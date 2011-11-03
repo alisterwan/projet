@@ -30,30 +30,33 @@
   </head>
   <body>
     <header>
-      <a href='./index.php' id='logo'>DigEat</a>
+      <div class='header'>
+        <a href='./index.php' id='logo'>DigEat</a>
+      </div>
     </header>
-    <div id='leftbox'></div>
-    <div id='rightbox'>
-      <form action='./index.php' method='post'>
-        <div>Log in:</div>
-        <div><input type='text' name='username' placeholder='Username' required></div>
-        <div><input type='password' name='password' placeholder='password' required></div>
-        <div><input type='submit' name='proceed' value='Submit'> <a href='./#'>Forgot your password?</a></div>
-      </form>
-      <form action='./registration.php' method='post'>
-        <div>Register:</div>
-        <div><input type='text' name='firstname' placeholder='Firstname' required></div>
-        <div><input type='text' name='surname' placeholder='Surname' required></div>
-        <div><input type='text' name='email' placeholder='Email' required></div>
-        <div><input type='submit' name='proceed' value='Submit'></div>
-      </form>
-    </div>
-  <div id='content'>";
+    <div id='body' class='clearfix'>
+      <div id='leftbox' class='panel'></div>
+      <div id='content' class='panel'>";
   }
 
   // Affichage du pied de la page.
   function printFooter() {
-    echo "</div></body></html>";
+    echo "</div>
+      <div id='rightbox' class='panel'>
+        <form action='./index.php' method='post'>
+          <div>Log in:</div>
+          <div><input type='text' name='username' placeholder='Username' required></div>
+          <div><input type='password' name='password' placeholder='password' required></div>
+          <div><input type='submit' name='proceed' value='Submit'> <a href='./#'>Forgot your password?</a></div>
+        </form>
+        <form action='./registration.php' method='post'>
+          <div>Register:</div>
+          <div><input type='text' name='firstname' placeholder='Firstname' required></div>
+          <div><input type='text' name='surname' placeholder='Surname' required></div>
+          <div><input type='text' name='email' placeholder='Email' required></div>
+          <div><input type='submit' name='proceed' value='Submit'></div>
+        </form>
+      </div></div></body></html>";
   }
 
 ?>
