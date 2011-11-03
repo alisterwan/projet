@@ -1,7 +1,7 @@
 <?php
 	include './header.php';
 	printHeader('Home Page');
-	
+
 
 // Rediriger l'admin s'il est correctement identifié
 	if ($_POST[username] == admin && sha1($_POST[password]) == 'f6793a9e6ca5356123fe0ab34bb46443894a5edf') {
@@ -13,10 +13,8 @@ document.location.replace('http://etudiant.univ-mlv.fr/~jwankutk/tuto/admin/inde
 // -->
 </script>";
 	}
-	
-	else
 
-if ($_POST) {
+	else if ($_POST) {
 		$user = $_POST[username];
 		$pass = sha1($_POST[password]);
 
@@ -28,7 +26,7 @@ if ($_POST) {
 
 		else {
 			echo "<p class='error'>Username or password incorrect, try again.</p>";
-		
+
 		}
 
 }
