@@ -25,7 +25,8 @@
     <title>$title</title>
     <meta name='description' content='Projet tuto'>
     <meta name='author' content='John Marie Equina Nicolas'>
-    <link rel='stylesheet' href='stylesheet.css'>
+    <link href='http://fonts.googleapis.com/css?family=Clara' rel='stylesheet'>
+    <link href='stylesheet.css' rel='stylesheet'>
   </head>
   <body>
     <header>
@@ -34,6 +35,7 @@
     <div id='leftbox'></div>
     <div id='rightbox'>
       <form action='./index.php' method='post'>
+        <div>Log in:</div>
         <div><input type='text' name='username' placeholder='Username' required></div>
         <div><input type='password' name='password' placeholder='password' required></div>
         <div><input type='submit' name='proceed' value='Submit'> <a href='./#'>Forgot your password?</a></div>
