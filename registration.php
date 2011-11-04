@@ -328,7 +328,12 @@
 				printForm($firstname,$surname,$address,$city,$country,$user,$email);
 			}
 			else
-				echo "<p>You have been successfully registered.</p>";
+				echo "<p>You have been successfully registered. <a href='./index.php'>here</a></p>";			
+				
+			if (!mkdir ("img/users/$user",0777,true))
+				echo 'File error';
+				
+				
 		}
 
 		//Envoie du mail de confirmation de l'inscription
