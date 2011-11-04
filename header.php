@@ -37,7 +37,7 @@
 	
 else {
 	// Requête qui récupère toutes les coordonnées du client
-	$customer = pg_fetch_row(pg_query($conn,"SELECT firstname,surname,address,city,country,mail from users where username='$_SESSION[name]'"));
+	$customer = pg_fetch_row(pg_query($conn,"SELECT firstname,surname,address,city,country,mail,username from users where username='$_SESSION[name]'"));
 	
 	echo "
 	<div id='rightbox' class='panel'>
@@ -50,6 +50,7 @@ else {
 	
 			<a href='./profile.php'>My profile</a><br>
 			<a href='./modifyaccount.php'>Modify my account</a><br>
+			<a href='./image.php'>My albums</a><br>
 			<a href='./logout.php'>Log out</a>
 	</div>";
 	}

@@ -261,6 +261,8 @@ header {
   float: left;
   font-size: .95em;
   padding: 5px 0;
+  margin-top: 90px;
+margin-right: 30px;
 }
 #rightbox, #leftbox { padding: 5px 5px; width: 190px; }
 #content { font-size: 1em; width: 580px; }
