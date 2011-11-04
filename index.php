@@ -20,7 +20,7 @@ document.location.replace('http://etudiant.univ-mlv.fr/~jwankutk/tuto/admin/inde
 
 		// Vérification du client dans la base de donnée
 		if (pg_num_rows(pg_query($conn,"SELECT firstname,surname,address,city,country,username,password,mail,id_customer FROM users WHERE username='$user' and password='$pass'"))) {
-			echo "<p>You are successfully logged in. Welcome <a href='./account.php'>$user</a>.</p>";
+			echo "<p>You are successfully logged in. Welcome <a href='./#'>$user</a>.</p>";
 			$_SESSION[name] = $user;
 		}
 
@@ -34,7 +34,5 @@ document.location.replace('http://etudiant.univ-mlv.fr/~jwankutk/tuto/admin/inde
 
 ?>
 
+<?php printFooter(); ?>
 
-
-
-<?php printFooter();?>
