@@ -8,15 +8,7 @@
   // Affiche l'entête
   function printHeader($title) {
 
-    // Affiche le nom d'utilisatuer s'il est connecté et un lien vers sa page perso.
-    if ($_SESSION[name])
-      $html = "<span id='log'>Welcome <a href='./account.php'>$_SESSION[name]</a>. <a href='./logout.php'>Log out</a>.</span>";
-
-    // Sinon, afficher un lien pour se connecter.
-    else
-      $html = "<span id='log'>Welcome. <a href='./login.php'>Log in</a> or <a href='./registration.php'>register</a>.</span>";
-
-    echo "
+   echo "
 <!doctype html>
 <html lang='en'>
   <head>
@@ -36,14 +28,36 @@
     </header>
     <div id='body' class='clearfix'>
       <div id='leftbox' class='panel'></div>
-      <div id='content' class='panel'>";
+      <div id='content' class='panel'></div>";
   }
+	
+	if (!$_SESSION[name]){
+	printIdentity();
+	}	
+	
+else {
+	// Requête qui récupère toutes les coordonnées du client
+	$customer = pg_fetch_row(pg_query($conn,"SELECT firstname,surname,address,city,country,mail from users where username='$_SESSION[name]'"));
+	
+	echo "
+	<div id='rightbox' class='panel'>
+		<p>Your account information:</p>
+			<div> $customer[0] $customer[1] </div>
+			<div> $customer[2] </div>
+			<div> $customer[3] </div>
+			<div> $customer[4] </div>
+			<div> $customer[5] </div>
+	
+			<a href='./profile.php'>My profile</a><br>
+			<a href='./modifyaccount.php'>Modify my account</a><br>
+			<a href='./logout.php'>Log out</a>
+	</div>";
+	}
 
-  // Affichage du pied de la page.
-  function printFooter() {
-    echo "</div>
-      <div id='rightbox' class='panel'>
-        <form action='./index.php' method='post'>
+  // Affichage les formulaires pour se connecter et s'inscrire
+  function printIdentity() {
+    echo " <div id='rightbox' class='panel'>
+    	   <form action='./index.php' method='post'>
           <div>Log in:</div>
           <div><input type='text' name='username' placeholder='Username' required></div>
           <div><input type='password' name='password' placeholder='password' required></div>
@@ -56,7 +70,15 @@
           <div><input type='text' name='email' placeholder='Email' required></div>
           <div><input type='submit' name='proceed' value='Submit'></div>
         </form>
-      </div></div></body></html>";
+      </div></div>";
   }
+  
+ // Affichage du pied de la page.
+	function printFooter() {
+		echo "
+		</div>
+	</body>
+</html>";
+	} 
 
 ?>
