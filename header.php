@@ -17,6 +17,7 @@
     <title>$title</title>
     <meta name='description' content='Projet tuto'>
     <meta name='author' content='John Marie Equina Nicolas'>
+    <meta http-equiv='Refresh' content='10'>
     <link href='http://fonts.googleapis.com/css?family=Clara' rel='stylesheet'>
     <link href='stylesheet.css' rel='stylesheet'>
   </head>
@@ -37,7 +38,9 @@
 	
 else {
 	// Requête qui récupère toutes les coordonnées du client
-	$customer = pg_fetch_row(pg_query($conn,"SELECT firstname,surname,address,city,country,mail,username from users where username='$_SESSION[name]'"));
+	
+	
+	$customer = pg_fetch_row(pg_query($conn,"SELECT firstname,surname,address,city,country,mail,username,id_customer from users where username='$_SESSION[name]'"));
 	
 	echo "
 	<div id='rightbox' class='panel'>
@@ -51,8 +54,14 @@ else {
 			<a href='./profile.php'>My profile</a><br>
 			<a href='./modifyaccount.php'>Modify my account</a><br>
 			<a href='./image.php'>My albums</a><br>
+			<a href='./chat.php'>Chatroom</a><br>
 			<a href='./logout.php'>Log out</a>
 	</div>";
+	
+	//On recupere le id de l'utilisateur dans une variable temporaire
+	$var_id = $customer[7];
+	$var_user =  $customer[6];
+	
 	}
 
   // Affichage les formulaires pour se connecter et s'inscrire
