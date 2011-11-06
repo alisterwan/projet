@@ -265,7 +265,13 @@ header {
 #rightbox, #leftbox { padding: 5px 5px; width: 190px; }
 #content { font-size: 1em; width: 580px; }
 
-
+.error {
+  border: 2px solid #F00;
+  border-radius: 2px;
+  font-weight: 700;
+  padding: 3px;
+  text-align: center;
+}
 
 
 

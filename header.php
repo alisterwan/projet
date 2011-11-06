@@ -70,6 +70,7 @@
   function rightboxContent() {
     if ($_SESSION[name]) {
       // Requête qui récupère toutes les coordonnées du client
+      global $conn;
       $customer = pg_fetch_row(pg_query($conn,"SELECT firstname,surname,address,city,country,mail,username,id_customer from users where username='$_SESSION[name]'"));
       $content = "<p>Your account information:</p>
         <div>$customer[0] $customer[1]</div>
