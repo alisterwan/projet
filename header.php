@@ -34,13 +34,10 @@
 
 
 
-
-
-
-
   // Affiche l'entête
-  function printHeader($title, $message) {
-   echo "
+  function printHeader($title) {
+    global $message;
+    echo "
 <!doctype html>
 <html lang='en'>
   <head>
@@ -62,45 +59,38 @@
       <div id='leftbox' class='panel'></div>
       <div id='content' class='panel'>
         $message
-      </div>";
+      </div>
+    <div id='rightbox' class='panel'>
+      ".rightboxContent()."
+    </div>";
   }
 
-	if (!$_SESSION[name]){
-	printIdentity();
-	}
-
-else {
-	// Requête qui récupère toutes les coordonnées du client
 
 
-	$customer = pg_fetch_row(pg_query($conn,"SELECT firstname,surname,address,city,country,mail,username,id_customer from users where username='$_SESSION[name]'"));
+  function rightboxContent() {
+    if ($_SESSION[name]) {
+      // Requête qui récupère toutes les coordonnées du client
+      $customer = pg_fetch_row(pg_query($conn,"SELECT firstname,surname,address,city,country,mail,username,id_customer from users where username='$_SESSION[name]'"));
+      $content = "<p>Your account information:</p>
+        <div>$customer[0] $customer[1]</div>
+        <div>$customer[2]</div>
+        <div>$customer[3]</div>
+        <div>$customer[4]</div>
+        <div>$customer[5]</div>
+        <a href='./profile.php'>My profile</a><br>
+        <a href='./modifyaccount.php'>Modify my account</a><br>
+        <a href='./image.php'>My albums</a><br>
+        <a href='./chat.php'>Chatroom</a><br>
+        <a href='./logout.php'>Log out</a>";
+      //On recupere le id de l'utilisateur dans une variable temporaire
+      $var_id = $customer[7];
+      $var_user =  $customer[6];
+    }
 
-	echo "
-	<div id='rightbox' class='panel'>
-		<p>Your account information:</p>
-			<div> $customer[0] $customer[1] </div>
-			<div> $customer[2] </div>
-			<div> $customer[3] </div>
-			<div> $customer[4] </div>
-			<div> $customer[5] </div>
-
-			<a href='./profile.php'>My profile</a><br>
-			<a href='./modifyaccount.php'>Modify my account</a><br>
-			<a href='./image.php'>My albums</a><br>
-			<a href='./chat.php'>Chatroom</a><br>
-			<a href='./logout.php'>Log out</a>
-	</div>";
-
-	//On recupere le id de l'utilisateur dans une variable temporaire
-	$var_id = $customer[7];
-	$var_user =  $customer[6];
-
-	}
-
-  // Affichage les formulaires pour se connecter et s'inscrire
-  function printIdentity() {
-    echo " <div id='rightbox' class='panel'>
-    	   <form action='./index.php' method='post'>
+    else {
+      // Afficher les formulaires pour se connecter et s'inscrire
+      $content = "
+        <form action='./index.php' method='post'>
           <div>Log in:</div>
           <div><input type='text' name='username' placeholder='Username' required></div>
           <div><input type='password' name='password' placeholder='password' required></div>
@@ -112,16 +102,15 @@ else {
           <div><input type='text' name='surname' placeholder='Surname' required></div>
           <div><input type='text' name='email' placeholder='Email' required></div>
           <div><input type='submit' name='proceed' value='Submit'></div>
-        </form>
-      </div></div>";
+        </form>";
+    }
+    return $content;
   }
 
- // Affichage du pied de la page.
-	function printFooter() {
-		echo "
-		</div>
-	</body>
-</html>";
-	}
+
+  // Affichage du pied de la page.
+  function printFooter() {
+    echo "</div></body></html>";
+  }
 
 ?>
