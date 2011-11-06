@@ -18,7 +18,7 @@
     if ($user == 'admin' && $pass == 'f6793a9e6ca5356123fe0ab34bb46443894a5edf') {
       $_SESSION[name] = Admininistrator;
       $_SESSION[masterpass] = $pass;
-      header('Location: http://etudiant.univ-mlv.fr/~jwankutk/tuto/admin/index.php');
+      header('Location: admin/index.php');
     }
 
 
