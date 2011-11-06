@@ -1,13 +1,45 @@
 <?php
   session_start();
 
+
+
   // Connexion à la base de donnée
-  if (!$conn = pg_connect("host=sqletud.univ-mlv.fr port=5432 dbname=mboivent_db user=mboivent password=equina4"))
-    echo "<p class='error'>Connexion error.</p>";
+  if (!$conn = pg_connect("host=sqletud.univ-mlv.fr port=5432 dbname=mboivent_db user=mboivent password=equina4")) {
+    $message = "<p class='error'>Connexion error.</p>";
+  }
+
+
+  else if ($_POST) {
+    $user = $_POST[username];
+    $pass = sha1($_POST[password]);
+
+
+  // Rediriger l'admin s'il est correctement identifié
+    if ($user == 'admin' && $pass == 'f6793a9e6ca5356123fe0ab34bb46443894a5edf') {
+      $_SESSION[name] = Admininistrator;
+      $_SESSION[masterpass] = $pass;
+      header('Location: http://etudiant.univ-mlv.fr/~jwankutk/tuto/admin/index.php');
+    }
+
+
+    // Vérification du client dans la base de donnée
+    else if (pg_num_rows(pg_query($conn,"SELECT firstname,surname,address,city,country,username,password,mail,id_customer FROM users WHERE username='$user' and password='$pass'"))) {
+      $message = "<p class='loggedin'>You are successfully logged in. Welcome <a href='./#'>$user</a>.</p>";
+      $_SESSION[name] = $user;
+    }
+    else {
+      $message = "<p class='error'>Username or password incorrect, try again.</p>";
+    }
+}
+
+
+
+
+
+
 
   // Affiche l'entête
-  function printHeader($title) {
-
+  function printHeader($title, $message) {
    echo "
 <!doctype html>
 <html lang='en'>
@@ -28,7 +60,9 @@
     </header>
     <div id='body' class='clearfix'>
       <div id='leftbox' class='panel'></div>
-      <div id='content' class='panel'></div>";
+      <div id='content' class='panel'>
+        $message
+      </div>";
   }
 
 	if (!$_SESSION[name]){
