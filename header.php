@@ -32,6 +32,21 @@
     }
 }
 
+  if ($_SESSION[name] != Admininistrator) {
+    /*
+     * On récupère les infos de l'utilisateur, s'il n'est pas l'administrateur:
+     * $customer[0] -> firstname
+     * $customer[1] -> surname
+     * $customer[2] -> address
+     * $customer[3] -> city
+     * $customer[4] -> country
+     * $customer[5] -> mail
+     * $customer[6] -> username
+     * $customer[7] -> id_customer
+     */
+    $customer = pg_fetch_row(pg_query($conn,"SELECT firstname,surname,address,city,country,mail,username,id_customer from users where username='$_SESSION[name]'"));
+  }
+
 
 
   // Affiche l'entête
@@ -70,8 +85,7 @@
   function rightboxContent() {
     if ($_SESSION[name]) {
       // Requête qui récupère toutes les coordonnées du client
-      global $conn;
-      $customer = pg_fetch_row(pg_query($conn,"SELECT firstname,surname,address,city,country,mail,username,id_customer from users where username='$_SESSION[name]'"));
+      global $customer;
       $content = "<p>Your account information:</p>
         <div>$customer[0] $customer[1]</div>
         <div>$customer[2]</div>
@@ -83,9 +97,6 @@
         <a href='./image.php'>My albums</a><br>
         <a href='./chat.php'>Chatroom</a><br>
         <a href='./logout.php'>Log out</a>";
-      //On recupere le id de l'utilisateur dans une variable temporaire
-      $var_id = $customer[7];
-      $var_user =  $customer[6];
     }
 
     else {

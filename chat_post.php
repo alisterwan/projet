@@ -1,7 +1,7 @@
 <?php
 include './header.php';
 
-if (!pg_query($conn,"INSERT INTO chat(message,id_cust) VALUES ('$_POST[message]','$var_id')")) {
+if (!pg_query($conn,"INSERT INTO chat(message,id_cust) VALUES ('$_POST[message]','$customer[7]')")) {
 				echo "<p class='error'>Query error.</p>";
 			}
 
