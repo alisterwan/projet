@@ -23,7 +23,7 @@
 
 
     // Vérification du client dans la base de donnée
-    else if (pg_num_rows(pg_query($conn,"SELECT firstname,surname,address,city,country,username,password,mail,id_customer FROM users WHERE username='$user' and password='$pass'"))) {
+    else if (pg_num_rows(pg_query($conn,"SELECT username FROM users WHERE username='$user' and password='$pass'"))) {
       $message = "<p class='loggedin'>You are successfully logged in. Welcome <a href='./#'>$user</a>.</p>";
       $_SESSION[name] = $user;
     }
@@ -41,7 +41,7 @@
      * $customer[3] -> city
      * $customer[4] -> country
      * $customer[5] -> mail
-     * $customer[6] -> username
+     * $customer[6] -> username == $_SESSION[name]
      * $customer[7] -> id_customer
      */
     $customer = pg_fetch_row(pg_query($conn,"SELECT firstname,surname,address,city,country,mail,username,id_customer from users where username='$_SESSION[name]'"));
