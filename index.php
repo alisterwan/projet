@@ -1,6 +1,6 @@
 <?php
 	include './header.php';
-	printHeader('Home Page');
+	printHeader('DigEat');
 
 	/*
 	 * HERE BE INDEX CONTENT

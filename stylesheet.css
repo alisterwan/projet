@@ -249,10 +249,10 @@ header {
 }
 
 #body {
-  box-shadow: 0 0 50px #DDD;
+  box-sizing: border-box;
+  box-shadow: 0 -100px 80px #DDD;
   margin: 0 auto;
   width: 960px;
-  box-sizing: border-box;
 }
 
 .panel {
