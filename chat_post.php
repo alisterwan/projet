@@ -1,15 +1,12 @@
 <?php
 include './header.php';
 
-if (!pg_query($conn,"INSERT INTO chat(message,id_cust) VALUES ('$_POST[message]','$customer[7]')")) {
-				echo "<p class='error'>Query error.</p>";
-			}
+  // Effectuer ici la requête qui insère le message
+  if (!pg_query($conn,"INSERT INTO chat(message,id_cust) VALUES ('$_POST[message]','$customer[7]')")) {
+    $html = "<p class='error'>Query error.</p>";
+    printDocument('Error');
+  }
 
-// Effectuer ici la requête qui insère le message
-// Puis rediriger vers chat.php comme ceci :
-	echo "<script language='Javascript'>
-<!--
-document.location.replace('http://etudiant.univ-mlv.fr/~jwankutk/tuto/chat.php');
-// -->
-</script>";
+  // Puis rediriger vers chat.php comme ceci :
+  header('Location: chat.php');
 ?>
