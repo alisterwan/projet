@@ -49,9 +49,8 @@
 
 
 
-  // Affiche l'entête
-  function printHeader($title) {
-    global $message;
+  function printDocument($title) {
+    global $message, $html;
     echo "
 <!doctype html>
 <html lang='en'>
@@ -74,10 +73,13 @@
       <div id='leftbox' class='panel'></div>
       <div id='content' class='panel'>
         $message
+        $html
       </div>
     <div id='rightbox' class='panel'>
       ".rightboxContent()."
-    </div>";
+    </div>
+  </body>
+</html>";
   }
 
 
@@ -117,12 +119,6 @@
         </form>";
     }
     return $content;
-  }
-
-
-  // Affichage du pied de la page.
-  function printFooter() {
-    echo "</div></body></html>";
   }
 
 ?>
