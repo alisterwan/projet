@@ -7,6 +7,6 @@
 
 	$html = "index content shall exist hereby in this variable, be it html elements or text.";
 
-	printDocument('DigEat');
+	printDocument();
 ?>
 

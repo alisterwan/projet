@@ -49,8 +49,9 @@
 
 
 
-  function printDocument($title) {
+  function printDocument($title = "DigEat") {
     global $message, $html;
+    $title = $title == "DigEat" ? $title : "DigEat - $title";
     echo "
 <!doctype html>
 <html lang='en'>
