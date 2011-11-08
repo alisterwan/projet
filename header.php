@@ -22,7 +22,7 @@
 
 
     // Vérification du client dans la base de donnée
-    else if (pg_num_rows($query = pg_query($conn,"SELECT id_customer FROM users WHERE username='$user' and password='$pass'"))) {
+    else if (pg_num_rows($query = pg_query($conn,"SELECT id_customer FROM users WHERE username='$name' and password='$pass'"))) {
       $_SESSION[id] = pg_fetch_result($query, 0, 0);
       $message = "<p class='loggedin'>You are successfully logged in. Welcome <a href='./#'>$name</a>.</p>";
     }
@@ -92,7 +92,7 @@
       global $user;
       $content = "<p>Your account information:</p>
         <div>$user[firstname] $user[surname]</div>
-        <div>$user[adress]</div>
+        <div>$user[address]</div>
         <div>$user[city]</div>
         <div>$user[country]</div>
         <div>$user[mail]</div>
