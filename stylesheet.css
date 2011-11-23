@@ -209,43 +209,57 @@ td { vertical-align: top; }
 header {
   background: #F0F0F0;
   border-bottom: 1px solid #DEDEDE;
-  position: relative;
 }
-.header {
+#header {
   margin: 0 auto;
   padding: 20px 0;
+  position: relative;
   width: 960px;
 }
-
 #logo {
-  color: #EEE;
+  color: #FFF;
   display: inline-block;
-  font-family: 'Clara', sans-serif;
-  font-size: 2.5em;
+  font: 2.5em 'Clara', serif;
   font-weight: 700;
   text-decoration: none;
-  text-indent: -30px;
-  text-shadow: 0 0   1px #000,
-               0 2px 1px #444,
-               0 2px 1px #444,
-               0 3px 1px #444,
-               0 4px 1px #444,
-               0 5px 1px #444,
-               0 0  20px #999;
-  -webkit-transition: color .3s ease-in-out, text-shadow .3s ease-in-out;
-  -moz-transition: color .3s ease-in-out, text-shadow .3s ease-in-out;
-  -o-transition: color .3s ease-in-out, text-shadow .3s ease-in-out;
-  transition: color .3s ease-in-out, text-shadow .3s ease-in-out;
+  /* mothereffingtextshadow.com */
+  text-shadow: 0 1px 0 #ccc,
+               0 2px 0 #c9c9c9,
+               0 3px 0 #bbb,
+               0 4px 0 #b9b9b9,
+               0 5px 0 #aaa,
+               0 6px 1px rgba(0,0,0,.1),
+               0 0 5px rgba(0,0,0,.1),
+               0 1px 3px rgba(0,0,0,.3),
+               0 3px 5px rgba(0,0,0,.2),
+               0 5px 10px rgba(0,0,0,.25),
+               0 10px 10px rgba(0,0,0,.2),
+               0 20px 20px rgba(0,0,0,.15);
+  -webkit-transition: color .3s ease-in-out;
+  -moz-transition: color .3s ease-in-out;
+  -o-transition: color .3s ease-in-out;
+  transition: color .3s ease-in-out;
 }
 #logo:hover {
-  color: #FFF;
-  text-shadow: 0 0   1px #000,
-               0 2px 1px #333,
-               0 2px 1px #333,
-               0 3px 1px #333,
-               0 4px 1px #333,
-               0 5px 1px #333,
-               0 0  30px #888;
+  color: #EEE;
+}
+nav {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  top: 0;
+}
+nav::before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+.nav {
+  font-size: 1.5em;
+  margin: 0 8px;
+  text-decoration: none;
+  vertical-align: middle;
 }
 
 #body {
