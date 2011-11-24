@@ -89,7 +89,7 @@ function connect($db, $user, $password){
   </head>
   <body>
     <header>
-      <div class='header'>
+      <div id='header'>
         <a href='./index.php' id='logo'>DigEat</a>
         <nav>
           <a class='nav' href='#'>Link 1</a>
