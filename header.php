@@ -71,8 +71,8 @@ include './config.php';
         <a href='./index.php' id='logo'>DigEat</a>
         <nav>
           <a class='nav' href='./index.php'>Home</a>
-          <a class='nav' href='./profile.php'>My Recipes</a>
-          <a class='nav' href='#'>My Recipes</a>
+          <a class='nav' href='./#'>Recipes</a>
+          <a class='nav' href='#'>Community</a>
         </nav>
       </div>
     </header>
