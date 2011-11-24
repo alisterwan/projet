@@ -92,9 +92,9 @@ function connect($db, $user, $password){
       <div id='header'>
         <a href='./index.php' id='logo'>DigEat</a>
         <nav>
-          <a class='nav' href='#'>Link 1</a>
-          <a class='nav' href='#'>Link 2</a>
-          <a class='nav' href='#'>Link 3</a>
+          <a class='nav' href='./index.php'>Home</a>
+          <a class='nav' href='./profile.php'>My Profile</a>
+          <a class='nav' href='#'>My Recipes</a>
         </nav>
       </div>
     </header>
@@ -123,7 +123,6 @@ function connect($db, $user, $password){
         <div>$user[4]</div>
         <div>$user[5]</div>
         <div>$user[8]</div>
-        <a href='./profile.php'>My profile</a><br>
         <a href='./modifyaccount.php'>Modify my account</a><br>
         <a href='./albums.php'>My albums</a><br>
 	 <a href='./friends.php'>Friends</a><br>
