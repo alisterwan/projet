@@ -1,28 +1,6 @@
 <?php
-  session_start();
 
-/************************
-	CONSTANTS
-/************************/
-define("HOST", "sqletud.univ-mlv.fr");  
-define("USER", "eyou01");  
-define("PASSWORD", "equina4");  
-define("DB", "eyou01_db");
-
-/************************
-	FUNCTIONS
-/************************/
-function connect($db, $user, $password){
-	$link = @mysql_connect($db, $user, $password);
-	if (!$link)
-	    die("Could not connect: ".mysql_error());
-	else{
-		$db = mysql_select_db(DB);
-		if(!$db)
-		die("Could not select database: ".mysql_error());
-		else return $link;
-	}
-}
+include './config.php';
 
 
 
@@ -93,7 +71,7 @@ function connect($db, $user, $password){
         <a href='./index.php' id='logo'>DigEat</a>
         <nav>
           <a class='nav' href='./index.php'>Home</a>
-          <a class='nav' href='./profile.php'>My Profile</a>
+          <a class='nav' href='./profile.php'>My Recipes</a>
           <a class='nav' href='#'>My Recipes</a>
         </nav>
       </div>
@@ -123,6 +101,7 @@ function connect($db, $user, $password){
         <div>$user[4]</div>
         <div>$user[5]</div>
         <div>$user[8]</div>
+        <a href='./profile.php'>My profile</a><br>
         <a href='./modifyaccount.php'>Modify my account</a><br>
         <a href='./albums.php'>My albums</a><br>
 	 <a href='./friends.php'>Friends</a><br>
