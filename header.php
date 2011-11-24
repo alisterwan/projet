@@ -104,6 +104,7 @@ include './config.php';
         <a href='./profile.php'>My profile</a><br>
         <a href='./modifyaccount.php'>Modify my account</a><br>
         <a href='./albums.php'>My albums</a><br>
+        <a href='./#'>My Recipes</a><br>
 	 <a href='./friends.php'>Friends</a><br>
         <a href='./chat.php'>Chatroom</a><br>
         <a href='./logout.php'>Log out</a>";
