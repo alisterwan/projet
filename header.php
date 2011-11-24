@@ -1,15 +1,35 @@
 <?php
   session_start();
 
+/************************
+	CONSTANTS
+/************************/
+define("HOST", "sqletud.univ-mlv.fr");  
+define("USER", "eyou01");  
+define("PASSWORD", "equina4");  
+define("DB", "eyou01_db");
+
+/************************
+	FUNCTIONS
+/************************/
+function connect($db, $user, $password){
+	$link = @mysql_connect($db, $user, $password);
+	if (!$link)
+	    die("Could not connect: ".mysql_error());
+	else{
+		$db = mysql_select_db(DB);
+		if(!$db)
+		die("Could not select database: ".mysql_error());
+		else return $link;
+	}
+}
+
 
 
   // Connexion à la base de donnée
-  if (!$conn = pg_connect("host=sqletud.univ-mlv.fr port=5432 dbname=mboivent_db user=mboivent password=equina4")) {
-    $message = "<p class='error'>Connexion error.</p>";
-  }
+  $conn = connect(HOST,USER,PASSWORD);
 
-
-  else if ($_POST) {
+    if ($_POST) {
     $name = $_POST[name];
     $pass = sha1($_POST[pass]);
 
@@ -22,8 +42,8 @@
 
 
     // Vérification du client dans la base de donnée
-    else if (pg_num_rows($query = pg_query($conn,"SELECT id_customer FROM users WHERE username='$name' and password='$pass'"))) {
-      $_SESSION[id] = pg_fetch_result($query, 0, 0);
+    else if (mysql_num_rows($query = mysql_query("SELECT id FROM users WHERE username='$name' and password='$pass'"))) {
+      $_SESSION[id] = mysql_result($query, 0, 0);
       $message = "<p class='loggedin'>You are successfully logged in. Welcome <a href='./#'>$name</a>.</p>";
     }
     else {
@@ -36,17 +56,19 @@
   if ($_SESSION[id]) {
     /*
      * On récupère les infos de l'utilisateur sous forme de tableau associatif:
-     * $user[firstname]
-     * $user[surname]
-     * $user[address]
-     * $user[city]
-     * $user[country]
-     * $user[username]
-     * $user[pass]
-     * $user[mail]
-     * $user[id_customer] == $_SESSION[id]
+     * $user[0] = firstname
+     * $user[1] = surname 
+     * $user[3] = address
+     * $user[4] = city 
+     * $user[5] = country 
+     * $user[6] = username
+     * $user[9] = profile picture
+     * $user[8] = email    
+     * $user[10] = $_SESSION[id]
      */
-    $user = pg_fetch_assoc(pg_query($conn,"SELECT * from users where id_customer='$_SESSION[id]'"));
+    $query = "SELECT * from users where id='$_SESSION[id]'";
+    $query2 = mysql_query($query);
+    $user = mysql_fetch_row($query2); 
   }
 
 
@@ -67,7 +89,7 @@
   </head>
   <body>
     <header>
-      <div id='header'>
+      <div class='header'>
         <a href='./index.php' id='logo'>DigEat</a>
         <nav>
           <a class='nav' href='#'>Link 1</a>
@@ -95,15 +117,16 @@
     if ($_SESSION[id]) {
       // Requête qui récupère toutes les coordonnées du client
       global $user;
-      $content = "<p>Your account information:</p>
-        <div>$user[firstname] $user[surname]</div>
-        <div>$user[address]</div>
-        <div>$user[city]</div>
-        <div>$user[country]</div>
-        <div>$user[mail]</div>
+      $content = "<p>Your account information:</p>	
+        <div>$user[0] $user[1]</div>
+        <div>$user[3]</div>
+        <div>$user[4]</div>
+        <div>$user[5]</div>
+        <div>$user[8]</div>
         <a href='./profile.php'>My profile</a><br>
         <a href='./modifyaccount.php'>Modify my account</a><br>
-        <a href='./image.php'>My albums</a><br>
+        <a href='./albums.php'>My albums</a><br>
+	 <a href='./friends.php'>Friends</a><br>
         <a href='./chat.php'>Chatroom</a><br>
         <a href='./logout.php'>Log out</a>";
     }

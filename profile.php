@@ -1,7 +1,9 @@
 <?php
 	include './header.php';
 
-	$html = "<h1>$customer[0] $customer[1] ($customer[6])</h1>";
+	$html = "<h1>$user[0] $user[1] ($user[6])</h1>
+		 <img src='$user[9]'/>	
+	";
 
 	printDocument('Profile');
 ?>
