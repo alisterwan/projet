@@ -1,0 +1,33 @@
+/** GENERAL **/
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: arial, sans-serif;
+}
+
+body {
+  margin-left: 260px;
+}
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+a:hover {
+  color: #2365A6;
+  text-decoration: underline;
+}
+
+#nav {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  padding: 10px;
+  border-right: 1px dashed #CCC;
+}
+
+.error {
+  color: red;
+  font-weight: 700;
+}
