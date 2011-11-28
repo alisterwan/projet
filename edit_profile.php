@@ -1,24 +1,25 @@
 <?php
-
 include './header.php';
 
 //fonction update users
 
 function updateUser($firstname,$surname,$address,$city,$country,$user,$email){
 	
-	$query = "UPDATE users SET firstname='$firstname', surname='$surname', address='$address', city='$city', country='$country', username='$user', mail='$email' WHERE id= '.$_SESSION[id].'";
+	$query = "UPDATE users SET firstname='$firstname', surname='$surname', address='$address', 
+	city='$city', country='$country', username='$user', mail='$email' WHERE id= '.$_SESSION[id].'";
 	$res = @mysql_query($query);
 	if(!$res)
 		die("Error: ".mysql_error());
 	else
 		return $res;
-	}
+}
 
 	
 	
-	 // Mise à jour des données
-  if ($_POST) {
-    session_start();
+	
+// Mise à jour des données
+if ($_POST) {
+    
     $firstname = $_POST[$user[0]];
     $surname   = $_POST[$user[1]];
     $address   = $_POST[$user[3]];
@@ -36,15 +37,14 @@ function updateUser($firstname,$surname,$address,$city,$country,$user,$email){
     $res = updateUser($firstname,$surname,$address,$city,$country,$user,$email);
   
     if(!$res){
-	echo "Query error";  
-	    }
-else {
-	Echo "Update successfully";
+		echo "Query error";  
+	}else{
+		Echo "Update successfully";
 	}	    	
   
     // Ne pas envoyer le POST dans header.php
     unset($_POST);
-  }
+}
 	
 
 
