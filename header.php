@@ -77,7 +77,9 @@ include './config.php';
       </div>
     </header>
     <div id='body' class='clearfix'>
-      <div id='leftbox' class='panel'></div>
+      <div id='leftbox' class='panel'>
+      ".leftboxContent()."
+      </div>
       <div id='content' class='panel'>
         $message
         $html
@@ -90,6 +92,19 @@ include './config.php';
   }
 
 
+ function leftboxContent() {
+    if ($_SESSION[id]) {
+      // Requête qui récupère toutes les coordonnées du client
+      global $user;
+      $content = "
+      <img src='$user[9]' width='170px' height='200px' />
+      <a href='./#'>Change my avatar</a><br>
+      <a href='./#'>My information</a>
+      ";
+    }
+    
+    return $content;
+}
 
   function rightboxContent() {
     if ($_SESSION[id]) {
@@ -102,7 +117,7 @@ include './config.php';
         <div>$user[5]</div>
         <div>$user[8]</div>
         <a href='./profile.php'>My profile</a><br>
-        <a href='./modifyaccount.php'>Modify my account</a><br>
+        <a href='./edit_profile.php'>Edit profile</a><br>
         <a href='./albums.php'>My albums</a><br>
         <a href='./#'>My Recipes</a><br>
 	 <a href='./friends.php'>Friends</a><br>
