@@ -1,5 +1,4 @@
 <?php
-
 include './config.php';
 
 
@@ -44,9 +43,9 @@ include './config.php';
      * $user[8] = email    
      * $user[10] = $_SESSION[id]
      */
-    $query = "SELECT * from users where id='$_SESSION[id]'";
-    $query2 = mysql_query($query);
-    $user = mysql_fetch_row($query2); 
+    $query = "SELECT * FROM users WHERE id='$_SESSION[id]'";
+    $result = mysql_query($query);
+    $user = mysql_fetch_row($result); 
   }
 
 
