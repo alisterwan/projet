@@ -1,5 +1,7 @@
 <?php
-include './config.php';
+
+include './includes/config.php';
+include './query_functions.php';
 
 
 
@@ -7,45 +9,51 @@ include './config.php';
   $conn = connect(HOST,USER,PASSWORD);
 
     if ($_POST) {
-    $name = $_POST[name];
+    $user = $_POST[name];
     $pass = sha1($_POST[pass]);
 
 
   // Rediriger l'admin s'il est correctement identifié
-    if ($name == 'admin' && $pass == 'f6793a9e6ca5356123fe0ab34bb46443894a5edf') {
+    if ($user == 'admin' && $pass == 'f6793a9e6ca5356123fe0ab34bb46443894a5edf') {
       $_SESSION[masterpass] = $pass;
       header('Location: admin/index.php');
     }
 
 
     // Vérification du client dans la base de donnée
-    else if (mysql_num_rows($query = mysql_query("SELECT id FROM users WHERE username='$name' and password='$pass'"))) {
-      $_SESSION[id] = mysql_result($query, 0, 0);
-      $message = "<p class='loggedin'>You are successfully logged in. Welcome <a href='./#'>$name</a>.</p>";
-    }
-    else {
+    
+	 $query  = "SELECT id,username FROM users WHERE username='$user' and password='$pass'";
+	 $result = mysql_query($query);
+
+        if (mysql_num_rows($result) == 1){
+	 $row = mysql_fetch_array($result, MYSQL_NUM);
+	 $_SESSION[id] = $row[0];
+	 $_SESSION[mail] = $row[1];
+	  }
+		
+    
+    	else {
       $message = "<p class='error'>Username or password incorrect, try again.</p>";
+	    }
+
+
     }
-  }
 
-
-
-  if ($_SESSION[id]) {
+  if (isset($_SESSION[id])) {
     /*
      * On récupère les infos de l'utilisateur sous forme de tableau associatif:
-     * $user[0] = firstname
-     * $user[1] = surname 
-     * $user[3] = address
-     * $user[4] = city 
-     * $user[5] = country 
-     * $user[6] = username
-     * $user[9] = profile picture
-     * $user[8] = email    
-     * $user[10] = $_SESSION[id]
+     * $user[firstname]
+     * $user[surname] 
+     * $user[address]
+     * $user[city] 
+     * $user[country] 
+     * $user[username]
+     * $user[avatar]
+     * $user[email]    
+     * $user[id]
      */
-    $query = "SELECT * FROM users WHERE id='$_SESSION[id]'";
-    $result = mysql_query($query);
-    $user = mysql_fetch_row($result); 
+   	$user = good_query_assoc("SELECT * FROM users WHERE id='$_SESSION[id]'");
+     
   }
 
 
@@ -68,12 +76,8 @@ include './config.php';
     <header>
       <div id='header'>
         <a href='./index.php' id='logo'>DigEat</a>
-        <nav>
-          <a class='nav' href='./index.php'>Home</a>
-          <a class='nav' href='./#'>Recipes</a>
-          <a class='nav' href='#'>Community</a>
-        </nav>
-      </div>
+        ".navContent()."
+	</div>
     </header>
     <div id='body' class='clearfix'>
       <div id='leftbox' class='panel'>
@@ -91,14 +95,43 @@ include './config.php';
   }
 
 
+function navContent(){
+    if (isset($_SESSION[id])) {
+      // Requête qui récupère toutes les coordonnées du client
+
+      $content = "
+      	 <nav>
+          <a class='nav' href='./index.php'>Home</a>
+	   <a class='nav' href='profile.php'>Profile</a>
+          <a class='nav' href='./#'>Recipes</a>
+          <a class='nav' href='#'>Community</a>
+        </nav>
+
+      ";
+    }
+    
+    else {
+	$content = " <nav>
+          <a class='nav' href='./index.php'>Home</a>
+          <a class='nav' href='./#'>Recipes</a>
+          <a class='nav' href='#'>Community</a>
+	   <a class='nav' href='registration.php'>Register</a>
+        </nav>";
+	    
+    }
+    
+    return $content;	
+} 
+
+
  function leftboxContent() {
-    if ($_SESSION[id]) {
+    if (isset($_SESSION[id])) {
       // Requête qui récupère toutes les coordonnées du client
       global $user;
       $content = "
-      <img src='$user[9]' width='170px' height='200px' />
+      <img src='$user[avatar]' width='170px' height='200px' />
       <a href='./#'>Change my avatar</a><br>
-      <a href='./#'>My information</a>
+      <a href='./information.php'>My information</a>
       ";
     }
     
@@ -106,22 +139,25 @@ include './config.php';
 }
 
   function rightboxContent() {
-    if ($_SESSION[id]) {
+    if (isset($_SESSION[id])) {
       // Requête qui récupère toutes les coordonnées du client
       global $user;
       $content = "<p>Your account information:</p>	
-        <div>$user[0] $user[1]</div>
-        <div>$user[3]</div>
-        <div>$user[4]</div>
-        <div>$user[5]</div>
-        <div>$user[8]</div>
-        <a href='./profile.php'>My profile</a><br>
-        <a href='./edit_profile.php'>Edit profile</a><br>
-        <a href='./albums.php'>My albums</a><br>
-        <a href='./#'>My Recipes</a><br>
-	 <a href='./friends.php'>Friends</a><br>
-        <a href='./chat.php'>Chatroom</a><br>
-        <a href='./logout.php'>Log out</a>";
+        <div>$user[firstname] $user[surname]</div>
+        <div>$user[address]</div>
+        <div>$user[city]</div>
+        <div>$user[country]</div>
+        <div>$user[mail]</div>
+       
+	<ul>
+        <li><a href='./edit_profile.php'>Edit profile</a></li>
+        <li><a href='./albums.php'>My albums</a></li>
+        <li><a href='./#'>My Recipes</a></li>
+	 <li><a href='./friends.php'>Friends</a></li>
+        <li><a href='./chat.php'>Chatroom</a></li>
+        <li><a href='./logout.php'>Log out</a></li>
+	</ul>
+	 ";
     }
 
     else {
@@ -133,13 +169,7 @@ include './config.php';
           <div><input type='password' name='pass' placeholder='password' required></div>
           <div><input type='submit' value='Submit'> <a href='./#'>Forgot your password?</a></div>
         </form>
-        <form action='./registration.php' method='post'>
-          <div>Register:</div>
-          <div><input type='text' name='firstname' placeholder='Firstname' required></div>
-          <div><input type='text' name='surname' placeholder='Surname' required></div>
-          <div><input type='text' name='email' placeholder='Email' required></div>
-          <div><input type='submit' name='proceed' value='Submit'></div>
-        </form>";
+       ";
     }
     return $content;
   }

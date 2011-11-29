@@ -1,0 +1,73 @@
+<?php
+
+//Fonctions qui fait des requetes MySQL
+
+
+function good_query($chaine, $debug=0)
+{
+    if ($debug == 1)
+        echo $chaine;
+
+    if ($debug == 2)
+        error_log($chaine);
+
+    $resultat = mysql_query($chaine);
+
+    if ($resultat == false)
+    {
+        error_log("SQL error: ".mysql_error()."\n\nOriginal query: $chaine\n");
+    }
+    return $resultat;
+}
+
+function good_query_list($sql, $debug=0)
+{
+    // cette fonction a besoin de good_query() fonction
+    $resultat = good_query($sql, $debug);
+  
+    if($lst = mysql_fetch_row($resultat))
+    {
+  mysql_free_result($resultat);
+  return $lst;
+    }
+    mysql_free_result($resultat);
+    return false;
+}
+
+function good_query_assoc($sql, $debug=0)
+{
+    // cette fonction a besoin de good_query() fonction
+    $resultat = good_query($sql, $debug);
+  
+    if($lst = mysql_fetch_assoc($resultat))
+    {
+  mysql_free_result($resultat);
+  return $lst;
+    }
+    mysql_free_result($resultat);
+    return false;
+}
+
+function good_query_value($sql, $debug=0)
+{
+    // cette fonction a besoin de good_query_list() fonction
+    $lst = good_query_list($sql, $debug);
+    return is_array($lst)?$lst[0]:false;
+}
+
+function good_query_table($sql, $debug=0)
+{
+    // cette fonction a besoin de good_query() fonction
+    $resultat = good_query($sql, $debug);
+
+    $table = array();
+    if (mysql_num_rows($resultat) > 0)
+    {
+        $i = 0;
+        while($table[$i] = mysql_fetch_assoc($resultat))
+      $i++;
+        unset($table[$i]);
+    }
+    mysql_free_result($resultat);
+    return $table;
+}
