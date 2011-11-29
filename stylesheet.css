@@ -288,8 +288,21 @@ nav::before {
   text-align: center;
 }
 
-
-
+#contribution label {
+  font-size: .9em;
+  font-weight: 700;
+}
+#contribution input {
+  display: block;
+  margin: 2px auto;
+  width: 80%;
+}
+#contribution textarea {
+  display: block;
+  height: 100px;
+  margin: 0 auto 20px;
+  width: 80%;
+}
 
 
 
