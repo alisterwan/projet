@@ -209,6 +209,7 @@ td { vertical-align: top; }
 header {
   background: #F0F0F0;
   border-bottom: 1px solid #DEDEDE;
+  position: relative;
 }
 #header {
   margin: 0 auto;
