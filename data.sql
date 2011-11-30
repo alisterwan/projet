@@ -30,7 +30,7 @@ CREATE TABLE `information` (
   `id_user` int(10) NOT NULL,
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`),
-  KEY `id_user` (`id_user`),
+  FOREIGN KEY `id_user` REFERENCES users(`id`)ON DELETE CASCADE,
   KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -49,9 +49,9 @@ CREATE TABLE `users` (
   `firstname` varchar(40) NOT NULL,
   `surname` varchar(40) NOT NULL,
   `sex` int(3) NOT NULL,
-  `address` varchar(40) NOT NULL,
-  `city` varchar(40) NOT NULL,
-  `country` varchar(50) NOT NULL,
+  `address` varchar(40) NULL,
+  `city` varchar(40)  NULL,
+  `country` varchar(50) NULL,
   `username` varchar(30) NOT NULL,
   `password` varchar(50) NOT NULL,
   `mail` varchar(80) NOT NULL,
@@ -61,11 +61,6 @@ CREATE TABLE `users` (
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `mail` (`mail`),
   KEY `id` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
---
--- Dumping data for table `users`
---
 
-INSERT INTO `users` VALUES('John', 'Wan', 1, '4 rue Claude Debussy', 'Tournan', 'France', 'alisterwan', '9cf95dacd226dcf43da376cdb6cbba7035218921', 'alisterwan@gmail.com', './img/avatar/man_default.png', 1);
-INSERT INTO `users` VALUES('equina', 'you', 1, '4 rue Claude Debussy', 'Tournan', 'France', 'eyou', '7eac6bc458216b0f5ecacc0722b654d8fba8c5fb', 'eyou@gmail.com', './img/avatar/man_default.png', 2);

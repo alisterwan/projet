@@ -2,6 +2,31 @@
 
 //Fonctions qui fait des requetes MySQL
 
+function retrieve_user_infos($id){ // prend en paramètre l'id de l'user, soit $_SESSION['id']
+
+	$sql='SELECT * FROM users WHERE id='.$id;
+	$query=mysql_query($sql);
+	
+	if (mysql_num_rows($query) == 1){
+		return $result=mysql_fetch_assoc($query);
+	}
+	
+	return false;
+}
+
+function retrieve_user_add_infos($id){ // prend en paramètre l'id de l'user, soit $_SESSION['id']
+
+	$sql='SELECT * FROM information WHERE id_user='.$id;
+	$query=mysql_query($sql);
+	
+	if (mysql_num_rows($query) == 1){
+		return $result=mysql_fetch_assoc($query);
+	}
+	
+	return false;
+}
+
+
 
 function good_query($chaine, $debug=0)
 {
