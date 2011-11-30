@@ -1,33 +1,37 @@
 <?php
   include './header.php';
 
-  $html .=
+  function redirect() {
+    //$id = query ingredient id;
+    //header("Location: ingredient.php?id=$id");
+    //exit;
+  }
+
+  if($_POST) {
+    //query si le nom de l'ingrédient existe déjà
+    if ("cet ingrédient existe déjà") {
+      redirect();
+    } else {
+      //query
+      if(!$query) {
+        $message = "<p class='error'>Connection error.</p>";
+      } else {
+        redirect();
+      }
+    }
+  }
+
+  $name = $_POST['name'] ? $_POST['name'] : $_GET['name'];
+
+  $html =
     "
-  <form action='handlecontribution.php' method='post' id='contribution'>
+  <form action='newingredient.php' method='post' id='contribution'>
     <p>Please define the ingredient.</p>
-    <input type='hidden' name='contribution' value='ingredient'>
-    <label>Name
-    <input type='text' name='name' required></label>
-    <label>Attribut 1
-    <input type='text' name='attr1' required></label>
-    <label>Attribut 2
-    <input type='text' name='attr2' required></label>
-    <label>Attribut 3
-    <input type='text' name='attr3' required></label>
-    <label>Attribut 4
-    <input type='text' name='attr4' required></label>
-    <label>Attribut 5
-    <input type='text' name='attr5' required></label>
-    <label>Attribut 6
-    <input type='text' name='attr6' required></label>
-    <label>Attribut 7
-    <input type='text' name='attr7' required></label>
-    <label>Attribut 8
-    <input type='text' name='attr8' required></label>
-    <label>Attribut 9
-    <input type='text' name='attr9' required></label>
+    <label>Name <input type='text' name='name' value='$name' required></label>
+    <label>Attribut 1 <input type='text' name='attr1' value='$_POST[attr1]'></label>
+    <label>Attribut 2 <input type='text' name='attr2' value='$_POST[attr2]'></label>
     <p>You may also describe it.</p>
-    <textarea></textarea>
+    <textarea name='description'>$_POST[description]</textarea>
     <input type='submit' value='Submit'>
   </form>
     ";
