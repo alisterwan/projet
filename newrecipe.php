@@ -294,15 +294,21 @@
     <label>Serves <input type='number' name='serves' value='$_POST[serves]'></label>
     <label>Preparation Duration (min) <input type='number' name='prepDuration' value='$_POST[prepDuration]'></label>
     <label>Cooking Duration (min) <input type='number' name='cookDuration' value='$_POST[cookDuration]'></label>
-    <label>Ingredient 1<input type='text' name='ing1' value='$_POST[ing1]'></label>
-    <label>Ingredient 2<input type='text' name='ing2' value='$_POST[ing2]'></label>
-    <label>Ingredient 3<input type='text' name='ing3' value='$_POST[ing3]'></label>
-    <label>Ingredient 4<input type='text' name='ing4' value='$_POST[ing4]'></label>
-    <label>Ingredient 5<input type='text' name='ing5' value='$_POST[ing5]'></label>
+    <label>Ingredient 1<input type='text' name='ing1' list='ingredientList' value='$_POST[ing1]'></label>
+    <label>Ingredient 2<input type='text' name='ing2' list='ingredientList' value='$_POST[ing2]'></label>
+    <label>Ingredient 3<input type='text' name='ing3' list='ingredientList' value='$_POST[ing3]'></label>
+    <label>Ingredient 4<input type='text' name='ing4' list='ingredientList' value='$_POST[ing4]'></label>
+    <label>Ingredient 5<input type='text' name='ing5' list='ingredientList' value='$_POST[ing5]'></label>
     <label>Preparation Method <textarea name='method'>$_POST[method]</textarea></label>
     <input type='submit' value='Submit'>
   </form>
     ";
+
+  $ingredients = mysql_query("SELECT name_en FROM ingredients");
+  while($ingredient = mysql_fetch_array($ingredients)) {
+    $list .= "<option value='$ingredient[0]'>";
+  }
+  $html .= "<datalist id='ingredientList'>$list</datalist>";
 
   printDocument();
 ?>
