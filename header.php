@@ -19,14 +19,14 @@ include("query_functions.php");
 
 
 		// Vérification du client dans la base de donnée
-		
+
 		 $query  = "SELECT id,username FROM users WHERE username='$username' and password='$pass'";
 		 $result = mysql_query($query);
 
 			if (mysql_num_rows($result) == 1){
 				 $row = mysql_fetch_array($result, MYSQL_NUM);
-				 $_SESSION['id'] = $row[0]; // ATTENTION IL FAUT METTRE LES QUOTES 
-				 $_SESSION['mail'] = $row[1]; // ATTENTION IL FAUT METTRE LES QUOTES 
+				 $_SESSION['id'] = $row[0]; // ATTENTION IL FAUT METTRE LES QUOTES
+				 $_SESSION['mail'] = $row[1]; // ATTENTION IL FAUT METTRE LES QUOTES
 			}
 			else {
 				$message = "<p class='error'>Username or password incorrect, try again.</p>";
@@ -39,10 +39,10 @@ include("query_functions.php");
 
 
 //// DEFINIT LA VARIABLE GLOBALE  $userid
-  if (isset($_SESSION['id'])) {  
+  if (isset($_SESSION['id'])) {
 
 	$userid=$_SESSION['id'];
-     
+
   }
 
 
@@ -52,7 +52,7 @@ include("query_functions.php");
 		echo "
 		<!doctype html>
 		<html lang='en'>
-		  <head>
+		<head>
 			<meta charset='utf-8'>
 			<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 			<title>$title</title>
@@ -60,8 +60,12 @@ include("query_functions.php");
 			<meta name='author' content='John Marie Equina Nicolas'>
 			<link href='http://fonts.googleapis.com/css?family=Clara' rel='stylesheet'>
 			<link href='stylesheet.css' rel='stylesheet'>
-		  </head>
-		  <body>
+			<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+			<script src='js/modernizr.custom.65662.js'></script>
+			<script src='js-webshim/minified/polyfiller.js'></script>
+			<script>$.webshims.polyfill();</script>
+		</head>
+		<body>
 			<header>
 			  <div id='header'>
 				<a href='./index.php' id='logo'>DigEat</a>
@@ -98,7 +102,7 @@ function navContent(){
 
       ";
     }
-    
+
     else {
 	$content = " <nav>
           <a class='nav' href='./index.php'>Home</a>
@@ -106,11 +110,11 @@ function navContent(){
           <a class='nav' href='#'>Community</a>
 	   <a class='nav' href='registration.php'>Register</a>
         </nav>";
-	    
+
     }
-    
-    return $content;	
-} 
+
+    return $content;
+}
 
 
  function leftboxContent() {
@@ -118,14 +122,14 @@ function navContent(){
       // Requête qui récupère toutes les coordonnées du client
       global $userid;
       $userinfos=retrieve_user_infos($userid);
-  
+
  	$content = "
-      <img src= '$userinfos[avatar]' width='170px' height='200px' /> 
+      <img src= '$userinfos[avatar]' width='170px' height='200px' />
       <a href='./#'>Change my avatar</a><br>
       <a href='./information.php'>My information</a>      ";
 	  return $content; // ATTENTION LE return n'était pas à la bonne place!
     }
-    
+
     //return $content;
 }
 
@@ -134,15 +138,15 @@ function rightboxContent() {
 		if (isset($_SESSION['id'])) { // ATTENTION IL FAUT METTRE LES QUOTES POUR id !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			  // Requête qui récupère toutes les coordonnées du client
 			  global $userid;
-			  
+
 			  $userinfos=retrieve_user_infos($userid);
-			  /*$content = "<p>Your account information:</p>	
+			  /*$content = "<p>Your account information:</p>
 				<div>$user[firstname] $user[surname]</div>
 				<div>$user[address]</div>
 				<div>$user[city]</div>
 				<div>$user[country]</div>
 				<div>$user[mail]</div>
-			   
+
 			<ul>
 				<li><a href='./edit_profile.php'>Edit profile</a></li>
 				<li><a href='./albums.php'>My albums</a></li>
@@ -151,14 +155,14 @@ function rightboxContent() {
 				<li><a href='./chat.php'>Chatroom</a></li>
 				<li><a href='./logout.php'>Log out</a></li>
 			</ul>			 ";*/
-			
-			 $content = '<p>Your account information:</p>	
+
+			 $content = '<p>Your account information:</p>
 				<div>'.$userinfos['firstname'].'&nbsp;'.$userinfos['surname'].'</div>
 				<div>'.$userinfos['address'].'</div>
 				<div>'.$userinfos['city'].'</div>
 				<div>'.$userinfos['country'].'</div>
 				<div>'.$userinfos['mail'].'</div>
-			   
+
 			<ul>
 				<li><a href="./edit_profile.php">Edit profile</a></li>
 				<li><a href="./albums.php">My albums</a></li>
@@ -167,7 +171,7 @@ function rightboxContent() {
 				<li><a href="./chat.php">Chatroom</a></li>
 				<li><a href="./logout.php">Log out</a></li>
 			</ul>			 ';
-			
+
 		}else{
 		  // Afficher les formulaires pour se connecter et s'inscrire
 		  $content = "
@@ -179,7 +183,7 @@ function rightboxContent() {
 			</form>
 		   ";
 		}
-		
+
 		return $content;
 }
 
