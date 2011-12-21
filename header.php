@@ -60,15 +60,9 @@ include("query_functions.php");
 			<meta name='author' content='John Marie Equina Nicolas'>
 			<link href='http://fonts.googleapis.com/css?family=Clara' rel='stylesheet'>
 			<link href='./css/stylesheet.css' rel='stylesheet'>
-			<link rel='stylesheet' href='./css/autocomplete.css' type='text/css' media='screen'>
 			<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
 			<script src='js/modernizr.custom.65662.js'></script>
 			<script src='js-webshim/minified/polyfiller.js'></script>
-			
-			<script type='text/javascript' src='autoComplete/jquery-1.2.1.pack.js'></script>
-			<script type='text/javascript' src='autoComplete/custom_functions.js'></script> 
-	
-			
 			<script>$.webshims.polyfill();</script>
 		</head>
 		<body>
