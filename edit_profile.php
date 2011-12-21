@@ -1,6 +1,11 @@
 <?php
 include './header.php';
 
+/*echo '<SCRIPT LANGUAGE=Javascript SRC="autoComplete/jquery-1.2.1.pack.js" />
+<SCRIPT LANGUAGE=Javascript SRC="autoComplete/custom_functions.js" />';
+echo "<link rel='stylesheet' href='autocomplete.css' type='text/css' media='screen'>";*/
+
+
 //fonction update users
 
 function updateUser($firstname,$surname,$address,$city,$country,$username,$email, $userid){ // fonction qui update sur la BDD
@@ -50,6 +55,7 @@ if (isset($userid)){ // vérification si logué ou pas
 
 		if (isset($_GET['updatesuccess'])){
 			$message="Update successful";
+			
 		}
 
 		$userinfos=retrieve_user_infos($userid); // retrieve_user_infos renvoit un tableau associatif contenant toutes les infos d'un user
@@ -57,32 +63,51 @@ if (isset($userid)){ // vérification si logué ou pas
 		
 			
 		if($userinfos!=false){// vérifie si la fonction est bien passée
+			
 
 			$username=$userinfos['username'];
 			$firstname=$userinfos['firstname'];
 			$surname=$userinfos['surname'];
 			$mail=$userinfos['mail'];
-			$address=$userinfos['address'];
+			$address=mysql_escape_string($userinfos['address']);
 			$city=$userinfos['city'];
 			$country=$userinfos['country'];			
 
-			// affichage champs profile, c'est tout ce pâté
-			$html= '<p>Your profile information:</p>
-			<form action="edit_profile.php?mode=profile_edit_process" method="post">
-			<table>
-			<tr><td>Firstname:</td><td><input type="text" name="firstname" value='.$firstname.' required></td></tr>
-			<tr><td>Surname:</td><td><input type="text" name="surname" value='.$surname.' required></td></tr>
-			<tr><td>Address:</td><td><input type="text" name="address" value='.$address.' ></td></tr>
-			<tr><td>City:</td><td><input type="text" name="city" value='.$city.' ></td></tr>
-			<tr><td>Country:</td><td><select name="country" value='.$country.' >   
-				<option value="France">France</option>
-			</select></td></tr>
-			<tr><td>Username:</td><td><input type="text" name="username" value='.$username.' required></td></tr>
-			<tr><td>Email:</td><td><input type="text" name="mail" value='.$mail.' required></td></tr>
-			<tr><td></td><td><button type="submit">Update</button></td></tr>
-			</table>
-		  </form>';
+						/*Type your county:
+				<br />
+				<input type="text" size="30" value="" id="inputString" onkeyup="lookup(this.value);" onblur="fill();" />
+	
 			
+			<div class="suggestionsBox" id="suggestions" style="display: none;">
+				<img src="upArrow.png" style="position: relative; top: -12px; left: 30px;" alt="upArrow" />
+				<div class="suggestionList" id="autoSuggestionsList">
+					&nbsp;
+				</div>
+			</div>*/
+			
+			// affichage champs profile, c'est tout ce pâté
+			$html= '<link rel="stylesheet" href="autocomplete.css" type="text/css" media="screen">
+			<p>Your profile information:</p>
+			<form action="edit_profile.php?mode=profile_edit_process" method="post" id="contribution">
+			<label>Firstname:<input type="text" name="firstname" value='.$firstname.' required></label>
+			<label>Surname:<input type="text" name="surname" value='.$surname.' required></label>
+			
+			<label>Country:<input type="text" size="30" name="country" type="text" value="'.$country.'" 
+			id="inputString" onkeyup="lookup(this.value);" onblur="fill();"></label>
+			
+			<div class="suggestionsBox" id="suggestions" style="display: none;">
+			<img src="autoComplete/upArrow.png" style="position: relative; top: -12px; left: 30px;" alt="upArrow" />
+			<div class="suggestionList" id="autoSuggestionsList">&nbsp;</div>
+			</div>
+			
+			
+			<label>Address:<input type="text" name="address" value='.$address.'></label>
+			<label>City:<input id="searchCity" type="text" name="city" value='.$city.' ></label>
+			<label>Username:<input type="text" name="username" value='.$username.' required></label>
+			<label>Email:<input type="text" name="mail" value='.$mail.' required></label>
+			<div><button type="submit">Update</button></div>
+		 	</form>';
+				
 		}else{
 			$message = "<p class='error'>Table USER error</p>";
 		}
