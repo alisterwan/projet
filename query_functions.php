@@ -26,6 +26,27 @@ function retrieve_user_add_infos($id){ // prend en paramètre l'id de l'user, soi
 	return false;
 }
 
+function retrieve_countryid($country){
+$sql='SELECT id FROM country WHERE name_en='.$country;
+	$query=mysql_query($sql);
+	
+	if (mysql_num_rows($query) == 1){
+		return $result=mysql_fetch_assoc($query);
+	}
+	
+	return false;	
+}
+
+function retrieve_cityname($id_country){
+$sql='SELECT name_en FROM city WHERE id_country='.$id_country;
+	$query=mysql_query($sql);
+	
+	if (mysql_num_rows($query) == 1){
+		return $result=mysql_fetch_assoc($query);
+	}
+	
+	return false;	
+}
 
 
 function good_query($chaine, $debug=0)
