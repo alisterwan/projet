@@ -60,12 +60,13 @@ include("query_functions.php");
 			<meta name='author' content='John Marie Equina Nicolas'>
 			<link href='http://fonts.googleapis.com/css?family=Clara' rel='stylesheet'>
 			<link href='./css/stylesheet.css' rel='stylesheet'>
+			<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
 			<script type='text/javascript' src='js/jquery.min.js'></script>
 			<script type='text/javascript' src='js/jquery.raty.min.js'></script>
               	<script type='text/javascript' src='js/functions.js'></script>
-			<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
 			<script src='js/modernizr.custom.65662.js'></script>
 			<script src='js-webshim/minified/polyfiller.js'></script>
+			
 			<script>$.webshims.polyfill();</script>
 			
 		</head>
