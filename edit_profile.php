@@ -92,21 +92,28 @@ if (isset($userid)){ // vérification si logué ou pas
 			<label>Firstname:<input type="text" name="firstname" value='.$firstname.' required></label>
 			<label>Surname:<input type="text" name="surname" value='.$surname.' required></label>
 			
-			<label>Country:<input type="text" size="30" name="country" type="text" value="'.$country.'" 
-			id="inputString" onkeyup="lookup(this.value);" onblur="fill();"></label>
-			
-			<div class="suggestionsBox" id="suggestions" style="display: none;">
-			<img src="autoComplete/upArrow.png" style="position: relative; top: -12px; left: 30px;" alt="upArrow" />
-			<div class="suggestionList" id="autoSuggestionsList">&nbsp;</div>
-			</div>
+			<label>Country:<input type="text" name="country" list="countryList" value='.$country.'></label>
 			
 			
 			<label>Address:<input type="text" name="address" value='.$address.'></label>
-			<label>City:<input id="searchCity" type="text" name="city" value='.$city.' ></label>
+			<label>City:<input type="text" name="city" value='.$city.' ></label>
 			<label>Username:<input type="text" name="username" value='.$username.' required></label>
 			<label>Email:<input type="text" name="mail" value='.$mail.' required></label>
 			<div><button type="submit">Update</button></div>
 		 	</form>';
+			
+			//requete pour recuperer les pays 
+			$country = mysql_query("SELECT name_en FROM country");
+  			while($res = mysql_fetch_array($country)) {
+    			$list .= "<option value='$res[0]'>";
+  			}
+			  $html .= "<datalist id='countryList'>$list</datalist>";
+			 
+			//requete pour recuperer l'id du pays
+
+
+			  
+			
 				
 		}else{
 			$message = "<p class='error'>Table USER error</p>";
