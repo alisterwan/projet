@@ -2,6 +2,10 @@
 
 
 //Functions
+
+
+/*********************************************************************************/
+
 function printInfoBanner($userid){
 	
 	$useraddinfos=retrieve_user_add_infos($userid);
@@ -27,8 +31,9 @@ function printInfoBanner($userid){
 function retrieve_countryid($country){
 $sql='SELECT id FROM country WHERE name_en='.$country;
 	$query=mysql_query($sql);
+	$verif = mysql_num_rows($query);
 	
-	if (mysql_num_rows($query) == 1){
+	if ($verif == 1){
 		return $result=mysql_fetch_assoc($query);
 	}
 	
@@ -47,16 +52,15 @@ $sql='SELECT name_en FROM city WHERE id_country='.$id_country;
 }
 
 function retrieve_user_infos($id){ // prend en paramètre l'id de l'user, soit $_SESSION['id']
-
 	$sql='SELECT * FROM users WHERE id='.$id;
 	$query=mysql_query($sql);
+	$verif = mysql_num_rows($query);
 	
-	if (mysql_num_rows($query) == 1){
-		return $result=mysql_fetch_assoc($query);
+	if ($verif == 1){
+	return $result=mysql_fetch_assoc($query);
 	}
-	
 	return false;
-}
+  }
 
 function retrieve_user_add_infos($id){ // prend en paramètre l'id de l'user, soit $_SESSION['id']
 
