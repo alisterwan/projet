@@ -2,11 +2,14 @@
 
 include './header.php';
 
-$html = "<h1>$user[firstname] $user[surname] ($user[username])</h1>
-	<FORM method='POST' action='./image.php' enctype='multipart/form-data' >
-	<input type='hidden' name='MAX_FILE_SIZE' value='1000000'>Upload a picture:<input type='file' name='image' value='parcourir'>
-	<br> <input type='submit' name='val' value='Upload'>
-      </FORM>";
+if (isset($userid)){  // vÈrification si loguÈ ou pas
+
+  
+  $userinfos=retrieve_user_infos($userid);
+  $useraddinfos=retrieve_user_add_infos($userid);
+
+$html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
+  <h3>Change my Avatar</h3>";
 
 $html .= "<br /><br />
       <FORM method='POST' action='./image.php'>
@@ -27,42 +30,33 @@ if (isset($_POST['useGravatar'])) {
             $query = "UPDATE users SET avatar='$avatar' WHERE id='$userid' ";
             $res = mysql_query($query);
         } else {
-            $image = $_SESSION['id'] . '.jpg';
-            $query = "UPDATE users SET avatar='$avatar' WHERE id='$userid' ";
+	     
+	     $sex_query = "SELECT sex FROM users WHERE id='$userid' ";
+	     $query1 = mysql_query($sex_query);
+	     $res1 = mysql_fetch_assoc($query1);
+		
+	     if ($res1['sex'] == '1'){
+		   $image = './img/avatar/man_default.png';
+		   $query = "UPDATE users SET avatar='$image' WHERE id='$userid' ";
+		   $res = mysql_query($query);  
+		   } 
+		   
+	     else {    
+            $image = './img/avatar/woman_default.png';
+            $query = "UPDATE users SET avatar='$image' WHERE id='$userid' ";
             $res = mysql_query($query);
+	     }
         }
     }
 }
 
-if (isset($_POST["image"])) {
-    $name = $_SESSION[id];
 
-    $dossier = 'img/users/' . $name;
-    $fichier = basename($_FILES['image']['name']);
-    $taille_maxi = 1000000;
-    $taille = filesize($_FILES['image']['tmp_name']);
-
-    $extensions = array(".png", ".gif", ".GIF", ".PNG", ".JPG", ".JPEG", ".jpg", ".jpeg");
-    $extension = strrchr($_FILES['image']['name'], ".");
-
-    if (!in_array($extension, $extensions)) {
-        $erreur = "Vous devez uploader un fichier de type png, gif, jpg, jpeg";
-    }
-
-    if ($taille > $taille_maxi) {
-        $erreur = "Le fichier est trop gros...";
-    }
-    if (!isset($erreur)) {
-        $fichier = strtr($fichier, 'ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ', 'AAAAAACEEEEIIIIOOOOOUUUUYaaaaaaceeeeiiiioooooouuuuyy');
-        $fichier = preg_replace('/([^.a-z0-9]+)/i', '-', $fichier);
-
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $dossier . $fichier)) {
-            echo "Upload successful!";
-        } else {
-            echo "Upload failed!";
-        }
-    }
-}
 
 printDocument('Upload a picture');
+}
+
+else{
+	
+	header('Location: index.php');
+}
 ?>
