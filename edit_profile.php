@@ -1,9 +1,6 @@
 <?php
 include './header.php';
 
-/*echo '<SCRIPT LANGUAGE=Javascript SRC="autoComplete/jquery-1.2.1.pack.js" />
-<SCRIPT LANGUAGE=Javascript SRC="autoComplete/custom_functions.js" />';
-echo "<link rel='stylesheet' href='autocomplete.css' type='text/css' media='screen'>";*/
 
 
 //fonction update users
@@ -73,17 +70,7 @@ if (isset($userid)){ // vérification si logué ou pas
 			$city=$userinfos['city'];
 			$country=$userinfos['country'];			
 
-						/*Type your county:
-				<br />
-				<input type="text" size="30" value="" id="inputString" onkeyup="lookup(this.value);" onblur="fill();" />
-	
-			
-			<div class="suggestionsBox" id="suggestions" style="display: none;">
-				<img src="upArrow.png" style="position: relative; top: -12px; left: 30px;" alt="upArrow" />
-				<div class="suggestionList" id="autoSuggestionsList">
-					&nbsp;
-				</div>
-			</div>*/
+				
 			
 			// affichage champs profile, c'est tout ce pâté
 			$html= '<link rel="stylesheet" href="autocomplete.css" type="text/css" media="screen">
@@ -91,12 +78,9 @@ if (isset($userid)){ // vérification si logué ou pas
 			<form action="edit_profile.php?mode=profile_edit_process" method="post" id="contribution">
 			<label>Firstname:<input type="text" name="firstname" value='.$firstname.' required></label>
 			<label>Surname:<input type="text" name="surname" value='.$surname.' required></label>
-			
 			<label>Country:<input type="text" name="country" list="countryList" value='.$country.'></label>
-			
-			
 			<label>Address:<input type="text" name="address" value='.$address.'></label>
-			<label>City:<input type="text" name="city" value='.$city.' ></label>
+			<label>City:<input type="text" name="city" list="cityList" value='.$city.' ></label>
 			<label>Username:<input type="text" name="username" value='.$username.' required></label>
 			<label>Email:<input type="text" name="mail" value='.$mail.' required></label>
 			<div><button type="submit">Update</button></div>
@@ -110,6 +94,14 @@ if (isset($userid)){ // vérification si logué ou pas
 			  $html .= "<datalist id='countryList'>$list</datalist>";
 			 
 			//requete pour recuperer l'id du pays
+			$id = retrieve_countryid($country);
+			
+			$city = mysql_query("SELECT name_en FROM city WHERE id_country LIKE '$id'");
+			while($res2 = mysql_fetch_array($city)) {
+    			$list2 .= "<option value='$res2[0]'>";
+  			}
+			  $html .= "<datalist id='cityList'>$list2</datalist>";
+			
 
 
 			  
