@@ -1,6 +1,7 @@
 <?php
   include './header.php';
 
+/*********Fonctions*****************/
   function redirect() {
     $query = mysql_fetch_row(mysql_query(
       sprintf("SELECT id FROM ingredients WHERE name_en LIKE '%s'",
@@ -10,6 +11,11 @@
     header("Location: ingredient.php?id=$id");
     exit;
   }
+/***********************************/
+
+
+
+
 
   if($_POST) {
     $query = mysql_num_rows(mysql_query(
