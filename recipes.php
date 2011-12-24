@@ -4,8 +4,8 @@
 function printRecipes($userid) {
 $recipe = good_query_assoc("SELECT * FROM recipes WHERE id_user = $userid");
 
-	if (!$info){
-	
+	if (!$recipe){
+		
 		return $html="
 		<h4>You haven't got recipes</h4>
 		<div>
@@ -20,9 +20,16 @@ $recipe = good_query_assoc("SELECT * FROM recipes WHERE id_user = $userid");
 	else 
 	
 	{
+		
+		
 		return $html="
-		<a href='#'>$recipe[name_en]</a> 
-		<p align='right'><small><a href='./newrecipe.php'>Add a new recipe</a></small></p>
+		<a href='./recipe.php?id=$recipe[id]'>$recipe[name_en]</a> 
+		<div>
+		<ul>
+		<li><small><a href='./newrecipe.php'>Add a new recipe</a></small></li>
+		<li><small><a href='./newingredient.php'>Add a new ingredient</a></small></li>
+		<ul>
+		</div>
 		";
 
 	  }
