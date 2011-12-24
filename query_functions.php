@@ -4,6 +4,19 @@
 //Functions
 
 
+function last_insert_id($table, $column){
+
+
+	$sql='SELECT '.$column.' FROM '.$table.' ORDER BY '.$column.' DESC LIMIT 0,1';
+	$query=mysql_query($sql);
+	
+	if (mysql_num_rows($query) == 1){
+		return $result=mysql_fetch_assoc($query);
+	}
+	
+	return false;	
+}
+
 /*********************************************************************************/
 
 function printInfoBanner($userid){
