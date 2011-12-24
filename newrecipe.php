@@ -81,7 +81,13 @@
     header("Location: recipe.php?id=$id");
     exit;
   }
+/*********************************************************************/
 
+if (isset($userid)){  // vÈrification si logué ou pas
+
+  
+  $userinfos=retrieve_user_infos($userid);
+  
   if($_POST) {
     $query = mysql_num_rows(mysql_query(
       sprintf("SELECT id FROM recipes WHERE name_en LIKE '%s'",
@@ -90,7 +96,9 @@
     if ($query) {
       redirect();
     } else {
-      $query = sprintf("INSERT INTO recipes(name_en,description_en,country_origin,difficulty,num_serves,duration_preparation,duration_cook,preparation_en) VALUES('%s','%s','%s','%s','%s','%s','%s','%s');",
+	        
+	    
+      $query = sprintf("INSERT INTO recipes(name_en,description_en,country_origin,difficulty,num_serves,duration_preparation,duration_cook,preparation_en,id_user) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s');",
 	 mysql_real_escape_string(strip_tags($_POST['name'])),
         mysql_real_escape_string(strip_tags($_POST['description'])),
         mysql_real_escape_string(strip_tags($_POST['country'])),
@@ -98,7 +106,8 @@
         mysql_real_escape_string(strip_tags($_POST['serves'])),
         mysql_real_escape_string(strip_tags($_POST['prepDuration'])),
         mysql_real_escape_string(strip_tags($_POST['cookDuration'])),
-        mysql_real_escape_string(strip_tags($_POST['method'])));
+        mysql_real_escape_string(strip_tags($_POST['method'])),
+	 mysql_real_escape_string(strip_tags($userid)));
         $response = @mysql_query($query);
 	 
 	 //on recupere le id de la recette
@@ -221,5 +230,7 @@
   
 
   printDocument();
+  
+}
 ?>
 
