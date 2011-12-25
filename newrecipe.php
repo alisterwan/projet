@@ -231,6 +231,9 @@ if (isset($userid)){  // vÈrification si logué ou pas
 
   printDocument();
   
+}else{
+	
+	header('Location: index.php');
 }
 ?>
 
