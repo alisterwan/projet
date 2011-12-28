@@ -215,9 +215,10 @@ if (isset($userid)){  // vÈrification si logué ou pas
     "<a id='more' href='#'>Add ingredient...</a><br>
     <script>
       var i = $i;
-      $('#more').on('click', function(e){
+      $('#more').on('click', function(e) {
         e.preventDefault();
-        $('#more').before('<label>Ingredient '+i+'<input type=\"text\" name=\"ing'+i+'\" list=\"ingredientList\"></label>');
+        $(this).before('<label>Ingredient '+i+'<input type=\"text\" name=\"ing'+i+'\" list=\"ingredientList\"></label>');
+        $(this).prev().updatePolyfill();
         i++;
       });
     </script>
