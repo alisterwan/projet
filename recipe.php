@@ -12,25 +12,19 @@ function retrieve_recipe_infos($id){ // prend en paramètre l'id de l'user, soit
 	return false;
   }
 
-function mysql_fetch_all($id_recipe) {
-  $query = sprintf("SELECT id_ingredient FROM recipe_ingredients
-    WHERE id_recipe='%s'",
-    mysql_real_escape_string($id_recipe)); 	
+
+function retrieve_ingredient_recipe($id_recipe){
+	$query = sprintf("SELECT id_ingredient FROM recipe_ingredients WHERE id_recipe='%s'",
+	mysql_real_escape_string($id_recipe)); 	
+	$result = mysql_query($query);	
 	
-   $result = mysql_query($query);	
-   	
-   while($row=mysql_fetch_array($result)) {
-       
-	foreach($row as $value){
-	$q ='SELECT name_en FROM ingredients WHERE id='.$value;	
-	$res = mysql_query($q);
-	$value = mysql_fetch_array($res);
-	echo $value;
-	echo "\n";	
-		}
+	while($row=mysql_fetch_row($result)) {
+   	echo $row[0];
+	echo "<br>";
    }
-   return false;
+ 
 }
+
 
 
 
@@ -40,21 +34,28 @@ if (isset($userid)){ // vérification si logué ou pas
   $userinfos=retrieve_user_infos($userid);
   
    $i = retrieve_recipe_infos($_GET[id]);
-   $j = mysql_fetch_all($_GET[id]);
+   $j[] = retrieve_ingredient_recipe($_GET[id]);
    
+   if($i[difficulty] == 0){ $i[difficulty] = 'Easy';}
+   else 
+   if($i[difficulty] == 1){ $i[difficulty] = 'Normal';}
+   else
+   if($i[difficulty] == 2){ $i[difficulty] = 'Difficult';}
+   else 
+   if($i[difficulty] == 3){ $i[difficulty] = 'Lunatic';}
   
   $html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
-  <h3>$i[name_en]</h3>
+  <h1 align='center'>$i[name_en]</h1>
   
   	<div>
-	<strong>Ingredients</strong>$j[id_ingredient]
+	<strong>Ingredients</strong>:$j
 	</div>
- 
+	
 	<div>
 	<div><strong>Description</strong>: $i[description_en]</div>
 	<div><strong>Origin</strong>: $i[country_origin]</div>
 	<div><strong>Difficulty</strong>: $i[difficulty]</div>
-	<div><strong>Number Serves</strong>: $i[num_serves] persons</div>
+	<div><strong>Number Serves</strong>: $i[num_serves] </div>
 	<div><strong>Preparation</strong>: $i[duration_preparation] minutes</div>
 	<div><strong>Cooking</strong>: $i[duration_cook] minutes</div>
 	<div><strong>Instructions</strong>: $i[preparation_en]</div>
