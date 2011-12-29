@@ -46,6 +46,24 @@ include("query_functions.php");
   }
 
 
+
+///////// MODULE LOCALIZATION /////////
+
+function i8n($string, $table, $id) {
+	$language = "en"; //get user's language
+	$query  = "SELECT ".$string."_en,".$string."_".$language." FROM $table WHERE id='$id'";
+	$result = mysql_query($query);
+	if ($language !== "en" and $result[1] != null) {
+		return $result[1];
+	} else {
+		return $result[0];
+	}
+}
+
+///// FIN MODULE LOCALIZATION /////////
+
+
+
  function printDocument($title = "DigEat"){
 		global $message, $html;
 		$title = $title == "DigEat" ? $title : "DigEat - $title";
