@@ -2,21 +2,6 @@
 
 include './header.php';
 
-function upload($index,$destination,$maxsize=FALSE,$extensions=FALSE)
-{
-   //Test1: fichier correctement uploadé
-     if (!isset($_FILES[$index]) OR $_FILES[$index]['error'] > 0) return FALSE;
-   //Test2: taille limite
-     if ($maxsize !== FALSE AND $_FILES[$index]['size'] > $maxsize) return FALSE;
-   //Test3: extension
-     $ext = substr(strrchr($_FILES[$index]['name'],'.'),1);
-     if ($extensions !== FALSE AND !in_array($ext,$extensions)) return FALSE;
-   //Déplacement
-     return move_uploaded_file($_FILES[$index]['tmp_name'],$destination);
-}
-
-
-
 if (isset($userid)){  // vÈrification si loguÈ ou pas
 
   
@@ -38,7 +23,7 @@ $html .= "<br /><br />
           Use Gravatar : 
           <label for='use'>Yes</label>
           <input type='radio' name='useGravatar' value='use' id='use'/>
-          <label for='notUse'>No</label>
+          <label for='notUse'>Default picture</label>
           <input type='radio' name='useGravatar' value='notUse' id='notUse'/>
           <input type='submit' name='val' value='Update'>
       </FORM>";
@@ -72,19 +57,57 @@ if (isset($_POST['useGravatar'])) {
     }
 }
 
-if (isset($_POST['picture'])) {
+if( ( isset($_FILES['picture']) && ($_FILES['picture']['error'] == UPLOAD_ERR_OK) ) ){    
+
+	//On fait un tableau contenant les extensions autorisées.
+	$extensionsOk = array('.PNG', '.GIF', '.JPG', '.JPEG', '.png', '.gif', '.jpg', '.jpeg');
 	
-	echo "coucou";
+	// On récupère l'extension, donc à partir de ce qu'il y a après le '.'
+	$extension = strrchr($_FILES['picture']['name'], '.');
 	
-	$upload1 = upload('$_POST["picture"]','./img/avatar/',15360, array('png','gif','jpg','jpeg') );
+	//teste
+	if(!in_array($extension, $extensionsOk)) //Si l'extension n'est pas dans le tableau
+	{
+		echo 'You must upload a file type png, gif, jpg, jpeg';
+	}
+
+	else{
 	
-	echo "coucou apres upload";
+			// vérification de la taille de l'image
+			if( filesize($_FILES['picture']['name']>10) ){
+
+			echo 'File too large.';
+			
+			}
+		
+		
+		
+			else{
+			
+			
+				$destination = './img/avatar/';
+
+				// si il y a une image avec le même, le nom est changé grâce à rand(). Cela évite que l'image soit écrasée.
+				while(file_exists($destination.$_FILES['picture']['name'])) {
+					$_FILES['picture']['name'] = rand().$_FILES['picture']['name'];
+				}
+    
+				// transfère de l'image du répertoire temporaire vers le dossier avatar	
+				move_uploaded_file($_FILES['picture']['tmp_name'], './img/avatar/'.$userid.'_profile_'.$_FILES["picture"]["name"]);    
+   
 	
-	$image = './img/avatar/$_POST["picture"]';
-	$query = "UPDATE users SET avatar='$image' WHERE id='$userid' ";
-	if ($upload1) echo "Upload de l'icone réussi!";
+				// met l'image uploadée en profil	
+				$image = './img/avatar/'.$userid.'_profile_'.$_FILES["picture"]["name"];
+				$query = "UPDATE users SET avatar='$image' WHERE id='$userid' ";
+				$res = mysql_query($query);
+	
+		}
+	
+	}
+
 	
 }
+
 
 
 printDocument('Upload a picture');
