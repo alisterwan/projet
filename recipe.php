@@ -17,10 +17,16 @@ function retrieve_ingredient_recipe($id_recipe){
 	$query = sprintf("SELECT id_ingredient FROM recipe_ingredients WHERE id_recipe='%s'",
 	mysql_real_escape_string($id_recipe)); 	
 	$result = mysql_query($query);	
-	
+	$return = array();
 	while($row=mysql_fetch_row($result)) {
-   	echo $row[0];
+   	$query1 = "SELECT name_en FROM ingredients WHERE id=$row[0]";
+	$response = mysql_query($query1);
+	while($row1 = mysql_fetch_assoc($response)){
+	echo "<div>";
+	echo $row1[name_en]; 
 	echo "<br>";
+	echo "</div>";	
+	}	
    }
  
 }
@@ -34,7 +40,7 @@ if (isset($userid)){ // vérification si logué ou pas
   $userinfos=retrieve_user_infos($userid);
   
    $i = retrieve_recipe_infos($_GET[id]);
-   $j[] = retrieve_ingredient_recipe($_GET[id]);
+  
    
    if($i[difficulty] == 0){ $i[difficulty] = 'Easy';}
    else 
@@ -48,7 +54,11 @@ if (isset($userid)){ // vérification si logué ou pas
   <h1 align='center'>$i[name_en]</h1>
   
   	<div>
-	<strong>Ingredients</strong>:$j
+	<strong>Ingredients</strong>:";
+	
+    $j = retrieve_ingredient_recipe($_GET[id]);
+   
+  $html.="
 	</div>
 	
 	<div>
