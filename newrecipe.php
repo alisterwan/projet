@@ -40,10 +40,8 @@
   $query = sprintf("SELECT id FROM ingredients
     WHERE name_en='%s'",
     mysql_real_escape_string($name));
-
-   $result = mysql_query($query);
-
-
+    $result = mysql_query($query);
+    
    if (!$result) {
    //si l'ingredient n'existe pas on l'ajoute dans la table ingredient
    return false;
@@ -60,7 +58,7 @@
 
 
 
-  // Fonction qui insere un new user dans la bdd
+  // Fonction qui insere un new recipe dans la bdd
   function insertRecipeIng($idRecipe,$idIngredient){
     $query = sprintf("INSERT INTO recipe_ingredients(id_recipe,id_ingredient) VALUES('%s','%s');",
     mysql_real_escape_string(strip_tags($idRecipe)),
@@ -72,6 +70,7 @@
       return $res;
 }
 
+  //fonction de redirection vers la page de recette crée
   function redirect() {
     $query = mysql_fetch_row(mysql_query(
       sprintf("SELECT id FROM recipes WHERE name_en LIKE '%s'",
@@ -81,6 +80,28 @@
     header("Location: recipe.php?id=$id");
     exit;
   }
+  
+  
+ function insertRecipe($name,$description,$country,$difficulty,$serves,$preparation,$cook,$instructions,$id_user){
+	$query = sprintf("INSERT INTO recipes(name_en,description_en,country_origin,difficulty,num_serves,duration_preparation,duration_cook,preparation_en,id_user) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s');",
+  	 mysql_real_escape_string(strip_tags($name)),
+        mysql_real_escape_string(strip_tags($description)),
+        mysql_real_escape_string(strip_tags($country)),
+        mysql_real_escape_string(strip_tags($difficulty)),
+        mysql_real_escape_string(strip_tags($serves)),
+        mysql_real_escape_string(strip_tags($preparation)),
+        mysql_real_escape_string(strip_tags($cook)),
+        mysql_real_escape_string(strip_tags($instructions)),
+  	 mysql_real_escape_string(strip_tags($id_user)));
+        $res = @mysql_query($query);
+
+		if(!$res)
+			die("Error: ".mysql_error());
+		else
+			return $res;
+	}
+ 
+ 
 /*********************************************************************/
 
 if (isset($userid)){  // vÈrification si logué ou pas
@@ -88,7 +109,7 @@ if (isset($userid)){  // vÈrification si logué ou pas
 
   $userinfos=retrieve_user_infos($userid);
 
-  if($_POST && false) {
+  if($_POST) {
     $query = mysql_num_rows(mysql_query(
       sprintf("SELECT id FROM recipes WHERE name_en LIKE '%s'",
         mysql_real_escape_string(strip_tags($_POST['name'])))
@@ -97,86 +118,16 @@ if (isset($userid)){  // vÈrification si logué ou pas
       redirect();
     } else {
 
-
-      $query = sprintf("INSERT INTO recipes(name_en,description_en,country_origin,difficulty,num_serves,duration_preparation,duration_cook,preparation_en,id_user) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s');",
-   mysql_real_escape_string(strip_tags($_POST['name'])),
-        mysql_real_escape_string(strip_tags($_POST['description'])),
-        mysql_real_escape_string(strip_tags($_POST['country'])),
-        mysql_real_escape_string(strip_tags($_POST['difficulty'])),
-        mysql_real_escape_string(strip_tags($_POST['serves'])),
-        mysql_real_escape_string(strip_tags($_POST['prepDuration'])),
-        mysql_real_escape_string(strip_tags($_POST['cookDuration'])),
-        mysql_real_escape_string(strip_tags($_POST['method'])),
-   mysql_real_escape_string(strip_tags($userid)));
-        $response = @mysql_query($query);
+insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['difficulty'],$_POST['serves'],$_POST['prepDuration'],$_POST['cookDuration'],$_POST['method'],$userid);
 
    //on recupere le id de la recette
    $getid_recipe = mysql_insert_id();
 
-
       /*
-       * quel méthode pour insérer les ingrédients?
+       *insérer les ingrédients
        */
 
-  //si les champs ingredients on été remplis
-
-      if (($_POST[ing1])){
-      $ing1 = getidIngredient(($_POST[ing1]));
-       if($ing1 == 0){
-      insertIngredient(($_POST[ing1]));
-      $ing1 = getidIngredient(($_POST[ing1]));
-      $res2 = insertRecipeIng($getid_recipe,$ing1);
-      }
-      else
-      $res2 = insertRecipeIng($getid_recipe,$ing1);
-      }
-
-      if (($_POST[ing2])){
-      $ing2 = getidIngredient($_POST[ing2]);
-      if($ing2 == 0){
-      insertIngredient(($_POST[ing2]));
-      $ing2 = getidIngredient(($_POST[ing2]));
-      $res3 = insertRecipeIng($getid_recipe,$ing2);
-      }
-      else
-      $res3 = insertRecipeIng($getid_recipe,$ing2);
-      }
-
-      if (($_POST[ing3])){
-      $ing3 = getidIngredient($_POST[ing3]);
-       if($ing3 == 0){
-      insertIngredient(($_POST[ing3]));
-      $ing3 = getidIngredient(($_POST[ing3]));
-      $res4 = insertRecipeIng($getid_recipe,$ing3);
-      }
-      else
-      $res4 = insertRecipeIng($getid_recipe,$ing3);
-      }
-
-      if (($_POST[ing4])){
-      $ing4 = getidIngredient($_POST[ing4]);
-       if($ing4 == 0){
-      insertIngredient(($_POST[ing4]));
-      $ing4 = getidIngredient(($_POST[ing4]));
-      $res5 = insertRecipeIng($getid_recipe,$ing4);
-      }
-      else
-      $res5 = insertRecipeIng($getid_recipe,$ing4);
-      }
-
-      if (($_POST[ing5])){
-      $ing5 = getidIngredient($_POST[ing5]);
-       if($ing5 == 0){
-      insertIngredient(($_POST[ing5]));
-      $ing5 = getidIngredient(($_POST[ing5]));
-      $res6 = insertRecipeIng($getid_recipe,$ing5);
-      }
-      else
-      $res6 = insertRecipeIng($getid_recipe,$ing5);
-      }
-
-
-
+     
 
       if(!$query) {
         $message = "<p class='error'>Connection error.</p>";
@@ -203,11 +154,21 @@ if (isset($userid)){  // vÈrification si logué ou pas
     <label>Serves <input type='number' name='serves' value='$_POST[serves]'></label>
     <label>Preparation Duration (min) <input type='number' name='prepDuration' value='$_POST[prepDuration]'></label>
     <label>Cooking Duration (min) <input type='number' name='cookDuration' value='$_POST[cookDuration]'></label>
-    <label>Ingredient 1<input type='text' name='ing1' list='ingredientList' value='$_POST[ing1]'></label>";
+    ";
 
-  $i = 2;
-  while($_POST["ing$i"]) {
-    $html .= "<label>Ingredient $i<input type='text' name='ing$i' list='ingredientList' value='".$_POST["ing$i"]."'></label>";
+  $i = 1;
+  while($_POST[$i]) {
+      $ing = getidIngredient($_POST[$i]);
+      //insere l'ingredient dans la bdd s'il n'existe pas
+      if($ing == 0){
+      insertIngredient(($_POST[$i]));
+      $ing = getidIngredient(($_POST[$i]));
+      $res3 = insertRecipeIng($getid_recipe,$ing);
+      }
+      else
+      $res3 = insertRecipeIng($getid_recipe,$ing); 
+    
+    $html .= "<label>Ingredient $i<input type='text' name='$i' list='ingredientList' value='".$_POST["$i"]."'></label>";
     $i++;
   }
 
@@ -215,9 +176,10 @@ if (isset($userid)){  // vÈrification si logué ou pas
     "<a id='more' href='#'>Add ingredient...</a><br>
     <script>
       var i = $i;
-      $('#more').on('click', function(e){
+      $('#more').on('click', function(e) {
         e.preventDefault();
-        $('#more').before('<label>Ingredient '+i+'<input type=\"text\" name=\"ing'+i+'\" list=\"ingredientList\"></label>');
+        $(this).before('<label>Ingredient '+i+'<input type=\"text\" name='+i+' list=\"ingredientList\"></label>');
+        $(this).prev().updatePolyfill();
         i++;
       });
     </script>
