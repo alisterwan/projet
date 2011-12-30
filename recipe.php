@@ -13,33 +13,13 @@ function retrieve_recipe_infos($id){ // prend en paramètre l'id de l'user, soit
   }
 
 
-function retrieve_ingredient_recipe($id_recipe){
-	$query = sprintf("SELECT id_ingredient FROM recipe_ingredients WHERE id_recipe='%s'",
-	mysql_real_escape_string($id_recipe)); 	
-	$result = mysql_query($query);	
-	$return = array();
-	while($row=mysql_fetch_row($result)) {
-   	$query1 = "SELECT name_en FROM ingredients WHERE id=$row[0]";
-	$response = mysql_query($query1);
-	while($row1 = mysql_fetch_assoc($response)){
-	echo "<div>";
-	echo $row1[name_en]; 
-	echo "<br>";
-	echo "</div>";	
-	}	
-   }
- 
-}
-
-
-
-
 
 if (isset($userid)){ // vérification si logué ou pas
 
   $userinfos=retrieve_user_infos($userid);
   
    $i = retrieve_recipe_infos($_GET[id]);
+   
   
    
    if($i[difficulty] == 0){ $i[difficulty] = 'Easy';}
@@ -54,11 +34,33 @@ if (isset($userid)){ // vérification si logué ou pas
   <h1 align='center'>$i[name_en]</h1>
   
   	<div>
-	<strong>Ingredients</strong>:";
+	<strong>Ingredients</strong>:<ul>";
+	//selection des ingredients reliees a la recette
+	$query = sprintf("SELECT id_ingredient FROM recipe_ingredients WHERE id_recipe='%s'",
+	mysql_real_escape_string($_GET[id])); 	
+	$result = mysql_query($query);	
 	
-    $j = retrieve_ingredient_recipe($_GET[id]);
+	while($row=mysql_fetch_row($result)) {
+   	$query1 = "SELECT name_en FROM ingredients WHERE id=$row[0]";
+	$response = mysql_query($query1);
+	while($row1 = mysql_fetch_assoc($response)){
+	$html.="<li>$row1[name_en]</li>";	
+	}	
+   }
    
+	$query = sprintf("SELECT path_source FROM recipe_photos WHERE id_recipe='%s'",
+	mysql_real_escape_string($_GET[id])); 	
+	$result2 = mysql_query($query);
+	
+	if(mysql_num_rows($result2) == 1){
+	$ij = mysql_fetch_row($result2);
+	 $html.= "<img src='img/recipes/$userinfos[id]_$_GET[id].jpg' />";	
+	}
+	
+
+
   $html.="
+  	</ul>
 	</div>
 	
 	<div>
