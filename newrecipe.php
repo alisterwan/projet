@@ -41,7 +41,7 @@
     WHERE name_en='%s'",
     mysql_real_escape_string($name));
     $result = mysql_query($query);
-    
+
    if (!$result) {
    //si l'ingredient n'existe pas on l'ajoute dans la table ingredient
    return false;
@@ -80,8 +80,8 @@
     header("Location: recipe.php?id=$id");
     exit;
   }
-  
-  
+
+
  function insertRecipe($name,$description,$country,$difficulty,$serves,$preparation,$cook,$instructions,$id_user){
 	$query = sprintf("INSERT INTO recipes(name_en,description_en,country_origin,difficulty,num_serves,duration_preparation,duration_cook,preparation_en,id_user) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s');",
   	 mysql_real_escape_string(strip_tags($name)),
@@ -100,8 +100,8 @@
 		else
 			return $res;
 	}
- 
- 
+
+
 /*********************************************************************/
 
 if (isset($userid)){  // vÈrification si logué ou pas
@@ -127,7 +127,7 @@ insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['diff
        *insérer les ingrédients
        */
 
-     
+
 
       if(!$query) {
         $message = "<p class='error'>Connection error.</p>";
@@ -168,8 +168,8 @@ insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['diff
       $res3 = insertRecipeIng($getid_recipe,$ing);
       }
       else
-      $res3 = insertRecipeIng($getid_recipe,$ing); 
-    
+      $res3 = insertRecipeIng($getid_recipe,$ing);
+
     $html .= "<label>Ingredient $i<input type='text' name='$i' list='ingredientList' value='".$_POST["$i"]."'></label>";
     $i++;
   }
@@ -180,11 +180,7 @@ insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['diff
       var i = $i;
       $('#more').on('click', function(e) {
         e.preventDefault();
-
         $(this).before('<label>Ingredient '+i+'<input type=\"text\" name='+i+' list=\"ingredientList\"></label>');
-
-        $(this).before('<label>Ingredient '+i+'<input type=\"text\" name=\"ing'+i+'\" list=\"ingredientList\"></label>');
-
         $(this).prev().updatePolyfill();
         i++;
       });
@@ -206,14 +202,14 @@ insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['diff
   }
   $html .= "<datalist id='ingredientList'>$list2</datalist>";
 
-if( ( isset($_FILES['picture']) && ($_FILES['picture']['error'] == UPLOAD_ERR_OK) ) ){    
+if( ( isset($_FILES['picture']) && ($_FILES['picture']['error'] == UPLOAD_ERR_OK) ) ){
 
 	//On fait un tableau contenant les extensions autorisées.
 	$extensionsOk = array('.PNG', '.GIF', '.JPG', '.JPEG', '.png', '.gif', '.jpg', '.jpeg');
-	
+
 	// On récupère l'extension, donc à partir de ce qu'il y a après le '.'
 	$extension = strrchr($_FILES['picture']['name'], '.');
-	
+
 	//teste
 	if(!in_array($extension, $extensionsOk)) //Si l'extension n'est pas dans le tableau
 	{
@@ -221,42 +217,42 @@ if( ( isset($_FILES['picture']) && ($_FILES['picture']['error'] == UPLOAD_ERR_OK
 	}
 
 	else{
-	
+
 			// vérification de la taille de l'image
 			if( filesize($_FILES['picture']['name']>10) ){
 
 			echo 'File too large.';
-			
+
 			}
-		
-		
-		
+
+
+
 			else{
-			
-			
+
+
 				$destination = './img/recipes/';
 
 				// si il y a une image avec le même, le nom est changé grâce à rand(). Cela évite que l'image soit écrasée.
 				while(file_exists($destination.$_FILES['picture']['name'])) {
 					$_FILES['picture']['name'] = rand().$_FILES['picture']['name'];
 				}
-    
-				// transfère de l'image du répertoire temporaire vers le dossier avatar	
-				move_uploaded_file($_FILES['picture']['tmp_name'], './img/recipes/'.$userid._.$getid_recipe);    
-   
-	
-				// met l'image uploadée en profil	
+
+				// transfère de l'image du répertoire temporaire vers le dossier avatar
+				move_uploaded_file($_FILES['picture']['tmp_name'], './img/recipes/'.$userid._.$getid_recipe);
+
+
+				// met l'image uploadée en profil
 				$image = './img/recipes/'.$userid._.$getid_recipe;
-				$query = sprintf("INSERT into recipe_photos(id_recipe,path_source) VALUES('%s','%s');", 
+				$query = sprintf("INSERT into recipe_photos(id_recipe,path_source) VALUES('%s','%s');",
 				mysql_real_escape_string(strip_tags($getid_recipe)),
 				mysql_real_escape_string(strip_tags($image)));
 				$res = @mysql_query($query);
-	
+
 		}
-	
+
 	}
 
-	
+
 }
 
 
