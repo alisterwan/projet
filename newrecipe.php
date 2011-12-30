@@ -180,11 +180,11 @@ insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['diff
       var i = $i;
       $('#more').on('click', function(e) {
         e.preventDefault();
-<<<<<<< HEAD
+
         $(this).before('<label>Ingredient '+i+'<input type=\"text\" name='+i+' list=\"ingredientList\"></label>');
-=======
+
         $(this).before('<label>Ingredient '+i+'<input type=\"text\" name=\"ing'+i+'\" list=\"ingredientList\"></label>');
->>>>>>> d685b7ed013b13495b3dbca432cb2d5c2724090d
+
         $(this).prev().updatePolyfill();
         i++;
       });
