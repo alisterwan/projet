@@ -138,7 +138,7 @@ insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['diff
   }
 
   $html =
-  "<form action='newrecipe.php' method='post' id='contribution'>
+  "<form action='newrecipe.php' method='post' id='contribution' enctype='multipart/form-data'>
     <p>Please define the recipe.</p>
     <label>Name <input type='text' name='name' value='$_POST[name]' required></label>
     <label>Description <input type='text' name='description' value='$_POST[description]'></label>
@@ -154,6 +154,8 @@ insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['diff
     <label>Serves <input type='number' name='serves' value='$_POST[serves]'></label>
     <label>Preparation Duration (min) <input type='number' name='prepDuration' value='$_POST[prepDuration]'></label>
     <label>Cooking Duration (min) <input type='number' name='cookDuration' value='$_POST[cookDuration]'></label>
+    <label for='picture'>Picture of the Recipe :</label>
+    <input type='file' size='65' name='picture' /></p>
     ";
 
   $i = 1;
@@ -199,6 +201,59 @@ insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['diff
     $list2 .= "<option value='$ingredient[0]'>$ingredient[0]</option>";
   }
   $html .= "<datalist id='ingredientList'>$list2</datalist>";
+
+if( ( isset($_FILES['picture']) && ($_FILES['picture']['error'] == UPLOAD_ERR_OK) ) ){    
+
+	//On fait un tableau contenant les extensions autorisées.
+	$extensionsOk = array('.PNG', '.GIF', '.JPG', '.JPEG', '.png', '.gif', '.jpg', '.jpeg');
+	
+	// On récupère l'extension, donc à partir de ce qu'il y a après le '.'
+	$extension = strrchr($_FILES['picture']['name'], '.');
+	
+	//teste
+	if(!in_array($extension, $extensionsOk)) //Si l'extension n'est pas dans le tableau
+	{
+		echo 'You must upload a file type png, gif, jpg, jpeg';
+	}
+
+	else{
+	
+			// vérification de la taille de l'image
+			if( filesize($_FILES['picture']['name']>10) ){
+
+			echo 'File too large.';
+			
+			}
+		
+		
+		
+			else{
+			
+			
+				$destination = './img/recipes/';
+
+				// si il y a une image avec le même, le nom est changé grâce à rand(). Cela évite que l'image soit écrasée.
+				while(file_exists($destination.$_FILES['picture']['name'])) {
+					$_FILES['picture']['name'] = rand().$_FILES['picture']['name'];
+				}
+    
+				// transfère de l'image du répertoire temporaire vers le dossier avatar	
+				move_uploaded_file($_FILES['picture']['tmp_name'], './img/recipes/'.$userid._.$getid_recipe);    
+   
+	
+				// met l'image uploadée en profil	
+				$image = './img/recipes/'.$userid._.$getid_recipe;
+				$query = sprintf("INSERT into recipe_photos(id_recipe,path_source) VALUES('%s','%s');", 
+				mysql_real_escape_string(strip_tags($getid_recipe)),
+				mysql_real_escape_string(strip_tags($image)));
+				$res = @mysql_query($query);
+	
+		}
+	
+	}
+
+	
+}
 
 
   printDocument();
