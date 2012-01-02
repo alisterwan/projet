@@ -1,5 +1,6 @@
 <?php
   include './header.php';
+    
 
 function retrieve_recipe_infos($id){ // prend en paramètre l'id de l'user, soit $_SESSION['id']
 	$sql='SELECT name_en,description_en,country_origin,difficulty,num_serves,duration_preparation,duration_cook,preparation_en FROM recipes WHERE id='.$id;
@@ -31,9 +32,24 @@ if (isset($userid)){ // vérification si logué ou pas
    if($i[difficulty] == 3){ $i[difficulty] = 'Lunatic';}
   
   $html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
-  <h1 align='center'>$i[name_en]</h1>
-  
-  	<div>
+	
+	<script>
+	$(function() {
+		$( '#accordion' ).accordion();
+	});
+	
+	jQuery(document).ready(function(){
+	$('.accordion .head').click(function() {
+		$(this).next().toggle('slow');
+		return false;
+	}).next().hide();
+});
+	
+	</script>
+	
+	<div id='accordion'>
+	<h1 align='center'><a href='#'>$i[name_en]</a></h1>
+	<div>
 	<strong>Ingredients</strong>:<ul>";
 	//selection des ingredients reliees a la recette
 	$query = sprintf("SELECT id_ingredient FROM recipe_ingredients WHERE id_recipe='%s'",
@@ -61,9 +77,7 @@ if (isset($userid)){ // vérification si logué ou pas
 
   $html.="
   	</ul>
-	</div>
-	
-	<div>
+
 	<div><strong>Description</strong>: $i[description_en]</div>
 	<div><strong>Origin</strong>: $i[country_origin]</div>
 	<div><strong>Difficulty</strong>: $i[difficulty]</div>
@@ -71,7 +85,25 @@ if (isset($userid)){ // vérification si logué ou pas
 	<div><strong>Preparation</strong>: $i[duration_preparation] minutes</div>
 	<div><strong>Cooking</strong>: $i[duration_cook] minutes</div>
 	<div><strong>Instructions</strong>: $i[preparation_en]</div>
+	</div>
 	
+	<h3 align='center'><a href='#'>Option</a></h3>
+	<div>
+	<ul>
+	<li><a href='editrecipe.php?id=$_GET[id]'>Edit this recipe</a></li>
+	<li><a href='deleterecipe.php?id=$_GET[id]' onclick='if (window.confirm('Confirm?')) 
+	{ 
+	return true; 
+	} 
+	else 
+	{ 
+	return false; 
+	} 
+	>Delete this recipe</a></li>
+	</ul>
+	</div>
+	
+		
 
 	</div>";
 
