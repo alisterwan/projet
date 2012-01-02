@@ -238,11 +238,11 @@ if( ( isset($_FILES['picture']) && ($_FILES['picture']['error'] == UPLOAD_ERR_OK
 				}
 
 				// transfère de l'image du répertoire temporaire vers le dossier avatar
-				move_uploaded_file($_FILES['picture']['tmp_name'], './img/recipes/'.$userid._.$getid_recipe);
+				move_uploaded_file($_FILES['picture']['tmp_name'], './img/recipes/'.$userid._.$getid_recipe.$extension);
 
 
 				// met l'image uploadée en profil
-				$image = './img/recipes/'.$userid._.$getid_recipe;
+				$image = './img/recipes/'.$userid._.$getid_recipe.$extension;
 				$query = sprintf("INSERT into recipe_photos(id_recipe,path_source) VALUES('%s','%s');",
 				mysql_real_escape_string(strip_tags($getid_recipe)),
 				mysql_real_escape_string(strip_tags($image)));
