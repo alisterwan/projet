@@ -32,6 +32,17 @@ if (!$query){
 	</div>
 	";
 	}
+	
+
+	 $html.="
+	<div>
+	<ul>
+	<li><small><a href='./newrecipe.php'>Add a new recipe</a></small></li>
+	<li><small><a href='./newingredient.php'>Add a new ingredient</a></small></li>
+	<ul>
+	</div>
+	";		
+	
 
 
 
