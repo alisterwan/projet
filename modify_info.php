@@ -69,9 +69,18 @@ if (isset($userid)){ // vérification si logué ou pas
 
 			// affichage champs profile, c'est tout ce pâté
 			$html= "<p>Edit your personal information:</p>
+			
+			 <script>
+			$(function() {
+			$( '#datepicker' ).datepicker();
+			});
+			</script>
+			
 			<form action='modify_info.php?mode=info_edit_process' method='post'>
 			<table>
-			<tr><td>Date of birth:</td><td><input type='text' name='date' value='$date'></td></tr>
+			<tr><td>Date of birth:</td><div class='demo'>
+			<td><input type='text' id='datepicker' value='$date'></td>
+			</div></tr>
 			<tr><td>Hobbies:</td><td><input type='textarea' name='hobbies' value='$hobbies'></td></tr>
 			<tr><td>Job:</td><td><input type='text' name='job' value='$job'></td></tr>
 			<tr><td>Music:</td><td><input type='textarea' name='music' value='$music'></td></tr>
