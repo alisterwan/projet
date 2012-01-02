@@ -87,6 +87,7 @@ if (isset($userid)){ // vérification si logué ou pas
 
 			// affichage champs profile, c'est tout ce pâté
 			$html= '<link rel="stylesheet" href="autocomplete.css" type="text/css" media="screen">
+			
 			<p>Your profile information:</p>
 			<form action="edit_profile.php?mode=profile_edit_process" method="post" id="contribution">
 			<label>Firstname:<input type="text" name="firstname" value='.$firstname.' required></label>
