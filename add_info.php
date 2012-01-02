@@ -27,9 +27,20 @@ if (isset($userid)){ // vérification si logué ou pas
   $userinfos=retrieve_user_infos($userid);
   $html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
   <h3>Add information</h3>
+  
+ 		       <script>
+			$(function() {
+			$( '#datepicker' ).datepicker();
+			});
+			</script>
+			
+			
+  
  	<form action='add_info.php?mode=add_info_process' method='post'>
 			<table>
-			<tr><td>Date of birth:</td><td><input type='text' name='date'></td></tr>
+			<tr><td>Date of birth:</td><div class='demo'>
+			<td><input type='text' id='datepicker'></td>
+			</div></tr>
 			<tr><td>Hobbies:</td><td><input type='textarea' name='hobbies'></td></tr>
 			<tr><td>Job:</td><td><input type='text' name='job'></td></tr>
 			<tr><td>Music:</td><td><input type='textarea' name='music'></td></tr>
