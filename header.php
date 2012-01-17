@@ -79,6 +79,10 @@ function i8n($string, $table, $id) {
 			<link href='http://fonts.googleapis.com/css?family=Clara' rel='stylesheet'>
 			<link href='./css/stylesheet.css' rel='stylesheet'>
 			
+	<script type='text/javascript' src='js/MooTools/mootools.js'></script>
+	<script type='text/javascript' src='js/MenuMatic/MenuMatic.js'></script>
+	<link rel='stylesheet' type='text/css' href='js/MenuMatic/MenuMatic_myNavigationMenu.css' />
+			
 	<script type='text/javascript' src='jsdate/TSWBrowserDetect.js'></script>
 	<script type='text/javascript' src='jsdate/TSWUtils.js'></script>
 	<script type='text/javascript' src='jsdate/TSWDateAndTime.js'></script>
@@ -125,22 +129,73 @@ function navContent(){
 
       $content = "
       	 <nav>
-          <a class='nav' href='./index.php'>Home</a>
-	   <a class='nav' href='profile.php'>Profile</a>
-          <a class='nav' href='./#'>Recipes</a>
-          <a class='nav' href='#'>Community</a>
+   	<ul id='myNavigationMenu'>
+		<li><a href='./index.php'>Home</a></li>
+		<li><a href='./profile.php'>Profile</a>
+			<ul>
+				<li><a href='#'>Edit Profile</a>
+					<ul>
+						<li><a href='edit_profile.php'>Account information</a></li>
+						<li><a href='modify_info.php'>Personal information</a></li>
+					</ul>
+				</li>
+				<li><a href='./albums.php'>My Albums</a></li>
+				<li><a href='./friends.php'>Friends</a></li>
+				<li><a href='./logout.php'>Log out</a></li>
+			</ul>
+		</li>
+		<li><a href='#'>Recipes</a>
+			<ul>
+				<li><a href='./recipes.php'>My Recipes</a></li>
+				<li><a href='#'>Feeds</a></li>
+			</ul>
+		</li>
+		<li><a href='#'>Community</a></li>
+	</ul>
+	<!-- Create a MenuMatic Instance -->
+	<script type='text/javascript' >
+		window.addEvent('load', function() {			
+			var myMenu = new MenuMatic({
+				id: 'myNavigationMenu',
+				subMenusContainerId: 'myNavigationMenu_menuContainer',
+				orientation: 'horizontal',
+				effect: 'slide & fade', 
+				duration: 800, 
+				hideDelay: 1000,
+				opacity: 100});
+		});		
+	</script>
+	 
         </nav>
 
       ";
     }
 
     else {
-	$content = " <nav>
-          <a class='nav' href='./index.php'>Home</a>
-          <a class='nav' href='./#'>Recipes</a>
-          <a class='nav' href='#'>Community</a>
-	   <a class='nav' href='registration.php'>Register</a>
-        </nav>";
+	$content = " 
+	<nav>
+	<ul id='myNavigationMenu'>
+		<li><a href='./index.php'>Home</a></li>
+		<li><a href='#'>Recipes</a></li>
+		<li><a href='#'>Community</a></li>
+		<li><a href='./registration.php'>Registration</a></li>
+	</ul>
+	<!-- Create a MenuMatic Instance -->
+	<script type='text/javascript' >
+		window.addEvent('load', function() {			
+			var myMenu = new MenuMatic({
+				id: 'myNavigationMenu',
+				subMenusContainerId: 'myNavigationMenu_menuContainer',
+				orientation: 'horizontal',
+				effect: 'slide & fade', 
+				duration: 800, 
+				hideDelay: 1000,
+				opacity: 100});
+		});		
+	</script>
+	 </nav>
+	 
+	 ";
 
     }
 
@@ -171,21 +226,7 @@ function rightboxContent() {
 			  global $userid;
 
 			  $userinfos=retrieve_user_infos($userid);
-			  /*$content = "<p>Your account information:</p>
-				<div>$user[firstname] $user[surname]</div>
-				<div>$user[address]</div>
-				<div>$user[city]</div>
-				<div>$user[country]</div>
-				<div>$user[mail]</div>
-
-			<ul>
-				<li><a href='./edit_profile.php'>Edit profile</a></li>
-				<li><a href='./albums.php'>My albums</a></li>
-				<li><a href='./#'>My Recipes</a></li>
-			 <li><a href='./friends.php'>Friends</a></li>
-				<li><a href='./chat.php'>Chatroom</a></li>
-				<li><a href='./logout.php'>Log out</a></li>
-			</ul>			 ";*/
+			  
 
 			 $content = '<p>Your account information:</p>
 				<div>'.$userinfos['firstname'].'&nbsp;'.$userinfos['surname'].'</div>
@@ -193,15 +234,7 @@ function rightboxContent() {
 				<div>'.$userinfos['city'].'</div>
 				<div>'.$userinfos['country'].'</div>
 				<div>'.$userinfos['mail'].'</div>
-
-			<ul>
-				<li><a href="./edit_profile.php">Edit profile</a></li>
-				<li><a href="./albums.php">My albums</a></li>
-				<li><a href="./recipes.php">My Recipes</a></li>
-			 <li><a href="./friends.php">Friends</a></li>
-				<li><a href="./chat.php">Chatroom</a></li>
-				<li><a href="./logout.php">Log out</a></li>
-			</ul>			 ';
+				';
 
 		}else{
 		  // Afficher les formulaires pour se connecter et s'inscrire
