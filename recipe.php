@@ -33,24 +33,15 @@ if (isset($userid)){ // vérification si logué ou pas
   
   $html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
 	
-	<script>
-	$(function() {
-		$( '#accordion' ).accordion();
-	});
 	
-	jQuery(document).ready(function(){
-	$('.accordion .head').click(function() {
-		$(this).next().toggle('slow');
-		return false;
-	}).next().hide();
-});
 	
-	</script>
-	
-	<div id='accordion'>
-	<h1 align='center'><a href='#'>$i[name_en]</a></h1>
-	<div>
+	<div id='myAccordion' class='tswAccordion'>
+	<div class='tswAccordionInactiveSection'>
+	<div class='tswAccordionHeader'>$i[name_en]</div>
+	<div class='tswAccordionBody'>
+		<!--Content for section 1-->
 	<strong>Ingredients</strong>:<ul>";
+	
 	//selection des ingredients reliees a la recette
 	$query = sprintf("SELECT id_ingredient FROM recipe_ingredients WHERE id_recipe='%s'",
 	mysql_real_escape_string($_GET[id])); 	
@@ -70,7 +61,7 @@ if (isset($userid)){ // vérification si logué ou pas
 	
 	if(mysql_num_rows($result2) == 1){
 	$ij = mysql_fetch_row($result2);
-	 $html.= "<img src='img/recipes/$userinfos[id]_$_GET[id].jpg' />";	
+	 $html.= "<img src='img/recipes/$userinfos[id]_$_GET[id].jpg' width='200px' height='175px' />";	
 	}
 	
 
@@ -86,10 +77,13 @@ if (isset($userid)){ // vérification si logué ou pas
 	<div><strong>Cooking</strong>: $i[duration_cook] minutes</div>
 	<div><strong>Instructions</strong>: $i[preparation_en]</div>
 	</div>
-	
-	<h3 align='center'><a href='#'>Option</a></h3>
-	<div>
-	<ul>
+
+		</div>
+		<div class='tswAccordionInactiveSection'>
+			<div class='tswAccordionHeader'>Option</div>
+			<div class='tswAccordionBody'>
+				<!--Content for section 2-->
+				<ul>
 	<li><a href='editrecipe.php?id=$_GET[id]'>Edit this recipe</a></li>
 	<li><a href='deleterecipe.php?id=$_GET[id]' onclick='if (window.confirm('Confirm?')) 
 	{ 
@@ -101,11 +95,19 @@ if (isset($userid)){ // vérification si logué ou pas
 	} 
 	>Delete this recipe</a></li>
 	</ul>
-	</div>
+				<div>
 	
-		
-
-	</div>";
+	</div>
+			</div>
+		</div>
+	</div>
+	<script type='text/javascript'>
+		var accordion = tswAccordionGetForId(\"myAccordion\");
+		accordion.setMouseOver(true);
+	</script>
+	
+	
+	";
 
   
  
