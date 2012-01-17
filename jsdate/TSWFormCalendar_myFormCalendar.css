@@ -1,0 +1,194 @@
+#myFormCalendar.tswFormCalendar
+{
+}
+#myFormCalendar_tswCalendarPopUp.tswFormCalendarVisual
+{
+	position: absolute;
+	width: 225px;
+	height: 225px;
+	background-image: url('Images/TSWFormCalendarRounded_F6F6FF_2F3C8E.png');
+}
+#myFormCalendar_tswCalendarPopUp.tswFormCalendarVisualIE6 div.tswFormCalendarVisualIE6
+{
+	width: 225px;
+	height: 225px;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='TacoComponents/Images/TSWFormCalendarRounded_F6F6FF_2F3C8E.png', sizingMethod='crop');
+}
+#myFormCalendar_tswCalendarPopUp.tswFormCalendarVisualIE6
+{
+	background-image: none;
+}
+#myFormCalendar_tswCalendarPopUp .tswFormCalendarVisualMonth
+{
+	position: absolute;
+	top: 20px;
+	left: 70px;
+	width: 84px;
+	text-align: center;
+	font-family: Helvetica, Arial;
+	font-size: 13px;
+	font-weight: bold;
+	color: #000000;
+}
+#myFormCalendar_tswCalendarPopUp .tswFormCalendarVisualYear
+{
+	position: absolute;
+	top: 34px;
+	left: 70px;
+	width: 84px;
+	text-align: center;
+	font-family: Helvetica, Arial;
+	font-size: 10px;
+	font-weight: bold;
+	color: #000000;
+}
+#myFormCalendar_tswCalendarPopUp .tswFormCalendarVisualDays
+{
+	position: absolute;
+	top: 52px;
+	left: 28px;
+	width: 170px;
+	height: 168px;
+}
+#myFormCalendar_tswCalendarPopUp .tswFormCalendarVisualDays div
+{
+	float: left;
+	margin: 0px 1px 2px 1px;
+	width: 22px;
+	font-family: Helvetica, Arial;
+	font-size: 12px;
+	text-align: center;
+}
+#myFormCalendar_tswCalendarPopUp .tswFormCalendarVisualDayHeader
+{
+	height: 14px;
+	color: #000000;
+}
+#myFormCalendar_tswCalendarPopUp.tswFormCalendarVisualIE6 .tswFormCalendarVisualDay
+{
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='TacoComponents/Images/TSWFormCalendarDayDisabled_FFFFFF_DDDDDD.png', sizingMethod='crop');
+}
+#myFormCalendar_tswCalendarPopUp.tswFormCalendarVisualIE6 .tswFormCalendarVisualDays .tswFormCalendarEnabled
+{
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='TacoComponents/Images/TSWFormCalendarDayEnabled_FFFFFF_AAAAAA.png', sizingMethod='crop');
+}
+#myFormCalendar_tswCalendarPopUp.tswFormCalendarVisualIE6 .tswFormCalendarVisualDays .tswFormCalendarSelected
+{
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='TacoComponents/Images/TSWFormCalendarDaySelected_E5E5FF_2F3C8E.png', sizingMethod='crop');
+}
+#myFormCalendar_tswCalendarPopUp .tswFormCalendarVisualDay
+{
+	height: 17px;
+	padding-top: 3px;
+	background-image: url('Images/TSWFormCalendarDayDisabled_FFFFFF_DDDDDD.png');
+	background-repeat: no-repeat;
+	color: #000000;
+}
+#myFormCalendar_tswCalendarPopUp .tswFormCalendarVisualDays .tswFormCalendarEnabled
+{
+	cursor: pointer;
+	background-image: url('Images/TSWFormCalendarDayEnabled_FFFFFF_AAAAAA.png');
+}
+#myFormCalendar_tswCalendarPopUp .tswFormCalendarVisualDays .tswFormCalendarSelected
+{
+	background-image: url('Images/TSWFormCalendarDaySelected_E5E5FF_2F3C8E.png');
+	color: #000000;
+}
+#myFormCalendar_tswCalendarPopUp.tswFormCalendarVisualIE6 .tswFormCalendarVisualPreviousYear
+{
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='TacoComponents/Images/TSWFormCalendarYearArrowLeft_6F76A9_FFFFFF.png', sizingMethod='crop');
+}
+#myFormCalendar_tswCalendarPopUp .tswFormCalendarVisualPreviousYear
+{
+	position: absolute;
+	top: 26px;
+	left: 26px;
+	width: 16px;
+	height: 16px;
+	font-size: 0px;
+	cursor: pointer;
+	background-image: url('Images/TSWFormCalendarYearArrowLeft_6F76A9_FFFFFF.png');
+}
+#myFormCalendar_tswCalendarPopUp.tswFormCalendarVisualIE6 .tswFormCalendarVisualPreviousMonth
+{
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='TacoComponents/Images/TSWFormCalendarMonthArrowLeft_6F76A9_FFFFFF.png', sizingMethod='crop');
+}
+#myFormCalendar_tswCalendarPopUp .tswFormCalendarVisualPreviousMonth
+{
+	position: absolute;
+	top: 24px;
+	left: 50px;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+	background-image: url('Images/TSWFormCalendarMonthArrowLeft_6F76A9_FFFFFF.png');
+}
+#myFormCalendar_tswCalendarPopUp.tswFormCalendarVisualIE6 .tswFormCalendarVisualNextYear
+{
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='TacoComponents/Images/TSWFormCalendarYearArrowRight_6F76A9_FFFFFF.png', sizingMethod='crop');
+}
+#myFormCalendar_tswCalendarPopUp .tswFormCalendarVisualNextYear
+{
+	position: absolute;
+	top: 26px;
+	right: 27px;
+	width: 16px;
+	height: 16px;
+	font-size: 0px;
+	cursor: pointer;
+	background-image: url('Images/TSWFormCalendarYearArrowRight_6F76A9_FFFFFF.png');
+}
+#myFormCalendar_tswCalendarPopUp.tswFormCalendarVisualIE6 .tswFormCalendarVisualNextMonth
+{
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='TacoComponents/Images/TSWFormCalendarMonthArrowRight_6F76A9_FFFFFF.png', sizingMethod='crop');
+}
+#myFormCalendar_tswCalendarPopUp .tswFormCalendarVisualNextMonth
+{
+	position: absolute;
+	top: 24px;
+	right: 51px;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+	background-image: url('Images/TSWFormCalendarMonthArrowRight_6F76A9_FFFFFF.png');
+}
+#myFormCalendar.tswFormCalendar span.tswFormCalendarButton, #myFormCalendar.tswFormCalendar span.tswFormCalendarButtonPressed
+{
+	display: inline-block;
+	vertical-align: middle;
+	border-width: 0px;
+	padding-bottom: 3px;
+	width: 20px;
+	height: 20px;
+	background-repeat: no-repeat;
+	background-position: top left;
+}
+#myFormCalendar.tswFormCalendarIE6 span.tswFormCalendarButton
+{
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='TacoComponents/Images/TSWFormCalendarButton_2F3C8E_FFFFFF_FFFFFF.png', sizingMethod='crop');
+}
+#myFormCalendar.tswFormCalendarIE6 span.tswFormCalendarButtonPressed
+{
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='TacoComponents/Images/TSWFormCalendarButtonPressed_6F76A9_6F76A9_FFFFFF.png', sizingMethod='crop');
+}
+#myFormCalendar.tswFormCalendar span#myFormCalendar_tswButton.tswFormCalendarButton
+{
+	background-image: url('Images/TSWFormCalendarButton_2F3C8E_FFFFFF_FFFFFF.png');
+}
+#myFormCalendar.tswFormCalendar span#myFormCalendar_tswButton.tswFormCalendarButton:hover
+{
+	background-image: url('Images/TSWFormCalendarButtonHover_6F76A9_FFFFFF_FFFFFF.png');
+}
+#myFormCalendar.tswFormCalendar span#myFormCalendar_tswButton.tswFormCalendarButtonPressed
+{
+	background-image: url('Images/TSWFormCalendarButtonPressed_6F76A9_6F76A9_FFFFFF.png');
+}
