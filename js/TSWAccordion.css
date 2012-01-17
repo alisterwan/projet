@@ -1,0 +1,39 @@
+/* Copyright 2009-2010 Taco Software. All rights reserved.
+ * http://tacosw.com
+ *
+ * This file is part of the Component Library included in Taco HTML Edit.
+ * Licensed users of Taco HTML Edit may modify and use this source code 
+ * for their web development (including commercial projects), as long as 
+ * this copyright notice is retained.
+ *
+ * The contents of this file may not be published in a format intended
+ * for access by other humans, so you may not put code examples on a
+ * web site with all or part of the contents of this file, and you may
+ * not publish the contents of this file in a printed format.
+ */
+
+.tswAccordion
+{
+	position: relative;
+	overflow: hidden;
+}
+
+.tswAccordionActiveSection, .tswAccordionInactiveSection
+{
+	position: absolute;
+}
+
+.tswAccordionHeader
+{
+	overflow: hidden;
+	cursor: pointer;
+}
+
+.tswAccordionBody
+{
+	overflow: hidden;
+}
+
+/* The checksum below is for internal use by Taco HTML Edit, 
+   to detect if a component file has been modified.
+   TacoHTMLEditChecksum: 8019487E */
