@@ -313,7 +313,7 @@ nav::before {
 	}
 	#myAccordion .tswAccordionActiveSection, #myAccordion .tswAccordionInactiveSection
 	{
-		background-color: #f0f0f0;
+		background-color: #ffffff;
 		width: 100%;
 		height: 880px;
 	}
