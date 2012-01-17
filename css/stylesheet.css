@@ -305,6 +305,45 @@ nav::before {
 }
 
 
+#myAccordion.tswAccordion
+	{
+		width: 580px;
+		height: 880px;
+		background-color: #f0f0f0;
+	}
+	#myAccordion .tswAccordionActiveSection, #myAccordion .tswAccordionInactiveSection
+	{
+		background-color: #f0f0f0;
+		width: 100%;
+		height: 880px;
+	}
+	#myAccordion .tswAccordionHeader
+	{
+		text-align: center;
+		padding: 5px;
+		font-family: "Trebuchet MS";
+		font-size: 16.0px;
+		font-weight: bold;
+	}
+	#myAccordion .tswAccordionActiveSection .tswAccordionHeader
+	{
+		background-color: #aa4a89;
+		color: #ffffff;
+		border: 5px solid #cccccc;
+	}
+	#myAccordion .tswAccordionInactiveSection .tswAccordionHeader
+	{
+		background-color: #f0f0f0;
+		color: #000000;
+		border: 1px solid #cccccc;
+	}
+	#myAccordion .tswAccordionHeader
+	{
+	}
+	#myAccordion .tswAccordionBody
+	{
+		padding: 5px;
+	}
 
 
 /* ==|== non-semantic helper classes ========================================
