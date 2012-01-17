@@ -19,7 +19,7 @@ if (isset($userid)){ // vérification si logué ou pas
 	// Mise à jour des données
 	if ($_POST && isset($_GET['mode']) && $_GET['mode']=="info_edit_process") { // ça va appeler la fonction qui va modifier la BDD : updateUser
 		
-		$date          = $_POST['date'];
+		$date          = $_POST['myDateInput'];
 		$hobbies       = $_POST['hobbies'];
 		$job           = $_POST['job'];
 		$music         = $_POST['music'];
@@ -70,27 +70,43 @@ if (isset($userid)){ // vérification si logué ou pas
 			// affichage champs profile, c'est tout ce pâté
 			$html= "<p>Edit your personal information:</p>
 			
-			 <script>
-			$(function() {
-			$( '#datepicker' ).datepicker();
-			});
-			</script>
-			
-			<form action='modify_info.php?mode=info_edit_process' method='post'>
-			<table>
-			<tr><td>Date of birth:</td><div class='demo'>
-			<td><input type='text' id='datepicker' value='$date'></td>
-			</div></tr>
-			<tr><td>Hobbies:</td><td><input type='textarea' name='hobbies' value='$hobbies'></td></tr>
-			<tr><td>Job:</td><td><input type='text' name='job' value='$job'></td></tr>
-			<tr><td>Music:</td><td><input type='textarea' name='music' value='$music'></td></tr>
-			<tr><td>Films:</td><td><input type='textarea' name='films' value='$films'></td></tr>
-			<tr><td>Books:</td><td><input type='textarea' name='books' value='$books'></td></tr>
-			<tr><td>About me:</td><td><input type='textarea' name='aboutme' value='$aboutme'></td></tr>
-			<tr><td>Favourite food:</td><td><input type='textarea' name='favouritefood' value='$favouritefood'></td></tr>
-			<tr><td></td><td><button type='submit'>Update my information &rarr;</button></td></tr>
+		
+			<form action='modify_info.php?mode=info_edit_process' method='post' id='contribution'>
+		
+		
+			<span id='myFormCalendar' class='tswFormCalendar'>
+		<label for='myDateInput'>Date of birth (dd/mm/yyyy):</label> 
+			<a href='javascript:tswFormCalendarGetForId(\"myFormCalendar\").togglePopUp();'>
+			<span id='myFormCalendar_tswButton'
+				class='tswFormCalendarButton'></span></a>
+	</span>
+	<script type='text/javascript'>
+		//Initialize Form Calendar
+		var tswFormCalendar = tswFormCalendarGetForId(\"myFormCalendar\");
+		tswFormCalendar.dateFormat = 'dd/MM/yyyy';
+	</script>
+		<input id='myFormCalendar_tswInput' 
+			name='myDateInput' value='$date'
+			onkeyup='tswFormCalendarGetForId(\"myFormCalendar\").updateDates();'
+			type='text' size='20' maxlength='10'/> 
+	
+		
+
+			<label>Hobbies:</td><td><input type='textarea' name='hobbies' value='$hobbies'></label>
+			<label>Job:</td><td><input type='text' name='job' value='$job'></label>
+			<label>Music:</td><td><input type='textarea' name='music' value='$music'></label>
+			<label>Films:</td><td><input type='textarea' name='films' value='$films'></label>
+			<label>Books:</td><td><input type='textarea' name='books' value='$books'></label>
+			<label>About me:</td><td><input type='textarea' name='aboutme' value='$aboutme'></label>
+			<label>Favourite food:</td><td><input type='textarea' name='favouritefood' value='$favouritefood'></label>
+			<label><button type='submit'>Update my information &rarr;</button></label>
 			</table>
-		  </form>";
+		  </form>
+		
+		
+		";
+		
+		
 			
 		}else{
 			$message = "<p class='error'>Table INFORMATION error</p>";
