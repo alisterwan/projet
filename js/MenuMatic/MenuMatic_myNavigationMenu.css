@@ -32,7 +32,7 @@
 	background-color: #ffffff;
 }
 #myNavigationMenu_menuContainer li+li a, #myNavigationMenu li li+li a{
-	border-top: 1px solid #ffffff;
+	border-top: 1px solid grey;
 }
 /* Main menu links on hover or focus */
 #myNavigationMenu a:hover, #myNavigationMenu a:focus, #myNavigationMenu a.mainMenuParentBtnFocused {
@@ -83,7 +83,7 @@
 /* All submenu OLs and ULs */
 #myNavigationMenu ol, #myNavigationMenu ul, #myNavigationMenu_menuContainer ul, #myNavigationMenu_menuContainer ol {	
 	/*border around submenu goes here*/	 
-	border:1px solid #ffffff;
+	border:1px solid grey;
 	left:0;
 }
 /* List items in main menu --[for non-javascript users this applies to submenus as well]  */
