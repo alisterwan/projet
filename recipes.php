@@ -11,6 +11,7 @@ if (isset($userid)){  // vérification si logué ou pas
   $html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
   <h3>My Recipes</h3>
   <h4>Born in $useraddinfos[date_birth], Works at $useraddinfos[job] Listen to $useraddinfos[music]</h4>
+  <div>
   ";
 
 $query = sprintf("SELECT * FROM recipes WHERE id_user='%s'",
@@ -18,12 +19,14 @@ $query = sprintf("SELECT * FROM recipes WHERE id_user='%s'",
 	$result = mysql_query($query);	
 	
 	while($row=mysql_fetch_row($result)) {
-	$html.="<div><a href='./recipe.php?id=$row[13]'><img src='img/recipes/$row[12]_$row[13].jpg' /><br>$row[0]</a></div>";	
+	$html.="<div><a href='./recipe.php?id=$row[13]'><img src='img/recipes/$row[12]_$row[13].jpg' width='200px' height='180px'/><br>$row[0]</a></div>";	
 	}	
 
 
 if (!$query){
-	$html.="<h4>You haven't got recipes</h4>
+	$html.="
+	</div>
+	<h4>You haven't got recipes</h4>
 	<div>
 	<ul>
 	<li><small><a href='./newrecipe.php'>Add a new recipe</a></small></li>
@@ -35,6 +38,7 @@ if (!$query){
 	
 
 	 $html.="
+	</div>
 	<div>
 	<ul>
 	<li><small><a href='./newrecipe.php'>Add a new recipe</a></small></li>
