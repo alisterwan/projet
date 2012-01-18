@@ -139,8 +139,6 @@ function navContent(){
 						<li><a href='modify_info.php'>Personal information</a></li>
 					</ul>
 				</li>
-				<li><a href='./albums.php'>My Albums</a></li>
-				<li><a href='./friends.php'>Friends</a></li>
 				<li><a href='./logout.php'>Log out</a></li>
 			</ul>
 		</li>
@@ -212,7 +210,7 @@ function navContent(){
  	$content = "
       <img src= '$userinfos[avatar]' width='170px' height='200px' />
       <a href='./image.php'>Change my avatar</a><br>
-      <a href='./information.php'>My information</a>      ";
+     ";
 	  return $content; // ATTENTION LE return n'était pas à la bonne place!
     }
 
@@ -235,6 +233,39 @@ function rightboxContent() {
 				<div>'.$userinfos['country'].'</div>
 				<div>'.$userinfos['mail'].'</div>
 				';
+				
+			$content.='
+			<ul id="myNavigationMenu">
+		<li><a href="./profile.php">My Datas</a>
+			<ul>
+				<li><a href="#">Objectives</a>
+					<ul>
+						<li><a href="objectivesform.php">Set Objectives</a></li>
+						<li><a href="graphique.php">View My Chart</a></li>
+					</ul>
+				</li>
+				<li><a href="./information.php">My Information</a></li>
+				<li><a href="./albums.php">My Albums</a></li>
+				<li><a href="./friends.php">Friends</a></li>
+				<li><a href="./recipes.php">My Recipes</a></li>
+				
+			</ul>
+		</li>
+	</ul>
+				<script type="text/javascript" >
+		window.addEvent("load", function() {			
+			var myMenu = new MenuMatic({
+				id: "myNavigationMenu",
+				subMenusContainerId: "myNavigationMenu_menuContainer",
+				orientation: "horizontal",
+				effect: "slide & fade", 
+				duration: 800, 
+				hideDelay: 1000,
+				opacity: 100});
+		});		
+	</script>
+			
+			';	
 
 		}else{
 		  // Afficher les formulaires pour se connecter et s'inscrire
