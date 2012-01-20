@@ -11,7 +11,7 @@
 		else
 			return $res;
 	}
-	
+
 /******************************************************************************************************/
 
 //recupere les infos sur la recette
@@ -19,7 +19,7 @@ function retrieve_recipe_infos($id){ // prend en paramètre l'id de l'user, soit
 	$sql='SELECT name_en,description_en,country_origin,difficulty,num_serves,duration_preparation,duration_cook,preparation_en FROM recipes WHERE id='.$id;
 	$query=mysql_query($sql);
 	$verif = mysql_num_rows($query);
-	
+
 	if ($verif > 0){
 	return $result=mysql_fetch_assoc($query);
 	}
@@ -29,55 +29,38 @@ function retrieve_recipe_infos($id){ // prend en paramètre l'id de l'user, soit
 
 /******************************************************************************************************/
 
-//fonction qui efface un ingredient d'une recette
-function removeIngredientsOnRecipe($ingname,$idrecipe){
-  $sql1 = 'SELECT id FROM ingredients WHERE name_en=$ingname';
-  $query1 = mysql_query($sql1);
-  $result1 = mysql_fetch_array($query1);
-  $sql2 = 'DELETE from recipe_ingredients WHERE id_ingredient=$result1';
-  $query2 = @mysql_query($sql2);
-  
-  if(!query2){
-  die("Error: ".mysql_error());
-  }
-	else
-	return $query2;	
- }
-
-/******************************************************************************************************/
-
 
 if (isset($userid)){ // vérification si logué ou pas
 
   $userinfos=retrieve_user_infos($userid);
-  
+
    $i = retrieve_recipe_infos($_GET[id]);
-   
-  
-   
+
+
+
    if($i[difficulty] == 0){ $i[difficulty] = 'Easy';}
-   else 
+   else
    if($i[difficulty] == 1){ $i[difficulty] = 'Normal';}
    else
    if($i[difficulty] == 2){ $i[difficulty] = 'Difficult';}
-   else 
+   else
    if($i[difficulty] == 3){ $i[difficulty] = 'Lunatic';}
-  
- 
-  
+
+
+
 	//selection des ingredients reliees a la recette
 	$query = sprintf("SELECT id_ingredient FROM recipe_ingredients WHERE id_recipe='%s'",
-	mysql_real_escape_string($_GET[id])); 	
+	mysql_real_escape_string($_GET[id]));
 	$result = mysql_query($query);
-	
+
 	while($row=mysql_fetch_row($result)) {
    	$query1 = "SELECT name_en FROM ingredients WHERE id=$row[0]";
 	$response = mysql_query($query1);
 	while($row1 = mysql_fetch_assoc($response)){
-	$html.="<li>$row1[name_en]</li>";	
-	}	
+	$html.="<li>$row1[name_en]</li>";
+	}
    }
-	
+
 	$html =
   "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
   <h1 align='center'>$i[name_en]</h1>
@@ -99,45 +82,61 @@ if (isset($userid)){ // vérification si logué ou pas
     <label>Cooking Duration (min) <input type='number' name='cookDuration' value='$i[duration_cook]'></label>
     <label for='picture'>Picture of the Recipe :</label>
     ";
-  
+
   $query = sprintf("SELECT path_source FROM recipe_photos WHERE id_recipe='%s'",
-	mysql_real_escape_string($_GET[id])); 	
+	mysql_real_escape_string($_GET[id]));
 	$result2 = mysql_query($query);
-	
+
 	if(mysql_num_rows($result2) == 1){
 	$ij = mysql_fetch_row($result2);
 	 $html.= "<img src='img/recipes/$userinfos[id]_$_GET[id].jpg' />
 	 <p>Edit this picture: </p><input type='file' size='65' name='picture' />
 	 <p><strong>Ingredients:</strong></p>
 	 <ul>
-	 ";	
+	 ";
 	}
 
-  
+
   //selection des ingredients reliees a la recette
 	$query = sprintf("SELECT id_ingredient FROM recipe_ingredients WHERE id_recipe='%s'",
-	mysql_real_escape_string($_GET[id])); 	
-	$result = mysql_query($query);	
-	
+	mysql_real_escape_string($_GET[id]));
+	$result = mysql_query($query);
+
 	$tmp = 1;
 	while($row=mysql_fetch_row($result)) {
    	$query1 = "SELECT name_en FROM ingredients WHERE id=$row[0]";
 	$response = mysql_query($query1);
-	
-	while($row1 = mysql_fetch_assoc($response)){ 
-	$html.="<li>$row1[name_en] <a id='removeing'href='#'><img src='./img/templates/deleteing.png' width='10px' height='10px'/></a></li>	
-	
-	<script>	
-	//un script qui recupere le id_ingredient on click sur un ingredient et le supprime dans la table recipe_ingredients 
+
+	while($row1 = mysql_fetch_assoc($response)){
+	$html.="<li>$row1[name_en] <a id='removeing' onclick='removeIngredientsOnRecipe(event, $row[0], $_GET[id])' href='#'><img src='./img/templates/deleteing.png' width='10px' height='10px'/></a></li>
+
+	<script>
+	  function removeIngredientsOnRecipe(e, id_ing, id_rec) {
+      var a, url, x;
+      e.preventDefault();
+      a = e.target.parentNode;
+      a.parentNode.hidden = true;
+      url = './removeIngredientsOnRecipe.php?id_ing=' + id_ing + '&id_rec=' + id_rec;
+      x = new XMLHttpRequest();
+      x.open('GET', url, true);
+      x.onload = function(e) {
+        a.innerHTML = this.responseText;
+        if(this.responseText !== 'success') {
+          a.innerHTML = this.responseText;
+          a.parentNode.hidden = false;
+        }
+      };
+      x.send();
+    }
 	</script>";
-	
+
 	$tmp++;
 	}
 
    }
-  
+
     $j = $tmp;
-  
+
     $html .=
     "
     </ul>
@@ -213,13 +212,13 @@ if( ( isset($_FILES['picture']) && ($_FILES['picture']['error'] == UPLOAD_ERR_OK
 
 
 }
-  
- 
+
+
  printDocument('Edit this Recipes');
-  
+
 }else{
-	
+
 	header('Location: index.php');
 }
-  
+
 ?>
