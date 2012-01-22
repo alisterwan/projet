@@ -34,7 +34,7 @@ $graph->SetScale("textlin");
 $theme_class= new UniversalTheme;
 $graph->SetTheme($theme_class);
 
-$graph->title->Set('Evolution');
+$graph->title->Set('Evolution of your weight');
 $graph->SetBox(false);
 
 $graph->yaxis->HideZeroLabel();
