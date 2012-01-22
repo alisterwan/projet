@@ -31,15 +31,39 @@ if (isset($userid)){ // vérification si logué ou pas
    else 
    if($i[difficulty] == 3){ $i[difficulty] = 'Lunatic';}
   
-  $html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
+  $html = "
 	
+	<script type='text/javascript'>
+			$(document).ready(function () {
+			$('ul.menu_body li:even').addClass('alt');
+    		$('img.menu_head').click(function () {
+			$('ul.menu_body').slideToggle('medium');
+    		});
+			$('ul.menu_body li a').mouseover(function () {
+			$(this).animate({ fontSize: '14px', paddingLeft: '20px' }, 50 );
+    		});
+			$('ul.menu_body li a').mouseout(function () {
+			$(this).animate({ fontSize: '12px', paddingLeft: '10px' }, 50 );
+    			});
+			});
+			</script>
+
+<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
+
+
+
 	
+	<h2>$i[name_en]</h2>
 	
-	<div id='myAccordion' class='tswAccordion'>
-	<div class='tswAccordionInactiveSection'>
-	<div class='tswAccordionHeader'>$i[name_en]</div>
-	<div class='tswAccordionBody'>
-		<!--Content for section 1-->
+	<div>
+	<img src='img/templates/option.png' width='150' height='40' class='menu_head' />
+		<ul class='menu_body'>
+    		<li><a href='editrecipe.php?id=$_GET[id]'>Edit</a></li>
+    		<li><a href='#'>Delete</a></li>
+        	<li><a href='#'>Share</a></li>
+		</ul>
+	</div>
+	
 	<strong>Ingredients</strong>:<ul>";
 	
 	//selection des ingredients reliees a la recette
@@ -69,6 +93,7 @@ if (isset($userid)){ // vérification si logué ou pas
   $html.="
   	</ul>
 
+
 	<div><strong>Description</strong>: $i[description_en]</div>
 	<div><strong>Origin</strong>: $i[country_origin]</div>
 	<div><strong>Difficulty</strong>: $i[difficulty]</div>
@@ -76,44 +101,14 @@ if (isset($userid)){ // vérification si logué ou pas
 	<div><strong>Preparation</strong>: $i[duration_preparation] minutes</div>
 	<div><strong>Cooking</strong>: $i[duration_cook] minutes</div>
 	<div><strong>Instructions</strong>: $i[preparation_en]</div>
-	</div>
 
-		</div>
-		<div class='tswAccordionInactiveSection'>
-			<div class='tswAccordionHeader'>Option</div>
-			<div class='tswAccordionBody'>
-				<!--Content for section 2-->
-				<ul>
-	<li><a href='editrecipe.php?id=$_GET[id]'>Edit this recipe</a></li>
-	<li><a href='deleterecipe.php?id=$_GET[id]' onclick='if (window.confirm('Confirm?')) 
-	{ 
-	return true; 
-	} 
-	else 
-	{ 
-	return false; 
-	} 
-	>Delete this recipe</a></li>
-	</ul>
-				<div>
-	
-	</div>
-			</div>
-		</div>
-	</div>
-	<script type='text/javascript'>
-		var accordion = tswAccordionGetForId(\"myAccordion\");
-		accordion.setMouseOver(true);
-	</script>
-	
-	
 	";
 
   
- 
+
   
 
-  printDocument('My Recipes');
+  printDocument('Recipe');
   
 }else{
 	
