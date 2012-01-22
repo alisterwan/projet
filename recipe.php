@@ -48,10 +48,12 @@ if (isset($userid)){ // vérification si logué ou pas
 			});
 			</script>
 
+
+	
 <h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
 
 
-
+	
 	
 	<h2>$i[name_en]</h2>
 	
@@ -59,7 +61,29 @@ if (isset($userid)){ // vérification si logué ou pas
 	<img src='img/templates/option.png' width='150' height='40' class='menu_head' />
 		<ul class='menu_body'>
     		<li><a href='editrecipe.php?id=$_GET[id]'>Edit</a></li>
-    		<li><a href='#'>Delete</a></li>
+    		<li><a id='removerec' onclick='removeRecipe(event,$_GET[id])' href='#'>Delete</a></li>
+			
+			
+			<script>
+	  function removeRecipe(e, id) {
+      var a, url, x;
+      e.preventDefault();
+      a = e.target.parentNode;
+      a.parentNode.hidden = true;
+      url = './deleterecipe.php?id=' + id;
+      x = new XMLHttpRequest();
+      x.open('GET', url, true);
+      x.onload = function(e) {
+        a.innerHTML = this.responseText;
+        if(this.responseText !== 'success') {
+          a.innerHTML = this.responseText;
+          a.parentNode.hidden = false;
+        }
+      };
+      x.send();
+    }
+	</script>
+			
         	<li><a href='#'>Share</a></li>
 		</ul>
 	</div>
