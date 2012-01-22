@@ -5,6 +5,8 @@ include './header.php';
 if (isset($userid)){ // vérification si logué ou pas
 
 
+$userinfos=retrieve_user_infos($userid);
+  
 
 //  requête pour savoir si la personne a déjà enregistré ses objectifs
 $query0 = "SELECT id_user FROM objective WHERE id_user='$userid'";
@@ -16,8 +18,19 @@ if( $row['id_user']!=null ){ // Si la personne n'a encore enregistré aucune don
 
 
 // Affiche le graph
-$html= "<img src='graph.php' alt='évolution' width='550' height='450' />";
+ $html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
+	
 
+	<div id='myAccordion' class='tswAccordion'>
+		<div class='tswAccordionInactiveSection'>
+			<div class='tswAccordionHeader'>Chart</div>
+				<div class='tswAccordionBody'>
+				<!--Content for section 1-->
+				<ul>
+				<img src='graph.php' alt='évolution' width='500' height='450' />
+				
+	";
+		
 
 
 // Récupère le poid de la personne
@@ -52,46 +65,39 @@ if( $imc>30 ){ $res =  'Go practise sports!';}
 $imc = round($imc,2);
 
 $html.="
-<p>
-Your imc is: $imc </br>
-$res
-</p>
+		<p>Your imc is: $imc</br> 
+		$res</p>
+	    </ul>
+		</div>
+	</div>
 ";
 
 
 
 $html.="
-
-<form action='graphique.php' enctype='multipart/form-data' method='post'>
-
-<input type='hidden' name='data' value='1'>
-<input type='submit' value='Keep up to date your data'/>
-
+		<div class='tswAccordionInactiveSection'>
+			<div class='tswAccordionHeader'>Keep up to date your data</div>
+			<div class='tswAccordionBody'>
+				<!--Content for section 2-->
+				<ul>
+				<form action='graphique.php' enctype='multipart/form-data' method='post'> 
+				  Weight (kilograms):<br/> 
+        		  <input type='text' name='weight' size='50'/><br/><br/>
+	  
+	     		 Size (centimeters):<br/> 
+    	      	<input type='text' name='size' size='50'/><br/><br/>
+	        	  <input type='submit' value='Send'/> 
+				</form>
+			 	</ul>
+			</div>
+			</div>
+	
+	</div>
+	<script type='text/javascript'>
+		var accordion = tswAccordionGetForId(\"myAccordion\");
+		accordion.setMouseOver(true);
+	</script>	
 ";
-
-
-
-
-if( isset($_POST['data']) && $_POST['data']!=null ){
-
-
-// Permet de modifié son poid, et sa taille
-
-$html.="
-
-			<h3>Keep up to date your data</h3> 
-<form action='graphique.php' enctype='multipart/form-data' method='post'> 
-
-	  Weight (kilograms):<br/> 
-          <input type='text' name='weight' size='50'/> 
-	  <br/><br/>
-	  
-      Size (centimeters):<br/> 
-          <input type='text' name='size' size='50'/> 
-	  <br/><br/>
-	  
-          <input type='submit' value='Send'/> 
-</form>";
 
 
 
@@ -158,9 +164,8 @@ if( ( isset($_POST['weight']) && $_POST['weight']!=null ) || ( isset($_POST['siz
 	
 				header('Location: graphique.php');	
 				
-		}
-		
-		}
+			}
+
 
 }
 printDocument(' Evolution ');
