@@ -79,20 +79,23 @@ function i8n($string, $table, $id) {
 			<link href='http://fonts.googleapis.com/css?family=Clara' rel='stylesheet'>
 			<link href='./css/stylesheet.css' rel='stylesheet'>
 			
-	<script type='text/javascript' src='js/MooTools/mootools.js'></script>
-	<script type='text/javascript' src='js/MenuMatic/MenuMatic.js'></script>
-	<link rel='stylesheet' type='text/css' href='js/MenuMatic/MenuMatic_myNavigationMenu.css' />
+			<script type='text/javascript' src='js/MooTools/mootools.js'></script>
+			<script type='text/javascript' src='js/MenuMatic/MenuMatic.js'></script>
+			<link rel='stylesheet' type='text/css' href='js/MenuMatic/MenuMatic_myNavigationMenu.css' />
 			
-	<script type='text/javascript' src='jsdate/TSWBrowserDetect.js'></script>
-	<script type='text/javascript' src='jsdate/TSWUtils.js'></script>
-	<script type='text/javascript' src='jsdate/TSWDateAndTime.js'></script>
-	<script type='text/javascript' src='jsdate/TSWFormCalendar.js'></script>
-	<link rel='stylesheet' type='text/css' href='jsdate/TSWFormCalendar_myFormCalendar.css' />
+			<script type='text/javascript' src='jsdate/TSWBrowserDetect.js'></script>
+			<script type='text/javascript' src='jsdate/TSWUtils.js'></script>
+			<script type='text/javascript' src='jsdate/TSWDateAndTime.js'></script>
+			<script type='text/javascript' src='jsdate/TSWFormCalendar.js'></script>
+			<link rel='stylesheet' type='text/css' href='jsdate/TSWFormCalendar_myFormCalendar.css' />
 
-
-	<script type='text/javascript' src='js/TSWAccordion.js'></script>
-	<script type='text/javascript' src='js/TSWDomUtils.js'></script>
-	<link rel='stylesheet' type='text/css' href='js/TSWAccordion.css' />
+			
+			
+			<script type='text/javascript' src='js/jquery.js'></script>
+		
+			<script type='text/javascript' src='js/TSWAccordion.js'></script>
+			<script type='text/javascript' src='js/TSWDomUtils.js'></script>
+			<link rel='stylesheet' type='text/css' href='js/TSWAccordion.css' />
 			
 			<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
 			<script src='js/modernizr.custom.65662.js'></script>
