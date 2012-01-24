@@ -102,6 +102,7 @@
 	}
 
 
+
 /*********************************************************************/
 
 if (isset($userid)){  // vÈrification si logué ou pas
@@ -123,10 +124,6 @@ insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['diff
    //on recupere le id de la recette
    $getid_recipe = mysql_insert_id();
 
-      /*
-       *insérer les ingrédients
-       */
-
 
 
       if(!$query) {
@@ -137,6 +134,8 @@ insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['diff
     }
   }
 
+				
+
   $html =
   "<form action='newrecipe.php' method='post' id='contribution' enctype='multipart/form-data'>
     <p>Please define the recipe.</p>
@@ -144,12 +143,19 @@ insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['diff
     <label>Description <input type='text' name='description' value='$_POST[description]'></label>
     <label>Origin <input type='text' name='country' list='countryList' value='$_POST[country]'></label>
     <label>Difficulty
-      <select name='difficulty'>
-        <option value='0'".($_POST['difficulty'] === 0 ? " selected" : null).">Easy</option>
-        <option value='1'".($_POST['difficulty'] === 1 ? " selected" : null).">Normal</option>
-        <option value='2'".($_POST['difficulty'] === 2 ? " selected" : null).">Difficult</option>
-        <option value='3'".($_POST['difficulty'] === 3 ? " selected" : null).">Lunatic</option>
-      </select>
+      <select name='difficulty'>";
+
+
+	  $query2 = "SELECT id,name_en FROM recipe_difficulty";
+	  $result2 = mysql_query($query2);	
+	 
+	  while ($rows = mysql_fetch_assoc($result2)){
+      $html.= "<option value='$rows[id]'>$rows[name_en]</option>";
+      }
+      
+
+	$html.="
+	  </select>
     </label>
     <label>Serves <input type='number' name='serves' value='$_POST[serves]'></label>
     <label>Preparation Duration (min) <input type='number' name='prepDuration' value='$_POST[prepDuration]'></label>
@@ -186,8 +192,15 @@ insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['diff
       });
     </script>
     <label>Preparation Method <textarea name='method'>$_POST[method]</textarea></label>
-    <input type='submit' value='Submit'>
-  </form>";
+	<label>Make this recipe:</label> 
+
+	<input type='radio' name='permission' value='0' checked/>Public
+    <input type='radio' name='permission' value='1'/>Private
+   
+	<input type='submit' value='Submit'>
+  	</form>
+	
+	";
 
   //requete pour recuperer les pays
   $country = mysql_query("SELECT name_en FROM country");
