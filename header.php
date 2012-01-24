@@ -90,8 +90,8 @@ function i8n($string, $table, $id) {
 			<link rel='stylesheet' type='text/css' href='jsdate/TSWFormCalendar_myFormCalendar.css' />
 			
 			
-			
 			<script type='text/javascript' src='js/jquery.js'></script>
+
 		
 			<script type='text/javascript' src='js/TSWAccordion.js'></script>
 			<script type='text/javascript' src='js/TSWDomUtils.js'></script>
