@@ -22,15 +22,13 @@ if (isset($userid)){ // vérification si logué ou pas
    $i = retrieve_recipe_infos($_GET[id]);
    
   
-   
-   if($i[difficulty] == 0){ $i[difficulty] = 'Easy';}
-   else 
-   if($i[difficulty] == 1){ $i[difficulty] = 'Normal';}
-   else
-   if($i[difficulty] == 2){ $i[difficulty] = 'Difficult';}
-   else 
-   if($i[difficulty] == 3){ $i[difficulty] = 'Lunatic';}
+   $query11 = "SELECT name_en FROM recipe_difficulty WHERE id=$i[difficulty]";
+   $res11 = mysql_query($query11); 
+   $row = mysql_fetch_assoc($res11); 
   
+   $i[difficulty]= $row[name_en];
+   
+	  
   $html = "
 	
 	<script type='text/javascript'>
