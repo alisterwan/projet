@@ -91,7 +91,9 @@ function i8n($string, $table, $id) {
 			
 			
 			<script type='text/javascript' src='js/jquery.js'></script>
-
+		
+		
+			
 		
 			<script type='text/javascript' src='js/TSWAccordion.js'></script>
 			<script type='text/javascript' src='js/TSWDomUtils.js'></script>
@@ -152,6 +154,7 @@ function navContent(){
 			</ul>
 		</li>
 		<li><a href='#'>Community</a></li>
+		<li><a href='./search_advanced.php'>Search</a></li>
 	</ul>
 	<!-- Create a MenuMatic Instance -->
 	<script type='text/javascript' >
@@ -180,6 +183,7 @@ function navContent(){
 		<li><a href='#'>Recipes</a></li>
 		<li><a href='#'>Community</a></li>
 		<li><a href='./registration.php'>Registration</a></li>
+		<li><a href='./search_advanced.php'>Search</a></li>
 	</ul>
 	<!-- Create a MenuMatic Instance -->
 	<script type='text/javascript' >
@@ -205,7 +209,18 @@ function navContent(){
 
 
  function leftboxContent() {
-    if (isset($_SESSION['id'])) { // ATTENTION IL FAUT METTRE LES QUOTES POUR id !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    if (isset($_SESSION['id'])) {
+    
+       if (isset($_GET['id'])) { 
+      // Requête qui récupère toutes les coordonnées du client
+      $userinfos=retrieve_user_infos($_GET['id']);
+
+ 	$content = "
+      <img src= '$userinfos[avatar]' width='170px' height='200px' />
+     ";
+	  return $content;
+    }
+     else{
       // Requête qui récupère toutes les coordonnées du client
       global $userid;
       $userinfos=retrieve_user_infos($userid);
@@ -214,10 +229,21 @@ function navContent(){
       <img src= '$userinfos[avatar]' width='170px' height='200px' />
       <a href='./image.php'>Change my avatar</a><br>
      ";
-	  return $content; // ATTENTION LE return n'était pas à la bonne place!
+	  return $content;}
     }
+    
+    else if (isset($_GET['id'])) { 
+      // Requête qui récupère toutes les coordonnées du client
+      $userinfos=retrieve_user_infos($_GET['id']);
 
-    //return $content;
+ 	$content = "
+      <img src= '$userinfos[avatar]' width='170px' height='200px' />
+     ";
+	  return $content;
+    }
+    
+    
+
 }
 
 
