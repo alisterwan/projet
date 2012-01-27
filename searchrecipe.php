@@ -82,8 +82,8 @@ function retrieve_recipe_infos($id){
 	$result2 = mysql_query($query);
 	
 	if(mysql_num_rows($result2) == 1){
-	$ij = mysql_fetch_row($result2);
-	 $html.= "<img src='img/recipes/$userinfos[id]_$_GET[id].jpg' width='200px' height='175px' />";	
+	$ij = mysql_fetch_assoc($result2);
+	 $html.= "<img src='$ij[path_source]' width='200px' height='175px' />";	
 	}
 	
 
