@@ -48,7 +48,7 @@ if(isset($_GET['recherche']))
 		$res2 = mysql_fetch_assoc($result2); 
 
 		$html.="
-		<div><a href='./searchrecipe.php?id=$dnn[id]'><img src='$res2[path_source]' 		width='150px' height='150px' /><div>$dnn[name_en] by $res[username]</div></a></div>";
+		<div><a href='./searchrecipe.php?id=$dnn[id]&id_user=$dnn[id_user]'><img src='$res2[path_source]' 		width='150px' height='150px' /><div>$dnn[name_en] by $res[username]</div></a></div>";
 		     
 		}
 		
@@ -79,7 +79,7 @@ if(isset($_GET['recherche']))
 		while($dnn = mysql_fetch_array($requete2))
 		{
 
-		$html.="<div><a href='./profile.php?id=$dnn[id]'><img src='$dnn[avatar]' 		width='175px' height='200px' /><div>$dnn[firstname] $dnn[surname] ($dnn[username])</div></a></div>";     
+		$html.="<div><a href='./profile.php?id_user=$dnn[id]'><img src='$dnn[avatar]' 		width='175px' height='200px' /><div>$dnn[firstname] $dnn[surname] ($dnn[username])</div></a></div>";     
 		}
 		
        	/***********************************************/
