@@ -58,7 +58,8 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
   	else {
  	 
  	 $html.="
- 	 <h4>Born in $useraddinfos[date_birth], Works at $useraddinfos[job] Listen to			 $useraddinfos[music]</h4>";
+ 	 <h4>Born in $useraddinfos[date_birth], Works at $useraddinfos[job] Listen to			 $useraddinfos[music]</h4>
+ 	 <a href='#'>Add as Friend</a>";
 	}
 	printDocument('Profile');
 }
