@@ -211,15 +211,16 @@ function navContent(){
  function leftboxContent() {
     if (isset($_SESSION['id'])) {
     
-       if (isset($_GET['id'])) { 
+       if (isset($_GET['id_user']) ) { 
       // Requête qui récupère toutes les coordonnées du client
-      $userinfos=retrieve_user_infos($_GET['id']);
+      $userinfos=retrieve_user_infos($_GET['id_user']);
 
  	$content = "
       <img src= '$userinfos[avatar]' width='170px' height='200px' />
      ";
 	  return $content;
     }
+    
      else{
       // Requête qui récupère toutes les coordonnées du client
       global $userid;
@@ -229,12 +230,14 @@ function navContent(){
       <img src= '$userinfos[avatar]' width='170px' height='200px' />
       <a href='./image.php'>Change my avatar</a><br>
      ";
-	  return $content;}
+	  return $content;
+	  }
     }
     
-    else if (isset($_GET['id'])) { 
+    
+    else if (isset($_GET['id_user'])) { 
       // Requête qui récupère toutes les coordonnées du client
-      $userinfos=retrieve_user_infos($_GET['id']);
+      $userinfos=retrieve_user_infos($_GET['id_user']);
 
  	$content = "
       <img src= '$userinfos[avatar]' width='170px' height='200px' />
