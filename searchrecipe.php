@@ -25,7 +25,7 @@ function retrieve_recipe_infos($id){
    
  
   		//recupere le username	
-		$query2 = "SELECT username FROM users WHERE id='$i[id_user]' ";
+		$query2 = "SELECT firstname,surname,username FROM users WHERE id='$i[id_user]' ";
 		$result2 = mysql_query($query2);
 		$res = mysql_fetch_assoc($result2);
    		
@@ -52,12 +52,12 @@ function retrieve_recipe_infos($id){
 
 	
 	
-	<h2>$i[name_en] by <a href='profile.php?id='$res[id]'>$res[username]</a></h2>
+	<h2>$i[name_en] by $res[firstname] $res[surname]</h2>
 	
 	<div>
 	<img src='img/templates/option.png' width='150' height='40' class='menu_head' />
 		<ul class='menu_body'>
-    		<li><a href='profile.php?id=$res[id]'>View Profile</a></li>
+    		<li><a href='profile.php?id_user=$i[id_user]'>View Profile</a></li>
 			<li><a href='#'>Send a message</a></li>			
 		</ul>
 	</div>
