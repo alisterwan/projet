@@ -75,7 +75,7 @@ function i8n($string, $table, $id) {
 			<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 			<title>$title</title>
 			<meta name='description' content='Projet tuto'>
-			<meta name='author' content='John Marie Equina Nicolas'>
+			<meta name='author' content='John Olivier Equina Nicolas'>
 			<link href='http://fonts.googleapis.com/css?family=Clara' rel='stylesheet'>
 			<link href='./css/stylesheet.css' rel='stylesheet'>
 			
@@ -93,7 +93,6 @@ function i8n($string, $table, $id) {
 			<script type='text/javascript' src='js/jquery.js'></script>
 		
 		
-			
 		
 			<script type='text/javascript' src='js/TSWAccordion.js'></script>
 			<script type='text/javascript' src='js/TSWDomUtils.js'></script>
@@ -133,6 +132,7 @@ function navContent(){
       // Requête qui récupère toutes les coordonnées du client
 
       $content = "
+      
       	 <nav>
    	<ul id='myNavigationMenu'>
 		<li><a href='./index.php'>Home</a></li>
@@ -171,7 +171,7 @@ function navContent(){
 	</script>
 	 
         </nav>
-
+	
       ";
     }
 
@@ -257,8 +257,13 @@ function rightboxContent() {
 
 			  $userinfos=retrieve_user_infos($userid);
 			  
+			  $content = "<div>
+			<img src='./img/templates/friends.png' width='50px' height='50px' title='Friends'/>
+			<img src='./img/templates/messages.png' width='50px' height='50px' title='Messages'/>
+			<img src='./img/templates/notifications.png' width='50px' height='50px' title='Notifications'/>
+	 </div>";
 
-			 $content = '<p>Your account information:</p>
+			 $content .= '<p>Your account information:</p>
 				<div>'.$userinfos['firstname'].'&nbsp;'.$userinfos['surname'].'</div>
 				<div>'.$userinfos['address'].'</div>
 				<div>'.$userinfos['city'].'</div>
