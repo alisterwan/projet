@@ -1,22 +1,68 @@
 <?php
 	include './header.php';
 
-if (isset($userid)){  // vérification si logué ou pas
+if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 
-  
   $userinfos=retrieve_user_infos($userid);
   $useraddinfos=retrieve_user_add_infos($userid);
   
-  $html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
-  <h3>My Profile</h3>
-  <h4>Born in $useraddinfos[date_birth], Works at $useraddinfos[job] Listen to $useraddinfos[music]</h4>
-  ";
+  $html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>";
+  
+  if($useraddinfos){
+ 	  $html.="<h4>Born in $useraddinfos[date_birth], Works at $useraddinfos[job] Listen to $useraddinfos[music]</h4>";
+ 	  }
 
-  printDocument('My Profile');
+
+
+ if(isset($_GET[id])){ 
+ $userinfos=retrieve_user_infos($_GET[id]);
+ 	  $useraddinfos=retrieve_user_add_infos($_GET[id]);
+ 	  
+ 	  $html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>";
+ 	  
+ 	  if(!$useraddinfos){
+ 	  
+ 	  $html.="<div>Sorry, there's no content available to show.</div>
+ 	  <a href='#'>Add as Friend</a>
+ 	  ";
+ 	  }
   
-}else{
-	
-	header('Location: index.php');
+  	else {
+ 	 
+ 	 $html.="
+ 	 <h4>Born in $useraddinfos[date_birth], Works at $useraddinfos[job] Listen to			 $useraddinfos[music]</h4>
+ 	 <a href='#'>Add as Friend</a>";
+	}
+
+ 
+ }  
+  
+   printDocument('Profile Page'); 
 }
+
+/********************************************************************/
+
+	else if (isset($_GET[id])){ // pour les visiteurs
+	  $userinfos=retrieve_user_infos($_GET[id]);
+ 	  $useraddinfos=retrieve_user_add_infos($_GET[id]);
+ 	  
+ 	  $html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>";
+ 	  
+ 	  if(!$useraddinfos){
+ 	  
+ 	  $html.="<div>Sorry, there's no content available to show.</div>
+ 	  <a href='#'>Add as Friend</a>
+ 	  ";
+ 	  }
   
+  	else {
+ 	 
+ 	 $html.="
+ 	 <h4>Born in $useraddinfos[date_birth], Works at $useraddinfos[job] Listen to			 $useraddinfos[music]</h4>";
+	}
+	printDocument('Profile');
+}
+ 
+ /********************************************************************/
+
 ?>
