@@ -115,18 +115,18 @@ if (isset($userid)){  // vÈrification si logué ou pas
       sprintf("SELECT id FROM recipes WHERE name_en LIKE '%s'",
         mysql_real_escape_string(strip_tags($_POST['name'])))
     ));
-    if ($query) {
+    if ($query>0) {
       redirect();
     } else {
 
-insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['difficulty'],$_POST['serves'],$_POST['prepDuration'],$_POST['cookDuration'],$_POST['method'],$userid);
+	$reussi=insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['difficulty'],$_POST['serves'],$_POST['prepDuration'],$_POST['cookDuration'],$_POST['method'],$userid);
 
    //on recupere le id de la recette
    $getid_recipe = mysql_insert_id();
 
 
-
-      if(!$query) {
+		if (!$reussi){
+      //if(!$query) {
         $message = "<p class='error'>Connection error.</p>";
       } else {
         redirect();
