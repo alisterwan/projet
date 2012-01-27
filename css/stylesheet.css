@@ -308,14 +308,14 @@ nav::before {
 #myAccordion.tswAccordion
 	{
 		width: 500px;
-		height: 800px;
+		height: 1100px;
 		background-color: #f0f0f0;
 	}
 	#myAccordion .tswAccordionActiveSection, #myAccordion .tswAccordionInactiveSection
 	{
 		background-color: #ffffff;
 		width: 500px;
-		height: 800px;
+		height: 1500px;
 	}
 	#myAccordion .tswAccordionHeader
 	{
