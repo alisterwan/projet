@@ -14,9 +14,9 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 
 
 
- if(isset($_GET[id])){ 
- $userinfos=retrieve_user_infos($_GET[id]);
- 	  $useraddinfos=retrieve_user_add_infos($_GET[id]);
+ if(isset($_GET[id_user])){ 
+ $userinfos=retrieve_user_infos($_GET[id_user]);
+ 	  $useraddinfos=retrieve_user_add_infos($_GET[id_user]);
  	  
  	  $html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>";
  	  
@@ -42,9 +42,9 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 
 /********************************************************************/
 
-	else if (isset($_GET[id])){ // pour les visiteurs
-	  $userinfos=retrieve_user_infos($_GET[id]);
- 	  $useraddinfos=retrieve_user_add_infos($_GET[id]);
+	else if (isset($_GET[id_user])){ // pour les visiteurs
+	  $userinfos=retrieve_user_infos($_GET[id_user]);
+ 	  $useraddinfos=retrieve_user_add_infos($_GET[id_user]);
  	  
  	  $html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>";
  	  
