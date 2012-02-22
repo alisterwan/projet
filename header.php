@@ -62,7 +62,7 @@ function i8n($string, $table, $id) {
 
 
 
-function printDocument($title) {
+function printDocument($title = 'DigEat') {
 	global $message, $html;
 	$title = $title == 'DigEat' ? $title : "DigEat - $title";
 	echo "
