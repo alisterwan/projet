@@ -248,19 +248,37 @@ nav {
   position: absolute;
   bottom: 0;
   right: 0;
-  top: 1;
 }
-nav::before {
-  content: '';
+nav li {
+  padding: 5px 0;
+  text-align: center;
+  width: 100px;
+}
+ul, li {
   display: inline-block;
-  height: 100%;
-  vertical-align: middle;
+  position: relative;
 }
-.nav {
-  font-size: 1.5em;
-  margin: 0 8px;
-  text-decoration: none;
-  vertical-align: middle;
+li:not(:hover) > ul {
+  display: none;
+}
+nav > ul > li > ul {
+  position: absolute;
+  top: 100%;
+  left: 0;
+}
+nav > ul > li > ul > li > ul {
+  position: absolute;
+  top: 0;
+  left: 100%;
+}
+#rightbox li {
+  padding: 0 5px;
+  width: 100%;
+}
+#rightbox > ul > li > ul {
+  position: absolute;
+  top: 0;
+  right: 100%;
 }
 
 #body {
@@ -305,46 +323,6 @@ nav::before {
 }
 
 
-#myAccordion.tswAccordion
-	{
-		width: 500px;
-		height: 1100px;
-		background-color: #f0f0f0;
-	}
-	#myAccordion .tswAccordionActiveSection, #myAccordion .tswAccordionInactiveSection
-	{
-		background-color: #ffffff;
-		width: 500px;
-		height: 1500px;
-	}
-	#myAccordion .tswAccordionHeader
-	{
-		text-align: center;
-		padding: 5px;
-		font-family: "Trebuchet MS";
-		font-size: 16.0px;
-		font-weight: bold;
-	}
-	#myAccordion .tswAccordionActiveSection .tswAccordionHeader
-	{
-		background-color: #aa4a89;
-		color: #ffffff;
-		border: 5px solid #cccccc;
-	}
-	#myAccordion .tswAccordionInactiveSection .tswAccordionHeader
-	{
-		background-color: #ffffff;
-		color: #000000;
-		border: 1px solid #cccccc;
-	}
-	#myAccordion .tswAccordionHeader
-	{
-	}
-	#myAccordion .tswAccordionBody
-	{
-		padding: 5px;
-	}
-
 
 ul, li{
     margin:0;
@@ -371,7 +349,7 @@ ul, li{
     text-decoration:none;
     padding:10px;
     display:block;
- 
+
 }
 
 .menu_body li.alt{

@@ -77,8 +77,6 @@ function printDocument($title = 'DigEat') {
 			<link href='http://fonts.googleapis.com/css?family=Clara' rel='stylesheet'>
 			<link href='./css/stylesheet.css' rel='stylesheet'>
 			<script type='text/javascript' src='js/MooTools/mootools.js'></script>
-			<script type='text/javascript' src='js/MenuMatic/MenuMatic.js'></script>
-			<link rel='stylesheet' type='text/css' href='js/MenuMatic/MenuMatic_myNavigationMenu.css' />
 			<script type='text/javascript' src='jsdate/TSWBrowserDetect.js'></script>
 			<script type='text/javascript' src='jsdate/TSWUtils.js'></script>
 			<script type='text/javascript' src='jsdate/TSWDateAndTime.js'></script>
@@ -97,7 +95,7 @@ function printDocument($title = 'DigEat') {
 			<header>
 				<div id='header'>
 					<a href='./index.php' id='logo'>DigEat</a>
-					".navContent()."
+					<nav>".navContent()."</nav>
 				</div>
 			</header>
 			<div id='body' class='clearfix'>
@@ -116,72 +114,38 @@ function navContent() {
 	if (isset($_SESSION['id'])) {
 		// Requête qui récupère toutes les coordonnées du client
 		$content = "
-		<nav>
-			<ul id='myNavigationMenu'>
-				<li><a href='./index.php'>Home</a></li>
-				<li>
-					<a href='./profile.php'>Profile</a>
-					<ul>
-						<li>
-							<a href='#'>Edit Profile</a>
-							<ul>
-								<li><a href='edit_profile.php'>Account information</a></li>
-								<li><a href='modify_info.php'>Personal information</a></li>
-							</ul>
-						</li>
-						<li><a href='./logout.php'>Log out</a></li>
-					</ul>
-				</li>
-				<li>
-					<a href='#'>Recipes</a>
-					<ul>
-						<li><a href='./recipes.php'>My Recipes</a></li>
-						<li><a href='#'>Feeds</a></li>
-					</ul>
-				</li>
-				<li><a href='#'>Community</a></li>
-				<li><a href='./search_advanced.php'>Search</a></li>
-			</ul>
-			<!-- Create a MenuMatic Instance -->
-			<script>
-				window.addEventListener('load', function() {
-					var myMenu = new MenuMatic({
-						id: 'myNavigationMenu',
-						subMenusContainerId: 'myNavigationMenu_menuContainer',
-						orientation: 'horizontal',
-						effect: 'slide & fade',
-						duration: 800,
-						hideDelay: 1000,
-						opacity: 100
-					});
-				});
-			</script>
-		</nav>";
+		<ul>
+			<li><a href='./index.php'>Home</a></li>
+			<li>
+				<a href='./profile.php'>Profile</a>
+				<ul>
+					<li>
+						<a href='#'>Edit Profile</a>
+						<ul>
+							<li><a href='edit_profile.php'>Account information</a></li>
+							<li><a href='modify_info.php'>Personal information</a></li>
+						</ul>
+					</li>
+					<li><a href='./logout.php'>Log out</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href='#'>Recipes</a>
+				<ul>
+					<li><a href='./recipes.php'>My Recipes</a></li>
+					<li><a href='#'>Feeds</a></li>
+				</ul>
+			</li>
+			<li><a href='#'>Community</a></li>
+			<li><a href='./search_advanced.php'>Search</a></li>
+		</ul>";
 	} else {
 		$content = "
-			<nav>
-				<ul id='myNavigationMenu'>
-					<li><a href='./index.php'>Home</a></li>
-					<li><a href='#'>Recipes</a></li>
-					<li><a href='#'>Community</a></li>
-					<li><a href='./registration.php'>Registration</a></li>
-					<li><a href='./search_advanced.php'>Search</a></li>
-				</ul>
-				<!-- Create a MenuMatic Instance -->
-				<script>
-					window.addEventListener('load', function() {
-						var myMenu = new MenuMatic({
-							id: 'myNavigationMenu',
-							subMenusContainerId: 'myNavigationMenu_menuContainer',
-							orientation: 'horizontal',
-							effect: 'slide & fade',
-							duration: 800,
-							hideDelay: 1000,
-							opacity: 100
-						});
-					});
-				</script>
-			</nav>";
+		<a href='./index.php'>Home</a>
+		<a href='#'>Recipes</a>
+		<a href='#'>Community</a>
+		<a href='./registration.php'>Registration</a>
+		<a href='./search_advanced.php'>Search</a>";
 	}
 	return $content;
 }
@@ -236,37 +200,19 @@ function rightboxContent() {
 		<div>'.$userinfos['city'].'</div>
 		<div>'.$userinfos['country'].'</div>
 		<div>'.$userinfos['mail'].'</div>
-		<ul id="myNavigationMenu">
+		<ul>
 			<li>
-				<a href="./profile.php">My Datas</a>
+				<a href="#">Objectives</a>
 				<ul>
-					<li>
-						<a href="#">Objectives</a>
-						<ul>
-							<li><a href="objectivesform.php">Set Objectives</a></li>
-							<li><a href="graphique.php">View My Chart</a></li>
-						</ul>
-					</li>
-					<li><a href="./information.php">My Information</a></li>
-					<li><a href="./albums.php">My Albums</a></li>
-					<li><a href="./friends.php">Friends</a></li>
-					<li><a href="./recipes.php">My Recipes</a></li>
+					<li><a href="objectivesform.php">Set Objectives</a></li>
+					<li><a href="graphique.php">View My Chart</a></li>
 				</ul>
 			</li>
-		</ul>
-		<script>
-			window.addEventListener("load", function() {
-				var myMenu = new MenuMatic({
-					id: "myNavigationMenu",
-					subMenusContainerId: "myNavigationMenu_menuContainer",
-					orientation: "horizontal",
-					effect: "slide & fade",
-					duration: 800,
-					hideDelay: 1000,
-					opacity: 100
-				});
-			});
-		</script>';
+			<li><a href="./information.php">My Information</a></li>
+			<li><a href="./albums.php">My Albums</a></li>
+			<li><a href="./friends.php">Friends</a></li>
+			<li><a href="./recipes.php">My Recipes</a></li>
+		</ul>';
 	} else {
 		// Afficher les formulaires pour se connecter et s'inscrire
 		$content = "
