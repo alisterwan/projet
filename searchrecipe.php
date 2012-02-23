@@ -23,6 +23,9 @@ function retrieve_recipe_infos($id){
   
    $i[difficulty]= $row[name_en];
    
+   $query21 = mysql_query("SELECT * FROM country WHERE id_country=$i[country_origin]");
+  	$res2 = mysql_fetch_assoc($query21);	
+  	$i[country_origin]=$res2[name_en];	
  
   		//recupere le username	
 		$query2 = "SELECT firstname,surname,username FROM users WHERE id='$i[id_user]' ";

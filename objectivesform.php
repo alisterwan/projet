@@ -87,15 +87,18 @@ if( ( isset($_POST['weight']) && $_POST['weight']!=null ) && ( isset($_POST['siz
 				date='$Date'";
 				$res = mysql_query($query) or die("error");
 
+				$size0=$size/100; // reconversion en de la taille en cm en m, pour le calcul de l'imc
+				$imc=$weight/($size0*$size0); // Calcul de l'imc, poid / taille²
 				
-				// enregistre dans la bdd objective
+				// enregistre dans la bdd evolution
 				$query2 = "INSERT INTO evolution SET
 				weight='$weight',
+				imc='$imc',
 				id_user='$userid',
 				date='$Date'";
 				$res2 = mysql_query($query2) or die("error 2");
 				
-				if( isset($res) && isset($res2) ) ?><meta http-equiv="Refresh" content="0"; URL=http://etudiant.univ-mlv.fr/~jwankutk/tuto_john/graphique.php"><?php
+				if( isset($res) && isset($res2) ) ?><meta http-equiv="Refresh" content="0"; URL="http://etudiant.univ-mlv.fr/~jwankutk/tuto_john/graphique.php"><?php
 
 
 }

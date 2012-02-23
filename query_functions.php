@@ -4,19 +4,6 @@
 //Functions
 
 
-function last_insert_id($table, $column){
-
-
-	$sql='SELECT '.$column.' FROM '.$table.' ORDER BY '.$column.' DESC LIMIT 0,1';
-	$query=mysql_query($sql);
-	
-	if (mysql_num_rows($query) == 1){
-		return $result=mysql_fetch_assoc($query);
-	}
-	
-	return false;	
-}
-
 /*********************************************************************************/
 
 function printInfoBanner($userid){
@@ -74,6 +61,17 @@ function retrieve_user_infos($id){ // prend en paramètre l'id de l'user, soit $_
 	}
 	return false;
   }
+  
+function retrieve_user_friends($id){
+$sql='SELECT * FROM groups WHERE id_creator='.$id;
+	$query=mysql_query($sql);
+	$verif = mysql_num_rows($query);
+	
+	if ($verif == 1){
+	return $result=mysql_fetch_assoc($query);
+	}
+	return false;
+}    
 
 function retrieve_user_add_infos($id){ // prend en paramètre l'id de l'user, soit $_SESSION['id']
 
@@ -87,6 +85,110 @@ function retrieve_user_add_infos($id){ // prend en paramètre l'id de l'user, soi
 	return false;
 }
 
+//fonction pour recuperer les friends request
+  function checkFriendRequest($id){
+  $query = sprintf("SELECT * FROM groups_relations
+    WHERE id_user='%s' AND approval='0'",
+    mysql_real_escape_string($id));
+    $result = mysql_query($query);
+
+   if (!$result) {
+   return false;
+   }
+
+   else
+   while ($row = mysql_fetch_assoc($result)) {
+   return $row; 
+   }
+
+   mysql_free_result($result);
+}
+
+
+	//fonction pour recuperer l'id du groupe par le id_creator
+	function getGroupId($idcreator){
+	$query = sprintf("SELECT * FROM groups
+    WHERE id_creator='%s'",
+    mysql_real_escape_string($idcreator));
+    $result = mysql_query($query);
+
+   if (!$result) {
+   return false;
+   }
+
+   else
+   while ($row = mysql_fetch_assoc($result)) {
+   return $row['id'];
+   }
+
+   mysql_free_result($result);
+	}
+
+
+	//fonction pour recuperer le id de l'emetteur
+	function getGroupCreator($idgroup){
+	$query = sprintf("SELECT * FROM groups
+    WHERE id='%s'",
+    mysql_real_escape_string($idgroup));
+    $result = mysql_query($query);
+
+   if (!$result) {
+   return false;
+   }
+
+   else
+   while ($row = mysql_fetch_assoc($result)) {
+   return $row['id_creator'];
+   }
+
+   mysql_free_result($result);
+	}
+	
+	  function checkFriendship($idgroup,$iduser){
+  $query = sprintf("SELECT * FROM groups_relations
+    WHERE id_group='%s' AND id_user='%s' AND approval='1'",
+    mysql_real_escape_string($idgroup),
+    mysql_real_escape_string($iduser));
+    $result = mysql_query($query);
+	
+	$verif = mysql_num_rows($result);
+	
+   if ($verif == 0) {
+ 
+   return $row=" <a href='#'><img src='./img/templates/follow.png' width='113px' height='42px' /></a>
+ 	  <a href='#' id='removeing' onclick='addFriends(event,$userid,$_GET[id_user])'><img src='./img/templates/addfriends.png' width='113px' height='42px' /></a>
+ 	 
+ 	 <script>
+	  function addFriends(e, id_user, id_friend) {
+      var a, url, x;
+      e.preventDefault();
+      a = e.target.parentNode;
+      a.parentNode.hidden = true;
+      url = './addFriends.php?id_user='+ id_user +'&id_friend=' + id_friend;
+      x = new XMLHttpRequest();
+      x.open('GET', url, true);
+      x.onload = function(e) {
+        a.innerHTML = this.responseText;
+        if(this.responseText !== 'success') {
+          a.innerHTML = this.responseText;
+          a.parentNode.hidden = false;
+        }
+      };
+      x.send();
+    }
+	</script>
+"; 
+   }
+   
+   else {
+   return $row="";
+   }
+
+   mysql_free_result($result);
+}
+	
+
+/******************************************************************/
 
 
 function good_query($chaine, $debug=0)

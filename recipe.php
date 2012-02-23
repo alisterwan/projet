@@ -22,11 +22,17 @@ if (isset($userid)){ // vérification si logué ou pas
    $i = retrieve_recipe_infos($_GET[id]);
    
   
+   	$query21 = mysql_query("SELECT * FROM country WHERE id_country=$i[country_origin]");
+  	$res2 = mysql_fetch_assoc($query21);	
+  	$i[country_origin]=$res2[name_en];	
+  
    $query11 = "SELECT name_en FROM recipe_difficulty WHERE id=$i[difficulty]";
    $res11 = mysql_query($query11); 
    $row = mysql_fetch_assoc($res11); 
   
    $i[difficulty]= $row[name_en];
+   
+   
    
 	  
   $html = "
@@ -76,13 +82,18 @@ if (isset($userid)){ // vérification si logué ou pas
         if(this.responseText !== 'success') {
           a.innerHTML = this.responseText;
           a.parentNode.hidden = false;
-        }
+        } else {
+		  location.pathname = '/~jwankutk/tuto_john/recipes.php';
+		}
       };
       x.send();
     }
 	</script>
 			
         	<li><a href='#'>Share</a></li>
+			<li><a href='#'>Export to PDF</a></li>
+			
+			
 		</ul>
 	</div>
 	
@@ -106,8 +117,8 @@ if (isset($userid)){ // vérification si logué ou pas
 	$result2 = mysql_query($query);
 	
 	if(mysql_num_rows($result2) == 1){
-	$ij = mysql_fetch_row($result2);
-	 $html.= "<img src='img/recipes/$userinfos[id]_$_GET[id].jpg' width='200px' height='175px' />";	
+	$ij = mysql_fetch_assoc($result2);
+	 $html.= "<img src='$ij[path_source]' width='200px' height='175px' />";	
 	}
 	
 
@@ -119,7 +130,7 @@ if (isset($userid)){ // vérification si logué ou pas
 	<div><strong>Description</strong>: $i[description_en]</div>
 	<div><strong>Origin</strong>: $i[country_origin]</div>
 	<div><strong>Difficulty</strong>: $i[difficulty]</div>
-	<div><strong>Number Serves</strong>: $i[num_serves] </div>
+	<div><strong>Servings</strong>: $i[num_serves] </div>
 	<div><strong>Preparation</strong>: $i[duration_preparation] minutes</div>
 	<div><strong>Cooking</strong>: $i[duration_cook] minutes</div>
 	<div><strong>Instructions</strong>: $i[preparation_en]</div>

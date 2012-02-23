@@ -14,7 +14,7 @@ if(isset($_GET['recherche']))
         $mots = explode(' ',$rec);//En separre lexpression en mots cles
         foreach($mots as $mot)
         	{
-          	$req .= ' name_en LIKE "%'.$mot.'%" OR';
+          	$req .= ' name_en LIKE "%'.$mot.'%" AND approval="0" OR';
         	}
         
         $req .= ' 1=0';

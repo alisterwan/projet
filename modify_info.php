@@ -75,7 +75,7 @@ if (isset($userid)){ // vérification si logué ou pas
 		
 		
 			<span id='myFormCalendar' class='tswFormCalendar'>
-		<label for='myDateInput'>Date of birth (dd/mm/yyyy):</label> 
+		<label for='myDateInput'>Date of birth (yyyy-mm-dd):</label> 
 			<a href='javascript:tswFormCalendarGetForId(\"myFormCalendar\").togglePopUp();'>
 			<span id='myFormCalendar_tswButton'
 				class='tswFormCalendarButton'></span></a>
@@ -83,7 +83,7 @@ if (isset($userid)){ // vérification si logué ou pas
 	<script type='text/javascript'>
 		//Initialize Form Calendar
 		var tswFormCalendar = tswFormCalendarGetForId(\"myFormCalendar\");
-		tswFormCalendar.dateFormat = 'dd/MM/yyyy';
+		tswFormCalendar.dateFormat = 'yyyy-MM-dd';
 	</script>
 		<input id='myFormCalendar_tswInput' 
 			name='myDateInput' value='$date'

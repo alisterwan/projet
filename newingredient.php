@@ -14,7 +14,8 @@
 /***********************************/
 
 
-if (isset($userid)){  // vÈrification si loguÈ ou pas
+
+
 
   if($_POST) {
     $query = mysql_num_rows(mysql_query(
@@ -50,6 +51,5 @@ if (isset($userid)){  // vÈrification si loguÈ ou pas
     ";
 
   printDocument();
-}
 ?>
 

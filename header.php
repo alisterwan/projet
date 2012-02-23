@@ -1,47 +1,49 @@
 <?php
 
-include('includes/config.php');
-include('query_functions.php');
+include("includes/config.php");
+include("query_functions.php");
 
 
 
 ///// MODULE CONNEXION /////
-if ($_POST && isset($_GET['mode']) && $_GET['mode'] == 'logon') {
-	// ATTENTION IL FAUT METTRE LES QUOTES POUR name
-	$username = $_POST['name'];
-	// ATTENTION IL FAUT METTRE LES QUOTES POUR pass
-	$pass = sha1($_POST['pass']);
+    if ($_POST && isset($_GET['mode']) && $_GET['mode']=="logon") {
+		$username = $_POST['name']; // ATTENTION IL FAUT METTRE LES QUOTES POUR name !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		$pass = sha1($_POST['pass']); // ATTENTION IL FAUT METTRE LES QUOTES POUR pass !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-	// Rediriger l'admin s'il est correctement identifié
-	if ($username == 'admin' && $pass == 'f6793a9e6ca5356123fe0ab34bb46443894a5edf') {
-		// ATTENTION IL FAUT METTRE LES QUOTES POUR masterpass
-		$_SESSION['masterpass'] = $pass;
-		// redirection
-		header('Location: admin/index.php');
-	}
+	  // Rediriger l'admin s'il est correctement identifié
+		if ($username == 'admin' && $pass == 'f6793a9e6ca5356123fe0ab34bb46443894a5edf') {
+		  $_SESSION['masterpass'] = $pass; // ATTENTION IL FAUT METTRE LES QUOTES POUR masterpass !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		  header('Location: admin/index.php'); // redirection
+		}
 
 
-	// Vérification du client dans la base de donnée
-	$query  = "SELECT id,username FROM users WHERE username='$username' and password='$pass'";
-	$result = mysql_query($query);
+		// Vérification du client dans la base de donnée
 
-	if (mysql_num_rows($result) == 1) {
-		 $row = mysql_fetch_array($result, MYSQL_NUM);
-		 $_SESSION['id']   = $row[0];
-		 $_SESSION['mail'] = $row[1];
-	} else {
-		$message = '<p class=error>Username or password incorrect, try again.</p>';
-	}
-}
+		 $query  = "SELECT id,username FROM users WHERE username='$username' and password='$pass'";
+		 $result = mysql_query($query);
+
+			if (mysql_num_rows($result) == 1){
+				 $row = mysql_fetch_array($result, MYSQL_NUM);
+				 $_SESSION['id'] = $row[0]; // ATTENTION IL FAUT METTRE LES QUOTES
+				 $_SESSION['mail'] = $row[1]; // ATTENTION IL FAUT METTRE LES QUOTES
+			}
+			else {
+				$message = "<p class='error'>Username or password incorrect, try again.</p>";
+			}
+
+
+    }
 ///// FIN MODULE CONNEXION /////
 
 
 
-//// DEFINIT LA VARIABLE GLOBALE $userinfos
-if (isset($_SESSION['id'])) {
-	$userinfos = retrieve_user_infos($_SESSION['id']);
-}
+//// DEFINIT LA VARIABLE GLOBALE  $userid
+  if (isset($_SESSION['id'])) {
+
+	$userid=$_SESSION['id'];
+
+  }
 
 
 
@@ -62,12 +64,12 @@ function i8n($string, $table, $id) {
 
 
 
-function printDocument($title = 'DigEat') {
-	global $message, $html;
-	$title = $title == 'DigEat' ? $title : "DigEat - $title";
-	echo "
-	<!doctype html>
-	<html lang='en'>
+ function printDocument($title = "DigEat"){
+		global $message, $html, $friend, $notifications;
+		$title = $title == "DigEat" ? $title : "DigEat - $title";
+		echo "
+		<!doctype html>
+		<html lang='en'>
 		<head>
 			<meta charset='utf-8'>
 			<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -75,137 +77,272 @@ function printDocument($title = 'DigEat') {
 			<meta name='description' content='Projet tuto'>
 			<meta name='author' content='John Olivier Equina Nicolas'>
 			<link href='http://fonts.googleapis.com/css?family=Clara' rel='stylesheet'>
+			<link rel='stylesheet' type='text/css' media='screen' href='css/all-examples.css'>
 			<link href='./css/stylesheet.css' rel='stylesheet'>
+			
 			<script type='text/javascript' src='js/MooTools/mootools.js'></script>
+			<script type='text/javascript' src='js/MenuMatic/MenuMatic.js'></script>
+			<link rel='stylesheet' type='text/css' href='js/MenuMatic/MenuMatic_myNavigationMenu.css' />
+			
 			<script type='text/javascript' src='jsdate/TSWBrowserDetect.js'></script>
 			<script type='text/javascript' src='jsdate/TSWUtils.js'></script>
 			<script type='text/javascript' src='jsdate/TSWDateAndTime.js'></script>
 			<script type='text/javascript' src='jsdate/TSWFormCalendar.js'></script>
 			<link rel='stylesheet' type='text/css' href='jsdate/TSWFormCalendar_myFormCalendar.css' />
+			
+			
+			
 			<script type='text/javascript' src='js/jquery.js'></script>
+		
+		
+		
 			<script type='text/javascript' src='js/TSWAccordion.js'></script>
 			<script type='text/javascript' src='js/TSWDomUtils.js'></script>
 			<link rel='stylesheet' type='text/css' href='js/TSWAccordion.css' />
+			
 			<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+			<script type='text/javascript' src='js/stack-1.js'></script>
+			
+			<script type='text/javascript' src='js/fisheye-iutil.min.js'></script>
+			<script type='text/javascript' src='js/dock-example1.js'></script>
+			
 			<script src='js/modernizr.custom.65662.js'></script>
 			<script src='js-webshim/minified/polyfiller.js'></script>
 			<script>$.webshims.polyfill();</script>
+			
+			<!--<script type='text/javascript' src='js/jquery.reveal.js'></script> 
+			
+			<script type='text/javascript'>
+
+		var nbInput = 0;
+		
+		function addIngredient(){
+		var nbChampsAjout = document.getElementById('Ingredients').value;
+		var div = document.getElementById('addIng');
+		if(nbChampsAjout <= 0){alert('Please tell us how many ingredients do you want to add');}
+		else{
+				nbInput++;
+				
+				label = document.createElement('div');
+				label.setAttribute(\"style\",\"margin-bottom: 10px\");
+				text = document.createTextNode('Ingredient ' +nbInput+':');
+				label.appendChild(text);				
+				input = document.createElement('input');
+				input.setAttribute(\"type\",\"text\");
+				input.setAttribute(\"name\",\"ing\"+nbInput);
+				
+				input.setAttribute(\"list\",\"ingredientList\");
+				
+				label.appendChild(input);
+		
+				div.appendChild(label);	
+			}
+ 			document.getElementById('addIng').innerHTML;
+ 
+		}
+		</script> -->
+			
+			
 		</head>
 		<body>
 			<header>
-				<div id='header'>
-					<a href='./index.php' id='logo'>DigEat</a>
-					<nav>".navContent()."</nav>
-				</div>
+			  <div id='header'>
+				<a href='./index.php' id='logo'>DigEat</a>
+				".navContent()."
+			</div>
 			</header>
 			<div id='body' class='clearfix'>
-				<div id='leftbox' class='panel'>".leftboxContent()."</div>
-				<div id='content' class='panel'>$message$html</div>
-				<div id='rightbox' class='panel'>".rightboxContent()."</div>
+			  <div id='leftbox' class='panel'>
+			  ".leftboxContent()."
+			  </div>
+			  <div id='content' class='panel'>
+				$message
+				$html
+				$friend
+				$notifications
+			  </div>
+			<div id='rightbox' class='panel'>
+			  ".rightboxContent()."
 			</div>
-		</body>
-	</html>";
+		  </body>
+		</html>";
+ }
+
+
+function navContent(){
+    if (isset($_SESSION['id'])) { // ATTENTION IL FAUT METTRE LES QUOTES POUR id !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      // Requête qui récupère toutes les coordonnées du client
+
+      $content = "
+      
+      	 <nav>
+   	<ul id='myNavigationMenu'>
+		<li><a href='./index.php'>Home</a></li>
+		<li><a href='./profile.php'>Profile</a>
+			<ul>
+				<li><a href='#'>Edit Profile</a>
+					<ul>
+						<li><a href='edit_profile.php'>Account information</a></li>
+						<li><a href='information.php'>Personal information</a></li>
+					</ul>
+				</li>
+				<li><a href='#'>Objectives</a>
+					<ul>
+						<li><a href='objectivesform.php'>Set Objectives</a></li>
+						<li><a href='graphique.php'>View My Chart</a></li>
+					</ul>
+				</li>
+				<li><a href='./logout.php'>Log out</a></li>
+			</ul>
+		</li>
+				<li><a href='#'>Community</a></li>
+		<li><a href='./search_advanced.php'>Search</a></li>
+	</ul>
+	<!-- Create a MenuMatic Instance -->
+	<script type='text/javascript' >
+		window.addEvent('load', function() {			
+			var myMenu = new MenuMatic({
+				id: 'myNavigationMenu',
+				subMenusContainerId: 'myNavigationMenu_menuContainer',
+				orientation: 'horizontal',
+				effect: 'slide & fade', 
+				duration: 800, 
+				hideDelay: 1000,
+				opacity: 100});
+		});		
+	</script>
+	 
+        </nav>
+	
+      ";
+    }
+
+    else {
+	$content = " 
+	<nav>
+	<ul id='myNavigationMenu'>
+		<li><a href='./index.php'>Home</a></li>
+		<li><a href='#'>Recipes</a></li>
+		<li><a href='#'>Community</a></li>
+		<li><a href='./registration.php'>Registration</a></li>
+		<li><a href='./search_advanced.php'>Search</a></li>
+	</ul>
+	<!-- Create a MenuMatic Instance -->
+	<script type='text/javascript' >
+		window.addEvent('load', function() {			
+			var myMenu = new MenuMatic({
+				id: 'myNavigationMenu',
+				subMenusContainerId: 'myNavigationMenu_menuContainer',
+				orientation: 'horizontal',
+				effect: 'slide & fade', 
+				duration: 800, 
+				hideDelay: 1000,
+				opacity: 100});
+		});		
+	</script>
+	 </nav>
+	 
+	 ";
+
+    }
+
+    return $content;
 }
 
 
+ function leftboxContent() {
+    if (isset($_SESSION['id'])) {
+    
+       if (isset($_GET['id_user']) ) { 
+      // Requête qui récupère toutes les coordonnées du client
+      $userinfos=retrieve_user_infos($_GET['id_user']);
 
-function navContent() {
-	// ATTENTION IL FAUT METTRE LES QUOTES POUR id
-	if (isset($_SESSION['id'])) {
-		// Requête qui récupère toutes les coordonnées du client
-		$content = "
-		<ul>
-			<li><a href='./index.php'>Home</a></li>
-			<li>
-				<a href='./profile.php'>Profile</a>
-				<ul>
-					<li>
-						<a href='#'>Edit Profile</a>
-						<ul>
-							<li><a href='edit_profile.php'>Account information</a></li>
-							<li><a href='modify_info.php'>Personal information</a></li>
-						</ul>
-					</li>
-					<li><a href='./logout.php'>Log out</a></li>
-				</ul>
-			</li>
-			<li>
-				<a href='#'>Recipes</a>
-				<ul>
-					<li><a href='./recipes.php'>My Recipes</a></li>
-					<li><a href='#'>Feeds</a></li>
-				</ul>
-			</li>
-			<li><a href='#'>Community</a></li>
-			<li><a href='./search_advanced.php'>Search</a></li>
-		</ul>";
-	} else {
-		$content = "
-		<a href='./index.php'>Home</a>
-		<a href='#'>Recipes</a>
-		<a href='#'>Community</a>
-		<a href='./registration.php'>Registration</a>
-		<a href='./search_advanced.php'>Search</a>";
-	}
-	return $content;
+ 	$content = "
+      <img src= '$userinfos[avatar]' width='170px' height='200px' />
+     ";
+	  return $content;
+    }
+    
+     else{
+      // Requête qui récupère toutes les coordonnées du client
+      global $userid;
+      $userinfos=retrieve_user_infos($userid);
+
+ 	$content = "
+      <img src= '$userinfos[avatar]' width='170px' height='200px' />
+      <a href='./image.php'><img src= './img/templates/camera.png' width='50px' height='50px'/></a>Change my avatar
+     ";
+	  return $content;
+	  }
+    }
+    
+    
+    else if (isset($_GET['id_user'])) { 
+      // Requête qui récupère toutes les coordonnées du client
+      $userinfos=retrieve_user_infos($_GET['id_user']);
+
+ 	$content = "
+      <img src= '$userinfos[avatar]' width='170px' height='200px' />
+     ";
+	  return $content;
+    }
+    
+    
+
 }
-
-
-
-function leftboxContent() {
-	if (isset($_SESSION['id'])) {
-		global $userinfos;
-		$content = "
-		<img src='$userinfos[avatar]' style='width: 170px; height: 200px;'>
-		<a href='./image.php'>Change my avatar</a><br>";
-	}
-	return $content;
-}
-
 
 
 function rightboxContent() {
-	// ATTENTION IL FAUT METTRE LES QUOTES POUR id
-	if (isset($_SESSION['id'])) {
-		// Requête qui récupère toutes les coordonnées du client
-		global $userinfos;
+		if (isset($_SESSION['id'])) { // ATTENTION IL FAUT METTRE LES QUOTES POUR id !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			  // Requête qui récupère toutes les coordonnées du client
+			  global $userid;
 
-		$content = '
-		<div>
-			<img src="./img/templates/friends.png"       style="width: 50px; height: 50px;" title=Friends>
-			<img src="./img/templates/messages.png"      style="width: 50px; height: 50px;" title=Messages>
-			<img src="./img/templates/notifications.png" style="width: 50px; height: 50px;" title=Notifications>
-		</div>
-		<p>Your account information:</p>
-		<div>'.$userinfos['firstname'].'&nbsp;'.$userinfos['surname'].'</div>
-		<div>'.$userinfos['address'].'</div>
-		<div>'.$userinfos['city'].'</div>
-		<div>'.$userinfos['country'].'</div>
-		<div>'.$userinfos['mail'].'</div>
-		<ul>
-			<li>
-				<a href="#">Objectives</a>
-				<ul>
-					<li><a href="objectivesform.php">Set Objectives</a></li>
-					<li><a href="graphique.php">View My Chart</a></li>
-				</ul>
-			</li>
-			<li><a href="./information.php">My Information</a></li>
-			<li><a href="./albums.php">My Albums</a></li>
-			<li><a href="./friends.php">Friends</a></li>
-			<li><a href="./recipes.php">My Recipes</a></li>
-		</ul>';
-	} else {
-		// Afficher les formulaires pour se connecter et s'inscrire
-		$content = "
-		<form action='./index.php?mode=logon' method='post'>
-			<img src='./img/templates/login.png'>
-			<div><input type='text' name='name' placeholder='Username' required></div>
-			<div><input type='password' name='pass' placeholder='password' required></div>
-			<div><input type='submit' value='Submit'> <a href='./#'>Forgot your password?</a></div>
-		</form>";
-	}
-	return $content;
+			  $userinfos=retrieve_user_infos($userid);
+			  
+			  $content = "<div>
+			<img src='./img/templates/friends.png' width='50px' height='50px' title='Friends'/>
+			<img src='./img/templates/messages.png' width='50px' height='50px' title='Messages'/>
+			<img src='./img/templates/notifications.png' width='50px' height='50px' title='Notifications'/>
+	 </div>";
+	 
+	 		$countryname = mysql_query("SELECT name_en FROM country WHERE id_country='$userinfos[country]'");
+  			$res11 = mysql_fetch_assoc($countryname);		
+	
+			 $content .= "<p>Your account information:</p>
+				<div>$userinfos[firstname] &nbsp;$userinfos[surname]</div>
+				<div>$userinfos[address]</div>
+				<div>$userinfos[city]</div>
+				<div>$res11[name_en]</div>
+				<div>$userinfos[mail]</div>
+			
+					
+			<div class='stack'>
+			<img src='img/stacks/stack.png' alt='stack'/>
+			<ul id='stack'>
+			<li><a href='objectivesform.php'><span>Objectives</span><img src='img/stacks/objectives.png' alt='My Objectives' /></a></li>
+			<li><a href='information.php'><span>Information</span><img src='img/stacks/information.png' alt='My infos' /></a></li>
+			
+			<li><a href='albums.php'><span>Albums</span><img src='img/stacks/albums.png' alt='My albums' /></a></li>
+			<li><a href='friends.php'><span>Friends</span><img src='img/stacks/myfriends.png' alt='My friends' /></a></li>	
+			<li><a href='recipes.php'><span>Recipes</span><img src='img/stacks/recipes.png' alt='My recipes' /></a></li>				
+			</ul>
+					</div>
+					
+					";	
+
+		}else{
+		  // Afficher les formulaires pour se connecter et s'inscrire
+		  $content = "
+			<form action='./index.php?mode=logon' method='post'>
+			  <img src='./img/templates/login.png'/>
+			  <div><input type='text' name='name' placeholder='Username' required></div>
+			  <div><input type='password' name='pass' placeholder='password' required></div>
+			  <div><input type='submit' value='Submit'> <a href='./#'>Forgot your password?</a></div>
+			</form>
+		   ";
+		}
+
+		return $content;
 }
 
 ?>

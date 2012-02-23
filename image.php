@@ -72,18 +72,7 @@ if( ( isset($_FILES['picture']) && ($_FILES['picture']['error'] == UPLOAD_ERR_OK
 	}
 
 	else{
-	
-			// vérification de la taille de l'image
-			if( filesize($_FILES['picture']['name']>10) ){
 
-			echo 'File too large.';
-			
-			}
-		
-		
-		
-			else{
-			
 			
 				$destination = './img/avatar/';
 
@@ -103,7 +92,6 @@ if( ( isset($_FILES['picture']) && ($_FILES['picture']['error'] == UPLOAD_ERR_OK
 	
 		}
 	
-	}
 
 	
 }

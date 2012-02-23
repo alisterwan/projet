@@ -18,7 +18,19 @@
 			return $res;
 	}
 	
+	
+	function createDefaultGroup($iduser,$name){
+	$query = sprintf("INSERT INTO groups(id_creator,name) VALUES('%s','%s');", 
+		mysql_real_escape_string(strip_tags($iduser)),
+		mysql_real_escape_string(strip_tags($name)));
+		$res = @mysql_query($query);
+		if(!$res)
+			die("Error: ".mysql_error());
+		else
+			return $res;
 
+	}
+	
 
 	// Formulaire affichant les champs à remplir pour l'inscription.
 	function printForm($firstname,$surname,$sex,$user,$email) {
@@ -124,7 +136,17 @@
 				$message = "<p class='error'>Query error.</p>";
 				printForm($firstname,$surname,$sex,$user,$email);
 			}
+			
 			else
+			$lastid = mysql_insert_id();
+			$namegroup = "friends";
+			
+			$res2 = createDefaultGroup($lastid,$namegroup);
+			if (!$res2) {
+				$message = "<p class='error'>Cannot create group.</p>";
+			}
+			
+			
 			//$headers ='From: "digeat"<digeat@gmail.com>'."\n";
 			//$headers .='Content-Type: text/plain; charset="iso-8859-1"'."\n";
 			//$headers .='Content-Transfer-Encoding: 8bit';

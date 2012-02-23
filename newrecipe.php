@@ -82,8 +82,8 @@
   }
 
 
- function insertRecipe($name,$description,$country,$difficulty,$serves,$preparation,$cook,$instructions,$id_user){
-	$query = sprintf("INSERT INTO recipes(name_en,description_en,country_origin,difficulty,num_serves,duration_preparation,duration_cook,preparation_en,id_user) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s');",
+ function insertRecipe($name,$description,$country,$difficulty,$serves,$preparation,$cook,$instructions,$approval,$id_user){
+	$query = sprintf("INSERT INTO recipes(name_en,description_en,country_origin,difficulty,num_serves,duration_preparation,duration_cook,preparation_en,approval,id_user) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');",
   	 mysql_real_escape_string(strip_tags($name)),
         mysql_real_escape_string(strip_tags($description)),
         mysql_real_escape_string(strip_tags($country)),
@@ -92,7 +92,8 @@
         mysql_real_escape_string(strip_tags($preparation)),
         mysql_real_escape_string(strip_tags($cook)),
         mysql_real_escape_string(strip_tags($instructions)),
-  	 mysql_real_escape_string(strip_tags($id_user)));
+        mysql_real_escape_string(strip_tags($approval)),
+   	    mysql_real_escape_string(strip_tags($id_user)));
         $res = @mysql_query($query);
 
 		if(!$res)
@@ -118,20 +119,25 @@ if (isset($userid)){  // vÈrification si logué ou pas
     if ($query>0) {
       redirect();
     } else {
-
-	$reussi=insertRecipe($_POST['name'],$_POST['description'],$_POST['country'],$_POST['difficulty'],$_POST['serves'],$_POST['prepDuration'],$_POST['cookDuration'],$_POST['method'],$userid);
+	
+	$query1 = mysql_query("SELECT * FROM country WHERE name_en='$_POST[country]'");
+  	$res2 = mysql_fetch_assoc($query1);	
+	
+	
+	$reussi=insertRecipe($_POST['name'],$_POST['description'],$res2[id_country],$_POST['difficulty'],$_POST['serves'],$_POST['prepDuration'],$_POST['cookDuration'],$_POST['method'],$_POST['permission'],$userid);
 
    //on recupere le id de la recette
    $getid_recipe = mysql_insert_id();
 
 
 		if (!$reussi){
-      //if(!$query) {
-        $message = "<p class='error'>Connection error.</p>";
-      } else {
+      if(!$query) {
+        $message = "<p class='error'>Please check your recipe again and submit.</p>";
+      } 
+      else {
         redirect();
       }
-    }
+    }}
   }
 
 				
@@ -140,7 +146,7 @@ if (isset($userid)){  // vÈrification si logué ou pas
   "<form action='newrecipe.php' method='post' id='contribution' enctype='multipart/form-data'>
     <p>Please define the recipe.</p>
     <label>Name <input type='text' name='name' value='$_POST[name]' required></label>
-    <label>Description <input type='text' name='description' value='$_POST[description]'></label>
+    <label>Description <textarea name='description'>$_POST[description]</textarea></label>
     <label>Origin <input type='text' name='country' list='countryList' value='$_POST[country]'></label>
     <label>Difficulty
       <select name='difficulty'>";
@@ -157,7 +163,7 @@ if (isset($userid)){  // vÈrification si logué ou pas
 	$html.="
 	  </select>
     </label>
-    <label>Serves <input type='number' name='serves' value='$_POST[serves]'></label>
+    <label>Servings <input type='number' name='serves' value='$_POST[serves]'></label>
     <label>Preparation Duration (min) <input type='number' name='prepDuration' value='$_POST[prepDuration]'></label>
     <label>Cooking Duration (min) <input type='number' name='cookDuration' value='$_POST[cookDuration]'></label>
     <label for='picture'>Picture of the Recipe :</label>
@@ -232,16 +238,6 @@ if( ( isset($_FILES['picture']) && ($_FILES['picture']['error'] == UPLOAD_ERR_OK
 	else{
 
 			// vérification de la taille de l'image
-			if( filesize($_FILES['picture']['name']>10) ){
-
-			echo 'File too large.';
-
-			}
-
-
-
-			else{
-
 
 				$destination = './img/recipes/';
 
@@ -262,9 +258,6 @@ if( ( isset($_FILES['picture']) && ($_FILES['picture']['error'] == UPLOAD_ERR_OK
 				$res = @mysql_query($query);
 
 		}
-
-	}
-
 
 }
 

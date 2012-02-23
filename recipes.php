@@ -26,7 +26,7 @@ if (isset($userid)){  // vérification si logué ou pas
 
 	<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
   	<h3>My Recipes</h3>
-	<img src='img/templates/option.png' width='150' height='40' class='menu_head' />
+	<img src='./img/templates/option.png' width='150' height='40' class='menu_head' />
 		<ul class='menu_body'>
     		<li><a href='./newrecipe.php'>Add Recipe</a></li>
     		<li><a href='./newingredient.php'>Add Ingredients</a></li>
@@ -39,20 +39,24 @@ if (isset($userid)){  // vérification si logué ou pas
 
 $query = sprintf("SELECT * FROM recipes WHERE id_user='%s'",
 	mysql_real_escape_string($userid));	
-	$result = mysql_query($query);	
-	
+	$result = mysql_query($query);
+
 	if (!$result){
 	$html.="
 	<p>You haven't got recipes</p>";
 	}
-	
+	else {	
 
+	while($row3=mysql_fetch_assoc($result)) {
 	
-	while($row=mysql_fetch_row($result)) {
-	$html.="<div><a href='./recipe.php?id=$row[13]'><img src='img/recipes/$row[12]_$row[13].jpg' width='250px' height='220px' alt='$row[0]' title='$row[0]'/><br/>$row[0]</a></div>";	
+	$query2 = "SELECT * FROM recipe_photos WHERE id_recipe=$row3[id]";
+	$result2 = mysql_query($query2);	
+	$row2=mysql_fetch_assoc($result2);
+	
+	$html.="<div><a href='./recipe.php?id=$row3[id]'><img src='$row2[path_source]' width='250px' height='220px' alt='$row3[name_en]' title='$row3[name_en]'/><br/>$row3[name_en]</a></div>";	
 	}	
 
-
+	}
 
   printDocument('My Recipes');
   

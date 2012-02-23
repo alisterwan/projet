@@ -7,13 +7,13 @@ function printInfo($userid) {
 $info = good_query_assoc("SELECT * FROM information WHERE id_user = $userid");
 
 	if (!$info){
-
+	
 		return $html="You haven't got information
 		<p align='right'><small><a href='./add_info.php'>Add information</a></small></p>
 		";
 	}else {
-
-
+		
+		
 		return $html="
 		Born: $info[date_birth]
 		<br/>Hobbies: $info[hobbies]
@@ -28,21 +28,21 @@ $info = good_query_assoc("SELECT * FROM information WHERE id_user = $userid");
 
 	  }
  }
-
-
+ 
+ 
 /////////////////////// FONCTIONS
-
-
- if (isset($_SESSION['id'])){ // vérification si logué ou pas
-
+ 
+ 
+ if (isset($userid)){ // vérification si logué ou pas
+ 
 	$html ="
 	<h1>Your information</h1>
-	".printInfo($_SESSION['id'])."
-
+	".printInfo($userid)."
+	
 	";
 
 	printDocument("Your information");
-
+	
 }else{
 	header('Location: index.php');
 }
