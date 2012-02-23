@@ -1,7 +1,7 @@
 <?php
 
-include("includes/config.php");
-include("query_functions.php");
+include('includes/config.php');
+include('query_functions.php');
 
 
 
@@ -28,8 +28,8 @@ if ($_POST && isset($_GET['mode']) && $_GET['mode'] == 'logon') {
 
 	if (mysql_num_rows($result) == 1) {
 		 $row = mysql_fetch_array($result, MYSQL_NUM);
-		 $_SESSION['id']   = $row[0]; // ATTENTION IL FAUT METTRE LES QUOTES
-		 $_SESSION['mail'] = $row[1]; // ATTENTION IL FAUT METTRE LES QUOTES
+		 $_SESSION['id']   = $row[0];
+		 $_SESSION['mail'] = $row[1];
 	} else {
 		$message = '<p class=error>Username or password incorrect, try again.</p>';
 	}
@@ -38,9 +38,9 @@ if ($_POST && isset($_GET['mode']) && $_GET['mode'] == 'logon') {
 
 
 
-//// DEFINIT LA VARIABLE GLOBALE $userid
+//// DEFINIT LA VARIABLE GLOBALE $userinfos
 if (isset($_SESSION['id'])) {
-	$userid = $_SESSION['id'];
+	$userinfos = retrieve_user_infos($_SESSION['id']);
 }
 
 
@@ -154,26 +154,10 @@ function navContent() {
 
 function leftboxContent() {
 	if (isset($_SESSION['id'])) {
-
-		// WTF
-		// Pourquoi est-ce qu'on fait trois fois la même chose ??????
-
-		if (isset($_GET['id_user'])) {
-			// Requête qui récupère toutes les coordonnées du client
-			$userinfos = retrieve_user_infos($_GET['id_user']);
-			$content   = "<img src='$userinfos[avatar]' style='width: 170px; height: 200px;'>";
-		} else {
-			// Requête qui récupère toutes les coordonnées du client
-			global $userid;
-			$userinfos = retrieve_user_infos($userid);
-			$content   = "
-			<img src='$userinfos[avatar]' style='width: 170px; height: 200px;'>
-			<a href='./image.php'>Change my avatar</a><br>";
-		}
-	} else if (isset($_GET['id_user'])) {
-		// Requête qui récupère toutes les coordonnées du client
-		$userinfos = retrieve_user_infos($_GET['id_user']);
-		$content   = "<img src='$userinfos[avatar]' style='width: 170px; height: 200px;'>";
+		global $userinfos;
+		$content = "
+		<img src='$userinfos[avatar]' style='width: 170px; height: 200px;'>
+		<a href='./image.php'>Change my avatar</a><br>";
 	}
 	return $content;
 }
@@ -184,9 +168,7 @@ function rightboxContent() {
 	// ATTENTION IL FAUT METTRE LES QUOTES POUR id
 	if (isset($_SESSION['id'])) {
 		// Requête qui récupère toutes les coordonnées du client
-		global $userid;
-
-		$userinfos = retrieve_user_infos($userid);
+		global $userinfos;
 
 		$content = '
 		<div>
