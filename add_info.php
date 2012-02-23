@@ -77,9 +77,6 @@ if ($_SESSION['id']) {
 		} else {
 			echo 'Query error';
 		}
-
-		// Ne pas envoyer le POST dans header.php
-		unset($_POST);
 	} else {
 		// Affichage profile
 
