@@ -272,3 +272,18 @@ function checkPermission($idgroup,$iduser){
 }
 
 ///////////////////FIN////////////////////// FONCTIONS QUI GERENT LES PERMiSSIONS! /////////////////////FIN///////////////////
+
+
+//////////////////////////////// GET DES TEXTS BY ID /////////////////////////////////////////////////////////////
+function getCountryNameById($id){
+	$sql='SELECT name_en FROM country WHERE id_country='.$id;
+	$query = mysql_query($sql);
+	
+	if($query){
+		$result = mysql_fetch_assoc($query);
+		return $result['name_en'];
+	}
+	return '';
+}
+
+//////////////////////////////// FIN GET DES TEXTS BY ID /////////////////////////////////////////////////////////////
