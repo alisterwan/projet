@@ -271,6 +271,9 @@ function checkPermission($idgroup,$iduser){
 	return false;
 }
 
+function isConnected($userid){
+	return isset($userid);
+}
 ///////////////////FIN////////////////////// FONCTIONS QUI GERENT LES PERMiSSIONS! /////////////////////FIN///////////////////
 
 
@@ -282,6 +285,17 @@ function getCountryNameById($id){
 	if($query){
 		$result = mysql_fetch_assoc($query);
 		return $result['name_en'];
+	}
+	return '';
+}
+
+function getGroupNameById($id){
+	$sql='SELECT name FROM groups WHERE id_creator='.$id;
+	$query = mysql_query($sql);
+	
+	if($query){
+		$result = mysql_fetch_assoc($query);
+		return $result['name'];
 	}
 	return '';
 }
