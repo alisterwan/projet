@@ -286,11 +286,7 @@ function navContent(){
      ";
 	  return $content;
     }
-    
-    
-
 }
-
 
 function rightboxContent() {
 		if (isset($_SESSION['id'])) { // ATTENTION IL FAUT METTRE LES QUOTES POUR id !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -305,14 +301,13 @@ function rightboxContent() {
 			<img src='./img/templates/notifications.png' width='50px' height='50px' title='Notifications'/>
 	 </div>";
 	 
-	 		$countryname = mysql_query("SELECT name_en FROM country WHERE id_country='$userinfos[country]'");
-  			$res11 = mysql_fetch_assoc($countryname);		
+	 		$countryname = getCountryNameById($userinfos['country']);		
 	
 			 $content .= "<p>Your account information:</p>
 				<div>$userinfos[firstname] &nbsp;$userinfos[surname]</div>
 				<div>$userinfos[address]</div>
 				<div>$userinfos[city]</div>
-				<div>$res11[name_en]</div>
+				<div>$countryname</div>
 				<div>$userinfos[mail]</div>
 			
 					
@@ -344,5 +339,4 @@ function rightboxContent() {
 
 		return $content;
 }
-
 ?>
