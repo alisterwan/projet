@@ -73,7 +73,7 @@ $sql='SELECT * FROM groups WHERE id_creator='.$id;
 	return false;
 }    
 
-function retrieve_user_add_infos($id){ // prend en paramètre l'id de l'user, soit $_SESSION['id']
+function retrieve_user_add_infos($id){ // prend en paramÃ¨tre l'id de l'user, soit $_SESSION['id']
 
 	$sql='SELECT * FROM information WHERE id_user='.$id;
 	$query=mysql_query($sql);
@@ -105,24 +105,8 @@ function retrieve_user_add_infos($id){ // prend en paramètre l'id de l'user, soi
 }
 
 
-	//fonction pour recuperer l'id du groupe par le id_creator
-	function getGroupId($idcreator){
-	$query = sprintf("SELECT * FROM groups
-    WHERE id_creator='%s'",
-    mysql_real_escape_string($idcreator));
-    $result = mysql_query($query);
 
-   if (!$result) {
-   return false;
-   }
-
-   else
-   while ($row = mysql_fetch_assoc($result)) {
-   return $row['id'];
-   }
-
-   mysql_free_result($result);
-	}
+	
 
 
 	//fonction pour recuperer le id de l'emetteur
@@ -144,48 +128,7 @@ function retrieve_user_add_infos($id){ // prend en paramètre l'id de l'user, soi
    mysql_free_result($result);
 	}
 	
-	  function checkFriendship($idgroup,$iduser){
-  $query = sprintf("SELECT * FROM groups_relations
-    WHERE id_group='%s' AND id_user='%s' AND approval='1'",
-    mysql_real_escape_string($idgroup),
-    mysql_real_escape_string($iduser));
-    $result = mysql_query($query);
 	
-	$verif = mysql_num_rows($result);
-	
-   if ($verif == 0) {
- 
-   return $row=" <a href='#'><img src='./img/templates/follow.png' width='113px' height='42px' /></a>
- 	  <a href='#' id='removeing' onclick='addFriends(event,$userid,$_GET[id_user])'><img src='./img/templates/addfriends.png' width='113px' height='42px' /></a>
- 	 
- 	 <script>
-	  function addFriends(e, id_user, id_friend) {
-      var a, url, x;
-      e.preventDefault();
-      a = e.target.parentNode;
-      a.parentNode.hidden = true;
-      url = './addFriends.php?id_user='+ id_user +'&id_friend=' + id_friend;
-      x = new XMLHttpRequest();
-      x.open('GET', url, true);
-      x.onload = function(e) {
-        a.innerHTML = this.responseText;
-        if(this.responseText !== 'success') {
-          a.innerHTML = this.responseText;
-          a.parentNode.hidden = false;
-        }
-      };
-      x.send();
-    }
-	</script>
-"; 
-   }
-   
-   else {
-   return $row="";
-   }
-
-   mysql_free_result($result);
-}
 	
 
 /******************************************************************/
@@ -259,3 +202,73 @@ function good_query_table($sql, $debug=0)
     mysql_free_result($resultat);
     return $table;
 }
+
+function RegistrationForVisitors(){
+	$ficelle='';
+	$ficelle.='<h4>Join the community!<br/>
+	<a href="registration.php" />Register now.</a>
+	<br/><br/>
+	It\'s free!';
+	return $ficelle;
+}
+
+
+///////////////////////////////////////// FONCTIONS QUI GERENT LES PERMiSSIONS! ////////////////////////////////////////
+
+function getAllGroupsByUserId($idcreator){
+	$query = sprintf("SELECT * FROM groups	WHERE id_creator='%s'",	mysql_real_escape_string($idcreator));
+	$result = mysql_query($query);
+
+	if (!$result) {
+		return false;
+	}else{
+		$reponse;
+		while ($row = mysql_fetch_assoc($result)) {
+			$reponse[]=$row['id'];
+		}
+		return $reponse;
+	}
+}
+
+function getGroupsByWallPostId($id){
+	$query = sprintf("SELECT * FROM wall_post_permission WHERE id_wall_post='%s'",	mysql_real_escape_string($id));
+	$result = mysql_query($query);
+
+	if (!$result) {
+		return false;
+	}else{
+		$reponse;
+		while ($row = mysql_fetch_assoc($result)) {
+			$reponse[]=$row['id'];
+		}
+		return $reponse;
+	}
+}
+
+function getGroupsByRecipeId($id){
+	$query = sprintf("SELECT * FROM recipe_view_permission WHERE id_recipe='%s'",	mysql_real_escape_string($id));
+	$result = mysql_query($query);
+
+	if (!$result) {
+		return false;
+	}else{
+		$reponse;
+		while ($row = mysql_fetch_assoc($result)) {
+			$reponse[]=$row['id'];
+		}
+		return $reponse;
+	}
+}
+
+function checkPermission($idgroup,$iduser){
+	foreach($idgroup as $idgroupsingle){
+		$sql = 'SELECT id FROM groups_relations WHERE id_group='.$idgroupsingle.' AND id_user='.$iduser.' AND approval=1';
+		$query = mysql_query($sql);
+		if(mysql_num_rows($query)>0){
+			return true;
+		}
+	}		
+	return false;
+}
+
+///////////////////FIN////////////////////// FONCTIONS QUI GERENT LES PERMiSSIONS! /////////////////////FIN///////////////////
