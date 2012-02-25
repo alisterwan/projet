@@ -25,7 +25,7 @@ function updateUser($firstname,$surname,$address,$country,$username,$email, $use
 
 /*******************************************************************************/
 
-if (isset($userid)){ // vérification si logué ou pas	
+if (isConnected($userid)){ // vérification si logué ou pas	
 
 	// Mise à jour des données
 	if ($_POST && isset($_GET['mode']) && $_GET['mode']=="profile_edit_process") { // ça va appeler la fonction qui va modifier la BDD : updateUser
