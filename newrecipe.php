@@ -142,11 +142,9 @@ if ($_POST) {
 		// Si la recette existe déjà,
 		// on redirige l'utilisateur vers la dite recette.
 		redirect();
-		// on a exit
+		// On a exit.
 	}
 
-	// Il aurait fallu POSTer l'id_country.
-	// FIX IT
 	$query1 = mysql_query("SELECT * FROM country WHERE name_en='$_POST[country]'");
 	$res2   = mysql_fetch_assoc($query1);
 
