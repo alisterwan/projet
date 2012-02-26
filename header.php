@@ -64,10 +64,10 @@ function i8n($string, $table, $id) {
 
 
 
- function printDocument($title = "DigEat"){
-		global $message, $html, $friend, $notifications;
-		$title = $title == "DigEat" ? $title : "DigEat - $title";
-		echo "
+function printDocument($title = "DigEat"){
+	global $message, $html, $friend, $notifications;
+	$title = $title == "DigEat" ? $title : "DigEat - $title";
+	echo "
 		<!doctype html>
 		<html lang='en'>
 		<head>
@@ -146,26 +146,31 @@ function i8n($string, $table, $id) {
 		</head>
 		<body>
 			<header>
-			  <div id='header'>
-				<a href='./index.php' id='logo'>DigEat</a>
-				".navContent()."
-			</div>
-			</header>
-			<div id='body' class='clearfix'>
-			  <div id='leftbox' class='panel'>
-			  ".leftboxContent()."
-			  </div>
-			  <div id='content' class='panel'>
-				$message
-				$html
-				$friend
-				$notifications
-			  </div>
-			<div id='rightbox' class='panel'>
-			  ".rightboxContent()."
-			</div>
-		  </body>
+				<div id='header'>
+					<a href='./index.php' id='logo'>DigEat</a>
+					".navContent()."
+				</div>
+			</header><div id='body' class='clearfix'>";
+	
+	if(function_exists('leftboxContent')){ // Displays leftBox if exists	
+		echo "<div id='leftbox' class='panel'>
+			".leftboxContent()."</div>";
+	}
+	
+	echo "<div id='content' class='panel'>
+	$message
+	$html
+	$friend
+	$notifications
+	</div>";
+			
+	if(function_exists('rightboxContent')){ // Displays rightBox if exists	
+		
+		echo "<div id='rightbox' class='panel'>".rightboxContent()."</div></body>
 		</html>";
+	}else{
+		echo '</html>';
+	}
  }
 
 
@@ -212,12 +217,8 @@ function navContent(){
 		});		
 	</script>
 	 
-        </nav>
-	
-      ";
-    }
-
-    else {
+        </nav>";
+    }else{
 	$content = " 
 	<nav>
 	<ul id='myNavigationMenu'>
@@ -240,103 +241,9 @@ function navContent(){
 				opacity: 100});
 		});		
 	</script>
-	 </nav>
-	 
-	 ";
-
+	 </nav>";
     }
-
-    return $content;
-}
-
-
- function leftboxContent() {
-    if (isset($_SESSION['id'])) {
-    
-       if (isset($_GET['id_user']) ) { 
-      // Requête qui récupère toutes les coordonnées du client
-      $userinfos=retrieve_user_infos($_GET['id_user']);
-
- 	$content = "
-      <img src= '$userinfos[avatar]' width='170px' height='200px' />
-     ";
-	  return $content;
-    }
-    
-     else{
-      // Requête qui récupère toutes les coordonnées du client
-      global $userid;
-      $userinfos=retrieve_user_infos($userid);
-
- 	$content = "
-      <img src= '$userinfos[avatar]' width='170px' height='200px' />
-      <a href='./image.php'><img src= './img/templates/camera.png' width='50px' height='50px'/></a>Change my avatar
-     ";
-	  return $content;
-	  }
-    }
-    
-    
-    else if (isset($_GET['id_user'])) { 
-      // Requête qui récupère toutes les coordonnées du client
-      $userinfos=retrieve_user_infos($_GET['id_user']);
-
- 	$content = "
-      <img src= '$userinfos[avatar]' width='170px' height='200px' />
-     ";
-	  return $content;
-    }
-}
-
-function rightboxContent() {
-		if (isset($_SESSION['id'])) { // ATTENTION IL FAUT METTRE LES QUOTES POUR id !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			  // Requête qui récupère toutes les coordonnées du client
-			  global $userid;
-
-			  $userinfos=retrieve_user_infos($userid);
-			  
-			  $content = "<div>
-			<img src='./img/templates/friends.png' width='50px' height='50px' title='Friends'/>
-			<img src='./img/templates/messages.png' width='50px' height='50px' title='Messages'/>
-			<img src='./img/templates/notifications.png' width='50px' height='50px' title='Notifications'/>
-	 </div>";
-	 
-	 		$countryname = getCountryNameById($userinfos['country']);		
 	
-			 $content .= "<p>Your account information:</p>
-				<div>$userinfos[firstname] &nbsp;$userinfos[surname]</div>
-				<div>$userinfos[address]</div>
-				<div>$userinfos[city]</div>
-				<div>$countryname</div>
-				<div>$userinfos[mail]</div>
-			
-					
-			<div class='stack'>
-			<img src='img/stacks/stack.png' alt='stack'/>
-			<ul id='stack'>
-			<li><a href='objectivesform.php'><span>Objectives</span><img src='img/stacks/objectives.png' alt='My Objectives' /></a></li>
-			<li><a href='information.php'><span>Information</span><img src='img/stacks/information.png' alt='My infos' /></a></li>
-			
-			<li><a href='albums.php'><span>Albums</span><img src='img/stacks/albums.png' alt='My albums' /></a></li>
-			<li><a href='friends.php'><span>Friends</span><img src='img/stacks/myfriends.png' alt='My friends' /></a></li>	
-			<li><a href='recipes.php'><span>Recipes</span><img src='img/stacks/recipes.png' alt='My recipes' /></a></li>				
-			</ul>
-					</div>
-					
-					";	
-
-		}else{
-		  // Afficher les formulaires pour se connecter et s'inscrire
-		  $content = "
-			<form action='./index.php?mode=logon' method='post'>
-			  <img src='./img/templates/login.png'/>
-			  <div><input type='text' name='name' placeholder='Username' required></div>
-			  <div><input type='password' name='pass' placeholder='password' required></div>
-			  <div><input type='submit' value='Submit'> <a href='./#'>Forgot your password?</a></div>
-			</form>
-		   ";
-		}
-
-		return $content;
+    return $content;
 }
 ?>
