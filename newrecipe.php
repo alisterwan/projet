@@ -189,8 +189,20 @@ if ($_POST) {
 		}
 	}
 
-	// Insertion des ingrédients.
-	// FIX IT
+	// Insertion des ingrédients dans le BDD.
+	$i = 1;
+	while ($_POST[$i]) {
+		$ing = getidIngredient($_POST[$i]);
+
+		//insere l'ingredient dans la bdd s'il n'existe pas
+		if ($ing == 0) {
+			insertIngredient(($_POST[$i]));
+			$ing = getidIngredient(($_POST[$i]));
+		}
+
+		insertRecipeIng($id_recipe, $ing);
+		$i++;
+	}
 
 	// Il y aurait-il une meilleure manière de vérifier
 	// que toute les requêtes ont été exécuté correctement ?
@@ -232,16 +244,6 @@ $html .= "
 
 $i = 1;
 while ($_POST[$i]) {
-	$ing = getidIngredient($_POST[$i]);
-
-	//insere l'ingredient dans la bdd s'il n'existe pas
-	if ($ing == 0) {
-		insertIngredient(($_POST[$i]));
-		$ing = getidIngredient(($_POST[$i]));
-	}
-
-	insertRecipeIng($id_recipe, $ing);
-
 	$html .= "<label>Ingredient $i<input type='text' name='$i' list='ingredientList' value='".$_POST["$i"]."'></label>";
 	$i++;
 }
