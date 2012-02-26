@@ -139,25 +139,75 @@ if ($_POST) {
 		)
 	);
 	if ($query > 0) {
+		// Si la recette existe déjà,
+		// on redirige l'utilisateur vers la dite recette.
+		redirect();
+		// on a exit
+	}
+
+	// Il aurait fallu POSTer l'id_country.
+	// FIX IT
+	$query1 = mysql_query("SELECT * FROM country WHERE name_en='$_POST[country]'");
+	$res2   = mysql_fetch_assoc($query1);
+
+	$reussi = insertRecipe(
+		$_POST['name'],
+		$_POST['description'],
+		$res2['id_country'],
+		$_POST['difficulty'],
+		$_POST['serves'],
+		$_POST['prepDuration'],
+		$_POST['cookDuration'],
+		$_POST['method'],
+		$_POST['permission'],
+		$userid
+	);
+
+	// On récupère l'ID de la recette.
+	$getid_recipe = mysql_insert_id();
+
+	// On renomme et déplace l'image correctement.
+	// FIX IT
+	if ((isset($_FILES['picture']) && ($_FILES['picture']['error'] == UPLOAD_ERR_OK))) {
+		//On fait un tableau contenant les extensions autorisées.
+		$extensionsOk = array('.PNG', '.GIF', '.JPG', '.JPEG', '.png', '.gif', '.jpg', '.jpeg');
+
+		// On récupère l'extension, donc à partir de ce qu'il y a après le '.'
+		$extension = strrchr($_FILES['picture']['name'], '.');
+
+		//Test si l'extension n'est pas dans le tableau
+		if (!in_array($extension, $extensionsOk)) {
+			echo 'You must upload a file type png, gif, jpg, jpeg';
+		} else {
+			// vérification de la taille de l'image
+			$destination = './img/recipes/';
+
+			// si il y a une image avec le même, le nom est changé grâce à rand(). Cela évite que l'image soit écrasée.
+			while (file_exists($destination.$_FILES['picture']['name'])) {
+				$_FILES['picture']['name'] = rand().$_FILES['picture']['name'];
+			}
+
+			// transfère de l'image du répertoire temporaire vers le dossier avatar
+			move_uploaded_file($_FILES['picture']['tmp_name'], './img/recipes/'.$userid._.$getid_recipe.$extension);
+
+			// met l'image uploadée en profil
+			$image = './img/recipes/'.$userid._.$getid_recipe.$extension;
+			$query = sprintf("INSERT into recipe_photos(id_recipe,path_source) VALUES('%s','%s');",
+				mysql_real_escape_string(strip_tags($getid_recipe)),
+				mysql_real_escape_string(strip_tags($image)));
+			@mysql_query($query);
+		}
+	}
+
+	// Insertion des ingrédients.
+	// FIX IT
+
+	// Il y aurait-il une meilleure manière de vérifier
+	// que toute les requettes ont été exécuter correctement?
+	if ($reussi && $query) {
 		redirect();
 	} else {
-		$query1 = mysql_query("SELECT * FROM country WHERE name_en='$_POST[country]'");
-		$res2   = mysql_fetch_assoc($query1);
-
-
-		$reussi = insertRecipe($_POST['name'], $_POST['description'], $res2['id_country'], $_POST['difficulty'], $_POST['serves'], $_POST['prepDuration'], $_POST['cookDuration'], $_POST['method'], $_POST['permission'], $userid);
-
-		//on recupere le id de la recette
-		$getid_recipe = mysql_insert_id();
-
-
-		if (!$reussi) {
-			if ($query) {
-				redirect();
-			} else {
-				$message = "<p class='error'>Please check your recipe again and submit.</p>";
-			}
-		}
+		$message = "<p class='error'>Please check your recipe again and submit.</p>";
 	}
 }
 
@@ -173,7 +223,7 @@ $html =
 			<select name='difficulty'>";
 
 
-$result = mysql_query("SELECT id,name_en FROM recipe_difficulty");
+$result = mysql_query("SELECT id, name_en FROM recipe_difficulty");
 
 while ($rows = mysql_fetch_assoc($result)) {
 	$html .= "<option value='$rows[id]'>$rows[name_en]</option>";
@@ -241,37 +291,6 @@ while ($ingredient = mysql_fetch_array($ingredients)) {
 }
 $html .= "<datalist id='ingredientList'>$list2</datalist>";
 
-
-if ((isset($_FILES['picture']) && ($_FILES['picture']['error'] == UPLOAD_ERR_OK))) {
-	//On fait un tableau contenant les extensions autorisées.
-	$extensionsOk = array('.PNG', '.GIF', '.JPG', '.JPEG', '.png', '.gif', '.jpg', '.jpeg');
-
-	// On récupère l'extension, donc à partir de ce qu'il y a après le '.'
-	$extension = strrchr($_FILES['picture']['name'], '.');
-
-	//Test si l'extension n'est pas dans le tableau
-	if (!in_array($extension, $extensionsOk)) {
-		echo 'You must upload a file type png, gif, jpg, jpeg';
-	} else {
-		// vérification de la taille de l'image
-		$destination = './img/recipes/';
-
-		// si il y a une image avec le même, le nom est changé grâce à rand(). Cela évite que l'image soit écrasée.
-		while (file_exists($destination.$_FILES['picture']['name'])) {
-			$_FILES['picture']['name'] = rand().$_FILES['picture']['name'];
-		}
-
-		// transfère de l'image du répertoire temporaire vers le dossier avatar
-		move_uploaded_file($_FILES['picture']['tmp_name'], './img/recipes/'.$userid._.$getid_recipe.$extension);
-
-		// met l'image uploadée en profil
-		$image = './img/recipes/'.$userid._.$getid_recipe.$extension;
-		$query = sprintf("INSERT into recipe_photos(id_recipe,path_source) VALUES('%s','%s');",
-			mysql_real_escape_string(strip_tags($getid_recipe)),
-			mysql_real_escape_string(strip_tags($image)));
-		@mysql_query($query);
-	}
-}
 
 printDocument('New Recipe');
 

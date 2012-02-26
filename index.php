@@ -1,13 +1,12 @@
 <?php
-	include 'header.php';
 
-if (isset($userid)){//si loguŽ	
- 
-// content    
+include 'header.php';
 
- }
+//si logué
+if (isset($userid)) {
+    // content
+}
 
-printDocument('Digeat Homepage');
+printDocument('Homepage');
 
-	
 ?>
