@@ -3,14 +3,99 @@
 /**************Fonctions****************************/
 
 /**************************************************/
+function leftboxContent() {
+	if (isset($_SESSION['id'])) {
+		if (isset($_GET['id_user']) ) { 
+			// Requête qui récupère toutes les coordonnées du client
+			$userinfos=retrieve_user_infos($_GET['id_user']);
+			$content = "<img src= '$userinfos[avatar]' width='170px' height='200px' />";
 
+    		return $content;
+		}else{
+		// Requête qui récupère toutes les coordonnées du client
+			global $userid;
+			$userinfos=retrieve_user_infos($userid);
+			$content = "<img src= '$userinfos[avatar]' width='170px' height='200px' /><a href='./image.php'><img src= './img/templates/camera.png' width='50px' height='50px'/></a>Change my avatar";
+			return $content;
+		}
+    }else if (isset($_GET['id_user'])) { 
+		// Requête qui récupère toutes les coordonnées du client
+		$userinfos=retrieve_user_infos($_GET['id_user']);
+		$content = "<img src= '$userinfos[avatar]' width='170px' height='200px' />";
+		return $content;
+    }
+}
 
+function rightboxContent() {
+		if (isset($_SESSION['id'])) { // ATTENTION IL FAUT METTRE LES QUOTES POUR id !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			  // requete qui récupère toutes les coord du client
+			  global $userid;
 
-if (isset($userid)){	
+			  $userinfos=retrieve_user_infos($userid);
+			  
+			  $content = "<div>
+			<img src='./img/templates/friends.png' width='50px' height='50px' title='Friends'/>
+			<img src='./img/templates/messages.png' width='50px' height='50px' title='Messages'/>
+			<img src='./img/templates/notifications.png' width='50px' height='50px' title='Notifications'/>
+	 </div>";
+	 
+	 		$countryname = getCountryNameById($userinfos['country']);		
+	
+			 $content .= "<p>Your account information:</p>
+				<div>$userinfos[firstname] &nbsp;$userinfos[surname]</div>
+				<div>$userinfos[address]</div>
+				<div>$userinfos[city]</div>
+				<div>$countryname</div>
+				<div>$userinfos[mail]</div>
+			
+					
+			<div class='stack'>
+			<img src='img/stacks/stack.png' alt='stack'/>
+			<ul id='stack'>
+			<li><a href='objectivesform.php'><span>Objectives</span><img src='img/stacks/objectives.png' alt='My Objectives' /></a></li>
+			<li><a href='information.php'><span>Information</span><img src='img/stacks/information.png' alt='My infos' /></a></li>
+			
+			<li><a href='albums.php'><span>Albums</span><img src='img/stacks/albums.png' alt='My albums' /></a></li>
+			<li><a href='friends.php'><span>Friends</span><img src='img/stacks/myfriends.png' alt='My friends' /></a></li>	
+			<li><a href='recipes.php'><span>Recipes</span><img src='img/stacks/recipes.png' alt='My recipes' /></a></li>				
+			</ul>
+			</div>";	
 
-  $userinfos=retrieve_user_infos($userid);
-  $useraddinfos=retrieve_user_add_infos($userid);
-  $userfriends = retrieve_user_friends($userid);	
+		}else{
+		  // Afficher les formulaires pour se connecter et s'inscrire
+		  $content = "
+			<form action='./index.php?mode=logon' method='post'>
+			  <img src='./img/templates/login.png'/>
+			  <div><input type='text' name='name' placeholder='Username' required></div>
+			  <div><input type='password' name='pass' placeholder='password' required></div>
+			  <div><input type='submit' value='Submit'> <a href='./#'>Forgot your password?</a></div>
+			</form>
+		   ";
+		}
+
+		return $content;
+}
+
+function printAvatarBadgeByURL($url){
+	return '<img src="'.$url.'"  width="48" height="48" alt="avatar">';
+}
+
+function printUserBadgeById($id){
+	$ficelle = '<table style="text-align: left; " border="0" cellpadding="2" cellspacing="2" ><tr>';
+	if($user = retrieve_user_infos($id)){
+		$ficelle.='<td>'.printAvatarBadgeByURL($user['avatar']).'</td>
+		<td>&nbsp;'.$user['firstname'].' '.$user['surname'].'<br/>
+		&nbsp;<a href="#" >Add to contacts</a></td></tr></table>';
+		return $ficelle;
+	}
+	return '';
+}
+
+if (isConnected($userid)){	
+
+	$userinfos=retrieve_user_infos($userid);
+	$useraddinfos=retrieve_user_add_infos($userid);
+	$userfriends = retrieve_user_friends($userid);	
 	
 /**************Friends Request****************************/ 
  //selection des id_group reliees au user
@@ -31,7 +116,7 @@ if (isset($userid)){
 	<p class='error'>
 	<a href='profile.php?id_user=$friend[id]'>$friend[username]<img src='$friend[avatar]' width='100px height='100px''/></a> wants to be your friend 
 	
-<a href='#' onclick='confirmFriends(event,$row[id_group],$userid)'>Accept</a> 
+	<a href='#' onclick='confirmFriends(event,$row[id_group],$userid)'>Accept</a> 
 	
 	<script>
 	  function confirmFriends(e, idgroup, id_user, username) {
@@ -80,17 +165,17 @@ if (isset($userid)){
 			}
 		}
 	
-	}	
+	}
 	
 	
 /****************************************************/	
  
  //Affichage des amis
  
- $html= "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
+	$html= "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
   
-  <div id='content'>
-  <div id='dock'>
+	<div id='content'>
+	<div id='dock'>
 		<div class='dock-container'>
 			
 			<a class='dock-item' href='newmessage.php'><span>Messages</span><img src='img/dock/email.png' alt='messages' /></a> 
@@ -104,31 +189,24 @@ if (isset($userid)){
 	</div>
   	</div>
  
- <h2>My Friends</h2>
-  ";
+	<h2>My Contacts</h2>";
 	
-	$query = "SELECT id FROM groups WHERE name='friends' AND id_creator='$userid'";
-    $result = mysql_query($query);
-    while($row = mysql_fetch_assoc($result)){
-    
-    $query2 = "SELECT id_user FROM groups_relations WHERE id_group='$row[id]' AND approval='1'";
-    $result2 = mysql_query($query2);
-    while($row1 = mysql_fetch_assoc($result2)){
-    	
-    $query3 = "SELECT * FROM users WHERE id=$row1[id_user]";	
-    $result3 = mysql_query($query3);
-    while($row2 = mysql_fetch_assoc($result3)){
-    $html.=	"
-    <div><a href='./profile.php?id_user=$row2[id]'><img src='$row2[avatar]' width='100px' height='100px' alt='$row2[username]' title='$row2[username]'/><br/>$row2[firstname] $row2[surname]($row2[username])</a></div>
-    ";
-    		}	
-    	}
- 	 }
- 	
- 
-     
-
- }
-
+	
+	/////////////  AFFICHAGE DES CONTACTS
+	$groupsnames;
+	$groupsids = getAllGroupsByUserId($userid);
+	foreach($groupsids AS $groupid){
+		$html.= '<br/><h4>'.getGroupNameById($groupid).'</h4>';
+		$users = getUserIdByGroup($groupid);
+		if($users){
+			foreach($users AS $user){
+				$html.= printUserBadgeById($user).'<br/>';				
+			}			
+		}else{
+			$html.='No contact<br/>';
+		}
+	}
+	/////////////  AFFICHAGE DES CONTACTS FIN 
+}
 	printDocument('My friends');
 ?>
