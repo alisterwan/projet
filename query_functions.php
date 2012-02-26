@@ -290,7 +290,7 @@ function getCountryNameById($id){
 }
 
 function getGroupNameById($id){
-	$sql='SELECT name FROM groups WHERE id_creator='.$id;
+	$sql='SELECT name FROM groups WHERE id='.$id;
 	$query = mysql_query($sql);
 	
 	if($query){
@@ -298,6 +298,21 @@ function getGroupNameById($id){
 		return $result['name'];
 	}
 	return '';
+}
+
+function getUserIdByGroup($id){
+	$query = sprintf("SELECT * FROM groups_relations WHERE id_group='%s'",	mysql_real_escape_string($id));
+	$result = mysql_query($query);
+
+	if (!$result || mysql_num_rows($result)<=0) {
+		return false;
+	}else{
+		$reponse;
+		while ($row = mysql_fetch_assoc($result)) {
+			$reponse[]=$row['id_user'];
+		}
+		return $reponse;
+	}
 }
 
 //////////////////////////////// FIN GET DES TEXTS BY ID /////////////////////////////////////////////////////////////
