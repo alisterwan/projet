@@ -1,5 +1,5 @@
 <?php
-	include 'header.php';
+include './header.php';
 
 function leftboxContent(){
 		 // ATTENTION IL FAUT METTRE LES QUOTES POUR id !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -50,13 +50,6 @@ function leftboxContent(){
 	return $content;
 }
 
+printDocument('Homepage');
 
-//si logué
-if (isset($userid)) {
-    // content
-}
-
-printDocument('Digeat Homepage');
-
-	
 ?>
