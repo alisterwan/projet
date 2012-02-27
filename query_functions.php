@@ -271,6 +271,14 @@ function checkPermission($idgroup,$iduser){
 	return false;
 }
 
+function belongsToUserGroups($currentUser, $user){
+	$groups = getAllGroupsByUserId($user);// récupère les groups de user
+	if($groups){
+		return checkPermission($groups, $currentUser);
+	}
+	return false; // user n'a aucun groupe
+}
+
 function isConnected($userid){
 	return isset($userid);
 }
