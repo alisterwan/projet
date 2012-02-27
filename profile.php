@@ -74,7 +74,7 @@ function printProfileBanner(){
 }
 
 function printAddNewFriend($userid){
-	return "<a href='#'><img src='./img/templates/follow.png' width='113px' height='42px' /></a>
+	return "
 		  <a href='#' id='removeing' onclick='addFriends(event,$userid,$_GET[id_user])'><img src='./img/templates/addfriends.png' width='113px' height='42px' /></a>
 		 
 		 <script>
@@ -97,6 +97,32 @@ function printAddNewFriend($userid){
 		}
 		</script>";	
 }
+
+
+function printAddNewSubscriber($userid){
+	return "<a href='#' onclick='addSubscribers(event,$userid,$_GET[id_user])'><img src='./img/templates/follow.png' width='113px' height='42px' /></a>
+	
+		 <script>
+		  function addSubscribers(e, id_user, id_friend) {
+		  var a, url, x;
+		  e.preventDefault();
+		  a = e.target.parentNode;
+		  a.parentNode.hidden = true;
+		  url = './addFriends.php?id_user='+ id_user +'&id_friend=' + id_friend;
+		  x = new XMLHttpRequest();
+		  x.open('GET', url, true);
+		  x.onload = function(e) {
+			a.innerHTML = this.responseText;
+			if(this.responseText !== 'success') {
+			  a.innerHTML = this.responseText;
+			  a.parentNode.hidden = false;
+			}
+		  };
+		  x.send();
+		}
+		</script>";	
+}
+
 
 if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 

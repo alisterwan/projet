@@ -95,25 +95,34 @@ function redirect() {
 
 
 
-function insertRecipe($name, $description, $country, $difficulty, $serves, $preparation, $cook, $instructions, $approval, $id_user) {
-	$query = sprintf("INSERT INTO recipes(name_en, description_en, country_origin, difficulty, num_serves, duration_preparation, duration_cook, preparation_en, approval, id_user) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');",
-		mysql_real_escape_string(strip_tags($name)),
-		mysql_real_escape_string(strip_tags($description)),
-		mysql_real_escape_string(strip_tags($country)),
-		mysql_real_escape_string(strip_tags($difficulty)),
-		mysql_real_escape_string(strip_tags($serves)),
-		mysql_real_escape_string(strip_tags($preparation)),
-		mysql_real_escape_string(strip_tags($cook)),
-		mysql_real_escape_string(strip_tags($instructions)),
-		mysql_real_escape_string(strip_tags($approval)),
-		mysql_real_escape_string(strip_tags($id_user)));
-	$result = @mysql_query($query);
+function insertRecipe() {
+	global $userid;
 
-	if ($result) {
-		return $result;
-	} else {
+	// On récupère l'ID du pays POSTé.
+	$country = mysql_fetch_assoc(mysql_query("SELECT id_country FROM country WHERE name_en='$_POST[country]'"));
+	if (!$country) {
+		// On met France comme pays par défaut si le pays donné n'existe pas.
+		$country['id_country'] = 67;
+	}
+
+	$query = sprintf("INSERT INTO recipes(name_en, description_en, country_origin, difficulty, num_serves, duration_preparation, duration_cook, preparation_en, approval, id_user) VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');",
+		mysql_real_escape_string(strip_tags($_POST['name'])),
+		mysql_real_escape_string(strip_tags($_POST['description'])),
+		mysql_real_escape_string(strip_tags($country['id_country'])),
+		mysql_real_escape_string(strip_tags($_POST['difficulty'])),
+		mysql_real_escape_string(strip_tags($_POST['serves'])),
+		mysql_real_escape_string(strip_tags($_POST['prepDuration'])),
+		mysql_real_escape_string(strip_tags($_POST['cookDuration'])),
+		mysql_real_escape_string(strip_tags($_POST['method'])),
+		mysql_real_escape_string(strip_tags($_POST['permission'])),
+		mysql_real_escape_string(strip_tags($userid)));
+	$result = mysql_query($query);
+
+	if (!$result) {
 		die('Error: '.mysql_error());
 	}
+
+	return true;
 }
 
 
@@ -145,23 +154,7 @@ if ($_POST) {
 		// On a exit.
 	}
 
-	// On récupère l'ID du pays POSTé.
-	// Et si le pays n'existe pas dans la BDD ?
-	// FIX IT
-	$country = mysql_fetch_assoc(mysql_query("SELECT id_country FROM country WHERE name_en='$_POST[country]'"));
-
-	$reussi = insertRecipe(
-		$_POST['name'],
-		$_POST['description'],
-		$country['id_country'],
-		$_POST['difficulty'],
-		$_POST['serves'],
-		$_POST['prepDuration'],
-		$_POST['cookDuration'],
-		$_POST['method'],
-		$_POST['permission'],
-		$userid
-	);
+	$reussi = insertRecipe();
 
 	// On récupère l'ID de la recette.
 	$id_recipe = mysql_insert_id();
