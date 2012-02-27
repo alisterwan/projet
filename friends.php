@@ -220,7 +220,7 @@ if (isConnected($userid) && !isset($_GET['id'])){
 	
 	/////////////  AFFICHAGE DES CONTACTS
 	$html.= printContactsByUserId($userid);
-	/////////////  AFFICHAGE DES CONTACTS FIN 
+	////////////  AFFICHAGE DES CONTACTS FIN 
 	
 	
 }elseif (isConnected($userid) && isset($_GET['id'])){ // Registered STALKER
