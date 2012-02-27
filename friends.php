@@ -85,13 +85,39 @@ function printUserBadgeById($id){
 	if($user = retrieve_user_infos($id)){
 		$ficelle.='<td>'.printAvatarBadgeByURL($user['avatar']).'</td>
 		<td>&nbsp;'.$user['firstname'].' '.$user['surname'].'<br/>
-		&nbsp;<a href="#" >Add to contacts</a></td></tr></table>';
+		&nbsp;';
+		global $userid;
+		if(!belongsToUserGroups($userid, $user['id'])) {
+			$ficelle.= '<a href="#" >Add to contacts</a></td></tr></table>';
+		}else{
+			$ficelle.='</td></tr></table>';
+		}
 		return $ficelle;
 	}
 	return '';
 }
 
-if (isConnected($userid)){	
+function printContactsByUserId($id){
+	$groupsnames;
+	$groupsids = getAllGroupsByUserId($id);
+	$ficelle='';
+	foreach($groupsids AS $groupid){
+		$ficelle.= '<br/><h4>'.getGroupNameById($groupid).'</h4>';
+		$users = getUserIdByGroup($groupid);
+		if($users){
+			foreach($users AS $user){
+				$ficelle.= printUserBadgeById($user).'<br/>';				
+			}			
+		}else{
+			$ficelle.='No contact<br/>';
+		}
+	}
+	return $ficelle;
+}
+
+////////////////////////////////////////////////////END FUNCTIONS////////////////////////////////////////////////////////////////
+
+if (isConnected($userid) && !isset($_GET['id'])){	
 
 	$userinfos=retrieve_user_infos($userid);
 	$useraddinfos=retrieve_user_add_infos($userid);
@@ -187,26 +213,21 @@ if (isConnected($userid)){
 		
 		</div>
 	</div>
-  	</div>
+  	</div>";
  
-	<h2>My Contacts</h2>";
+	$html.="<h3>My Contacts</h3>";
 	
 	
 	/////////////  AFFICHAGE DES CONTACTS
-	$groupsnames;
-	$groupsids = getAllGroupsByUserId($userid);
-	foreach($groupsids AS $groupid){
-		$html.= '<br/><h4>'.getGroupNameById($groupid).'</h4>';
-		$users = getUserIdByGroup($groupid);
-		if($users){
-			foreach($users AS $user){
-				$html.= printUserBadgeById($user).'<br/>';				
-			}			
-		}else{
-			$html.='No contact<br/>';
-		}
-	}
+	$html.= printContactsByUserId($userid);
 	/////////////  AFFICHAGE DES CONTACTS FIN 
+	
+	
+}elseif (isConnected($userid) && isset($_GET['id'])){ // Registered STALKER
+	$userinfos=retrieve_user_infos($_GET['id']);
+	$html= "<h1>$userinfos[firstname] $userinfos[surname]</h1>";
+	$html.="<h3>Contacts</h3>";
+	$html.= printContactsByUserId($_GET['id']);
 }
 	printDocument('My friends');
 ?>
