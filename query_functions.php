@@ -230,8 +230,8 @@ function getAllGroupsByUserId($idcreator){
 	}
 }
 
-function getGroupsByWallPostId($id){
-	$query = sprintf("SELECT * FROM wall_post_permission WHERE id_wall_post='%s'",	mysql_real_escape_string($id));
+function getAllGroupNameByUserId($idcreator){
+	$query = sprintf("SELECT name FROM groups	WHERE id_creator='%s'",	mysql_real_escape_string($idcreator));
 	$result = mysql_query($query);
 
 	if (!$result) {
@@ -239,7 +239,7 @@ function getGroupsByWallPostId($id){
 	}else{
 		$reponse;
 		while ($row = mysql_fetch_assoc($result)) {
-			$reponse[]=$row['id'];
+			$reponse[]=$row['name'];
 		}
 		return $reponse;
 	}
@@ -321,6 +321,14 @@ function getUserIdByGroup($id){
 		}
 		return $reponse;
 	}
+}
+
+function getFirstnameSurnameByUserId($id){
+	$sql = 'SELECT firstname, surname FROM users WHERE id_user='.$id;
+	$query = mysql_query($sql);
+	if(!$query) return false;
+	$result = mysql_fetch_assoc($query);
+	return $result['firstname'].' '.$result['surname'];
 }
 
 //////////////////////////////// FIN GET DES TEXTS BY ID /////////////////////////////////////////////////////////////
