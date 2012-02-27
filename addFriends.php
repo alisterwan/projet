@@ -10,7 +10,7 @@
 	}
 	
 
-	$res2 = @mysql_query("INSERT INTO groups_relations(id_group,id_user,approval) VALUES ($row[id],$_GET[id_friend],0)");
+	$res2 = @mysql_query("INSERT INTO groups_relations(id_group,id_user,approval,status) VALUES ($row[id],$_GET[id_friend],0,0)");
 		
 		if(!$res2)
 			die("Error: ".mysql_error());

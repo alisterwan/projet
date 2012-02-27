@@ -6,7 +6,8 @@
   $approval = 1;
  
   //met a jour dans un sens la requete
-  $query = sprintf("UPDATE groups_relations SET approval='%s' WHERE id_group='$_GET[idgroup]' AND id_user='$_GET[id_user]';",
+  $query = sprintf("UPDATE groups_relations SET approval='%s',status='%s' WHERE id_group='$_GET[idgroup]' AND id_user='$_GET[id_user]';",
+		mysql_real_escape_string(strip_tags($approval))
 		mysql_real_escape_string(strip_tags($approval)));
 		$res = @mysql_query($query);
 		
@@ -34,7 +35,7 @@
   
   
   			
-		$query2 ="INSERT INTO groups_relations(id_group,id_user,approval) VALUES ($row2[id],$row[id_creator],1)";
+		$query2 ="INSERT INTO groups_relations(id_group,id_user,approval,status) VALUES ($row2[id],$row[id_creator],1,1)";
 		
 		$res2 = @mysql_query($query2);
 		
