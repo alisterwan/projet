@@ -126,8 +126,31 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 			$vargroup = getAllGroupsByUserId($userid);
 			$var = checkPermission($vargroup,$_GET['id_user']);
 		   
-		    if(!$var) $html.= printAddNewFriend($userid);
-		
+		    if(!$var){
+				//$html.= printAddNewFriend($userid);
+				$html.="<a href='#'><img src='./img/templates/follow.png' width='113px' height='42px' /></a>
+				  <a href='#' id='removeing' onclick='addFriends(event,$userid,$_GET[id_user])'><img src='./img/templates/addfriends.png' width='113px' height='42px' /></a>
+				 
+				 <script>
+				  function addFriends(e, id_user, id_friend) {
+				  var a, url, x;
+				  e.preventDefault();
+				  a = e.target.parentNode;
+				  a.parentNode.hidden = true;
+				  url = './addFriends.php?id_user='+ id_user +'&id_friend=' + id_friend;
+				  x = new XMLHttpRequest();
+				  x.open('GET', url, true);
+				  x.onload = function(e) {
+					a.innerHTML = this.responseText;
+					if(this.responseText !== 'success') {
+					  a.innerHTML = this.responseText;
+					  a.parentNode.hidden = false;
+					}
+				  };
+				  x.send();
+				}
+				</script>";
+			}		
 		}else{ // "visiteur", content available 	 
 			$html.= printInfoMember($_GET['id_user']);
 			$vargroup = getAllGroupsByUserId($userid);
