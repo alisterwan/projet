@@ -82,19 +82,13 @@
 	$html = "<div class='form'>";
 
 	if ($_POST) { 
-
 		$firstname = $_POST['firstname'];
 		$surname   = $_POST['surname'];
 		$sex       = $_POST['sex'];
-		$address   = $_POST['address'];
-		$city      = $_POST['city'];
-		$country   = $_POST['country'];
 		$user      = $_POST['username'];
 		$pass      = $_POST['password'];
 		$email     = $_POST['email'];
 		
-		
-
 		// On vérifie si le mdp est est de 8 charactères minimum et l'utilisateur l'a bien saisie.
 		if (strlen($pass)<6 || $pass != $_POST['passcheck']) {
 			$message = "<p class='error'>Password invalid or too short.</p>";
@@ -139,7 +133,7 @@
 			
 			else
 			$lastid = mysql_insert_id();
-			$namegroup = "Friends";
+			$namegroup = "friends";
 			
 			$res2 = createDefaultGroup($lastid,$namegroup);
 			if (!$res2) {
