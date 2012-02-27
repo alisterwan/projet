@@ -139,7 +139,7 @@
 			
 			else
 			$lastid = mysql_insert_id();
-			$namegroup = "friends";
+			$namegroup = "Friends";
 			
 			$res2 = createDefaultGroup($lastid,$namegroup);
 			if (!$res2) {
