@@ -26,16 +26,16 @@ function leftboxContent() {
 		// Requête qui récupère toutes les coordonnées du client
 			global $userid;
 			$userinfos=retrieve_user_infos($userid);
-			$content = "<img src= '$userinfos[avatar]' width='170px' height='200px' /><a href='./image.php'><img src= './img/templates/camera.png' width='50px' height='50px'/></a>Change my avatar";
+			$content = "<img src= '$userinfos[avatar]' width='170px' height='200px'><a href='./image.php'><img src= './img/templates/camera.png' width='50px' height='50px'></a>Change my avatar";
 			$content.="
 			<div class='stack'>
-			<img src='img/stacks/stack.png' alt='stack'/>
+			<img src='img/stacks/stack.png' alt='stack'>
 			<ul id='stack'>
-				<li><a href='objectivesform.php'><span>Objectives</span><img src='img/stacks/objectives.png' alt='My Objectives' /></a></li>
-				<li><a href='information.php'><span>Information</span><img src='img/stacks/information.png' alt='My infos' /></a></li>			
-				<li><a href='albums.php'><span>Albums</span><img src='img/stacks/albums.png' alt='My albums' /></a></li>
-				<li><a href='friends.php'><span>Friends</span><img src='img/stacks/myfriends.png' alt='My friends' /></a></li>	
-				<li><a href='recipes.php'><span>Recipes</span><img src='img/stacks/recipes.png' alt='My recipes' /></a></li>				
+				<li><a href='objectivesform.php'><span>Objectives</span><img src='img/stacks/objectives.png' alt='My Objectives'></a></li>
+				<li><a href='information.php'><span>Information</span><img src='img/stacks/information.png' alt='My infos'></a></li>			
+				<li><a href='albums.php'><span>Albums</span><img src='img/stacks/albums.png' alt='My albums'></a></li>
+				<li><a href='friends.php'><span>Friends</span><img src='img/stacks/myfriends.png' alt='My friends'></a></li>	
+				<li><a href='recipes.php'><span>Recipes</span><img src='img/stacks/recipes.png' alt='My recipes'></a></li>				
 			</ul>
 			</div>";
 			return $content;
@@ -64,10 +64,10 @@ function printProfileBanner(){
 	return "<div id='content'>
 		<div id='dock'>
 			<div class='dock-container'>				
-				<a class='dock-item' href='newmessage.php'><span>Messages</span><img src='img/dock/email.png' alt='messages' /></a> 			
-				<a class='dock-item' href='groups.php'><span>Groups</span><img src='img/dock/portfolio.png' alt='history' /></a> 			
-				<a class='dock-item' href='followers.php'><span>Followers</span><img src='img/dock/link.png' alt='links' /></a> 
-				<a class='dock-item' href='#'><span>RSS</span><img src='img/dock/rss.png' alt='rss' /></a> 			
+				<a class='dock-item' href='newmessage.php'><span>Messages</span><img src='img/dock/email.png' alt='messages'></a> 			
+				<a class='dock-item' href='groups.php'><span>Groups</span><img src='img/dock/portfolio.png' alt='history'></a> 			
+				<a class='dock-item' href='followers.php'><span>Followers</span><img src='img/dock/link.png' alt='links'></a> 
+				<a class='dock-item' href='#'><span>RSS</span><img src='img/dock/rss.png' alt='rss'></a> 			
 			</div>
 		</div>
 		</div>";
@@ -75,7 +75,7 @@ function printProfileBanner(){
 
 function printAddNewFriend($userid){
 	return "
-		  <a href='#' id='removeing' onclick='addFriends(event,$userid,$_GET[id_user])'><img src='./img/templates/addfriends.png' width='113px' height='42px' /></a>
+		  <a href='#' id='removeing' onclick='addFriends(event,$userid,$_GET[id_user])'><img src='./img/templates/addfriends.png' width='113px' height='42px'></a>
 		 
 		 <script>
 		  function addFriends(e, id_user, id_friend) {
@@ -100,7 +100,7 @@ function printAddNewFriend($userid){
 
 
 function printAddNewSubscriber($userid){
-	return "<a href='#' onclick='addSubscribers(event,$userid,$_GET[id_user])'><img src='./img/templates/follow.png' width='113px' height='42px' /></a>
+	return "<a href='#' onclick='addSubscribers(event,$userid,$_GET[id_user])'><img src='./img/templates/follow.png' width='113px' height='42px'></a>
 	
 		 <script>
 		  function addSubscribers(e, id_user, id_friend) {
@@ -108,7 +108,7 @@ function printAddNewSubscriber($userid){
 		  e.preventDefault();
 		  a = e.target.parentNode;
 		  a.parentNode.hidden = true;
-		  url = './addFriends.php?id_user='+ id_user +'&id_friend=' + id_friend;
+		  url = './addSubscribers.php?id_user='+ id_user +'&id_friend=' + id_friend;
 		  x = new XMLHttpRequest();
 		  x.open('GET', url, true);
 		  x.onload = function(e) {
@@ -153,29 +153,9 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 			$var = checkPermission($vargroup,$_GET['id_user']);
 		   
 		    if(!$var){
-				//$html.= printAddNewFriend($userid);
-				$html.="<a href='#'><img src='./img/templates/follow.png' width='113px' height='42px' /></a>
-				  <a href='#' id='removeing' onclick='addFriends(event,$userid,$_GET[id_user])'><img src='./img/templates/addfriends.png' width='113px' height='42px' /></a>
-				 
-				 <script>
-				  function addFriends(e, id_user, id_friend) {
-				  var a, url, x;
-				  e.preventDefault();
-				  a = e.target.parentNode;
-				  a.parentNode.hidden = true;
-				  url = './addFriends.php?id_user='+ id_user +'&id_friend=' + id_friend;
-				  x = new XMLHttpRequest();
-				  x.open('GET', url, true);
-				  x.onload = function(e) {
-					a.innerHTML = this.responseText;
-					if(this.responseText !== 'success') {
-					  a.innerHTML = this.responseText;
-					  a.parentNode.hidden = false;
-					}
-				  };
-				  x.send();
-				}
-				</script>";
+				$html.= printAddNewSubscriber($userid);
+				$html.= printAddNewFriend($userid);
+				
 			}		
 		}else{ // "visiteur", content available 	 
 			$html.= printInfoMember($_GET['id_user']);
