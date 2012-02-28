@@ -133,13 +133,18 @@
 			
 			else
 			$lastid = mysql_insert_id();
-			$namegroup = "friends";
+			$namegroup = "Friends";
+			$group2 = "Followers";
 			
 			$res2 = createDefaultGroup($lastid,$namegroup);
 			if (!$res2) {
 				$message = "<p class='error'>Cannot create group.</p>";
 			}
 			
+			$res3 = createDefaultGroup($lastid,$group2);
+			if (!$res3) {
+				$message = "<p class='error'>Cannot create group.</p>";
+			}
 			
 			//$headers ='From: "digeat"<digeat@gmail.com>'."\n";
 			//$headers .='Content-Type: text/plain; charset="iso-8859-1"'."\n";

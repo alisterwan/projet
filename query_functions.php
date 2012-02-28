@@ -331,4 +331,8 @@ function getFirstnameSurnameByUserId($id){
 	return $result['firstname'].' '.$result['surname'];
 }
 
+function printLinkToProfileByUserId($id){
+	return '<a href="profile.php?id='.$id.'" target="_blank" >'.getFirstnameSurnameByUserId($id).'</a>';
+}
+
 //////////////////////////////// FIN GET DES TEXTS BY ID /////////////////////////////////////////////////////////////
