@@ -9,10 +9,22 @@ function printNotification($iduser){
   $query = mysql_query($sql);
 
   if(!$query) die("Error: ".mysql_error());
-
-  $row = mysql_fetch_assoc($query));
-	
-  return $row;	
+  
+  $html = "<ol>";
+  	
+  while($row = mysql_fetch_assoc($query)){
+  
+  $html. = "<li>
+  <span>id Groupe: $row[id_group]</span>
+  <span>id User: $row[id_user]</span>
+  <span>Approval $row[approval]</span>
+  </li>"
+  
+  }
+			
+  $html. = "</ol>";	
+		
+  return $html;	
 }
 
 ?>
