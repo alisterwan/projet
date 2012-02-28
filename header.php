@@ -64,9 +64,9 @@ function i8n($string, $table, $id) {
 
 
 
-function printDocument($title = "DigEat"){
+function printDocument($title = 'DigEat') {
 	global $message, $html, $friend, $notifications;
-	$title = $title == "DigEat" ? $title : "DigEat - $title";
+	$title = $title == 'DigEat' ? $title : "DigEat - $title";
 	echo "
 		<!doctype html>
 		<html lang='en'>
@@ -79,107 +79,72 @@ function printDocument($title = "DigEat"){
 			<link href='http://fonts.googleapis.com/css?family=Clara' rel='stylesheet'>
 			<link rel='stylesheet' type='text/css' media='screen' href='css/all-examples.css'>
 			<link href='./css/stylesheet.css' rel='stylesheet'>
-			
-			<script type='text/javascript' src='js/MooTools/mootools.js'></script>
-			<script type='text/javascript' src='js/MenuMatic/MenuMatic.js'></script>
-			<link rel='stylesheet' type='text/css' href='js/MenuMatic/MenuMatic_myNavigationMenu.css' />
-			
-			<script type='text/javascript' src='jsdate/TSWBrowserDetect.js'></script>
-			<script type='text/javascript' src='jsdate/TSWUtils.js'></script>
-			<script type='text/javascript' src='jsdate/TSWDateAndTime.js'></script>
-			<script type='text/javascript' src='jsdate/TSWFormCalendar.js'></script>
-			<link rel='stylesheet' type='text/css' href='jsdate/TSWFormCalendar_myFormCalendar.css' />
-			
-			
-			
+
+			<script src='js/MooTools/mootools.js'></script>
+			<script src='js/MenuMatic/MenuMatic.js'></script>
+			<link rel='stylesheet' type='text/css' href='js/MenuMatic/MenuMatic_myNavigationMenu.css'>
+
+			<script src='jsdate/TSWBrowserDetect.js'></script>
+			<script src='jsdate/TSWUtils.js'></script>
+			<script src='jsdate/TSWDateAndTime.js'></script>
+			<script src='jsdate/TSWFormCalendar.js'></script>
+			<link rel='stylesheet' type='text/css' href='jsdate/TSWFormCalendar_myFormCalendar.css'>
+
 			<script type='text/javascript' src='js/jquery.js'></script>
-		
-		
-		
-			<script type='text/javascript' src='js/TSWAccordion.js'></script>
-			<script type='text/javascript' src='js/TSWDomUtils.js'></script>
+
+			<script src='js/TSWAccordion.js'></script>
+			<script src='js/TSWDomUtils.js'></script>
 			<link rel='stylesheet' type='text/css' href='js/TSWAccordion.css' />
-			
-			<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
-			<script type='text/javascript' src='js/stack-1.js'></script>
-			
-			<script type='text/javascript' src='js/fisheye-iutil.min.js'></script>
-			<script type='text/javascript' src='js/dock-example1.js'></script>
-			
+
+			<script src='js/stack-1.js'></script>
+
+			<script src='js/fisheye-iutil.min.js'></script>
+			<script src='js/dock-example1.js'></script>
+
 			<script src='js/modernizr.custom.65662.js'></script>
 			<script src='js-webshim/minified/polyfiller.js'></script>
 			<script>$.webshims.polyfill();</script>
-			
-			<!--<script type='text/javascript' src='js/jquery.reveal.js'></script> 
-			
-			<script type='text/javascript'>
 
-		var nbInput = 0;
-		
-		function addIngredient(){
-		var nbChampsAjout = document.getElementById('Ingredients').value;
-		var div = document.getElementById('addIng');
-		if(nbChampsAjout <= 0){alert('Please tell us how many ingredients do you want to add');}
-		else{
-				nbInput++;
-				
-				label = document.createElement('div');
-				label.setAttribute(\"style\",\"margin-bottom: 10px\");
-				text = document.createTextNode('Ingredient ' +nbInput+':');
-				label.appendChild(text);				
-				input = document.createElement('input');
-				input.setAttribute(\"type\",\"text\");
-				input.setAttribute(\"name\",\"ing\"+nbInput);
-				
-				input.setAttribute(\"list\",\"ingredientList\");
-				
-				label.appendChild(input);
-		
-				div.appendChild(label);	
-			}
- 			document.getElementById('addIng').innerHTML;
- 
-		}
-		</script> -->
-			
-			
+			<script>
+				function updateNotifications() {
+					var d = document;
+					setTimeout(updateNotifications, 1000);
+				}
+			</script>
 		</head>
 		<body>
 			<header>
 				<div id='header'>
 					<a href='./index.php' id='logo'>DigEat</a>
 					".navContent()."
+					<div id='notifications'></div>
+					<script>updateNotifications()</script>
 				</div>
-			</header><div id='body' class='clearfix'>";
-	
-	if(function_exists('leftboxContent')){ // Displays leftBox if exists	
-		echo "<div id='leftbox' class='panel'>
-			".leftboxContent()."</div>";
+			</header>
+			<div id='body' class='clearfix'>";
+
+	if (function_exists('leftboxContent')) {
+		// Displays leftBox if exists
+		echo "<div id='leftbox' class='panel'>".leftboxContent()."</div>";
 	}
-	
-	echo "<div id='content' class='panel'>
-	$message
-	$html
-	$friend
-	$notifications
-	</div>";
-			
-	if(function_exists('rightboxContent')){ // Displays rightBox if exists	
-		
-		echo "<div id='rightbox' class='panel'>".rightboxContent()."</div></body>
-		</html>";
-	}else{
-		echo '</html>';
+
+	echo "<div id='content' class='panel'> $message $html $friend $notifications </div>";
+
+	if (function_exists('rightboxContent')) {
+		// Displays rightBox if exists
+		echo "<div id='rightbox' class='panel'>".rightboxContent()."</div>";
 	}
- }
+
+	echo '</div></body></html>';
+}
 
 
-function navContent(){
+function navContent() {
     if (isset($_SESSION['id'])) { // ATTENTION IL FAUT METTRE LES QUOTES POUR id !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       // Requête qui récupère toutes les coordonnées du client
 
       $content = "
-      
+
       	 <nav>
    	<ul id='myNavigationMenu'>
 		<li><a href='./index.php'>Home</a></li>
@@ -205,21 +170,21 @@ function navContent(){
 	</ul>
 	<!-- Create a MenuMatic Instance -->
 	<script type='text/javascript' >
-		window.addEvent('load', function() {			
+		window.addEvent('load', function() {
 			var myMenu = new MenuMatic({
 				id: 'myNavigationMenu',
 				subMenusContainerId: 'myNavigationMenu_menuContainer',
 				orientation: 'horizontal',
-				effect: 'slide & fade', 
-				duration: 800, 
+				effect: 'slide & fade',
+				duration: 800,
 				hideDelay: 1000,
 				opacity: 100});
-		});		
+		});
 	</script>
-	 
+
         </nav>";
     }else{
-	$content = " 
+	$content = "
 	<nav>
 	<ul id='myNavigationMenu'>
 		<li><a href='./index.php'>Home</a></li>
@@ -230,20 +195,20 @@ function navContent(){
 	</ul>
 	<!-- Create a MenuMatic Instance -->
 	<script type='text/javascript' >
-		window.addEvent('load', function() {			
+		window.addEvent('load', function() {
 			var myMenu = new MenuMatic({
 				id: 'myNavigationMenu',
 				subMenusContainerId: 'myNavigationMenu_menuContainer',
 				orientation: 'horizontal',
-				effect: 'slide & fade', 
-				duration: 800, 
+				effect: 'slide & fade',
+				duration: 800,
 				hideDelay: 1000,
 				opacity: 100});
-		});		
+		});
 	</script>
 	 </nav>";
     }
-	
+
     return $content;
 }
 ?>
