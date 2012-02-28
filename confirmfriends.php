@@ -3,12 +3,8 @@
   header('Content-type: text/plain');
 
 
-  $approval = 1;
- 
   //met a jour dans un sens la requete
-  $query = sprintf("UPDATE groups_relations SET approval='%s',status='%s' WHERE id_group='$_GET[idgroup]' AND id_user='$_GET[id_user]';",
-		mysql_real_escape_string(strip_tags($approval))
-		mysql_real_escape_string(strip_tags($approval)));
+  $query = sprintf("UPDATE groups_relations SET approval='1', status='1' WHERE id_group='$_GET[idgroup]' AND id_user='$_GET[id_user]'");
 		$res = @mysql_query($query);
 		
 		if(!$res){
