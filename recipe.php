@@ -1,36 +1,32 @@
-<?php
-  include './header.php';
+<?php include 'header.php';
     
-
 function retrieve_recipe_infos($id){ // prend en paramètre l'id de l'user, soit $_SESSION['id']
 	$sql='SELECT name_en,description_en,country_origin,difficulty,num_serves,duration_preparation,duration_cook,preparation_en FROM recipes WHERE id='.$id;
 	$query=mysql_query($sql);
 	$verif = mysql_num_rows($query);
 	
 	if ($verif > 0){
-	return $result=mysql_fetch_assoc($query);
+		return $result=mysql_fetch_assoc($query);
 	}
 	return false;
-  }
-
-
-
+}
+  
 if (isset($userid)){ // vérification si logué ou pas
 
   $userinfos=retrieve_user_infos($userid);
   
-   $i = retrieve_recipe_infos($_GET[id]);
+   $i = retrieve_recipe_infos($_GET['id']);
    
   
    	$query21 = mysql_query("SELECT * FROM country WHERE id_country=$i[country_origin]");
   	$res2 = mysql_fetch_assoc($query21);	
-  	$i[country_origin]=$res2[name_en];	
+  	$i['country_origin']=$res2['name_en'];	
   
    $query11 = "SELECT name_en FROM recipe_difficulty WHERE id=$i[difficulty]";
    $res11 = mysql_query($query11); 
    $row = mysql_fetch_assoc($res11); 
   
-   $i[difficulty]= $row[name_en];
+   $i['difficulty']= $row['name_en'];
    
    
    
@@ -101,7 +97,7 @@ if (isset($userid)){ // vérification si logué ou pas
 	
 	//selection des ingredients reliees a la recette
 	$query = sprintf("SELECT id_ingredient FROM recipe_ingredients WHERE id_recipe='%s'",
-	mysql_real_escape_string($_GET[id])); 	
+	mysql_real_escape_string($_GET['id'])); 	
 	$result = mysql_query($query);	
 	
 	while($row=mysql_fetch_row($result)) {
@@ -113,7 +109,7 @@ if (isset($userid)){ // vérification si logué ou pas
    }
    
 	$query = sprintf("SELECT path_source FROM recipe_photos WHERE id_recipe='%s'",
-	mysql_real_escape_string($_GET[id])); 	
+	mysql_real_escape_string($_GET['id'])); 	
 	$result2 = mysql_query($query);
 	
 	if(mysql_num_rows($result2) == 1){
