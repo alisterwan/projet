@@ -124,7 +124,8 @@ if (isConnected($userid) && !isset($_GET['id'])){
 	$userfriends = retrieve_user_friends($userid);	
 	
 /**************Friends Request****************************/ 
- //selection des id_group reliees au user
+    
+    //selection des id_group reliees au user
 	$query = sprintf("SELECT id_group FROM groups_relations WHERE id_user='%s' AND approval='0'",
 	mysql_real_escape_string($userid)); 	
 	$result = mysql_query($query);	
@@ -194,7 +195,62 @@ if (isConnected($userid) && !isset($_GET['id'])){
 	}
 	
 	
-/****************************************************/	
+/****************************************************/
+
+/******************Followers announcers**************/
+
+ //selection des id_group reliees au user
+	$query = sprintf("SELECT id_group FROM groups_relations WHERE id_user='%s' AND approval='1' AND status='0'",
+	mysql_real_escape_string($userid)); 	
+	$result = mysql_query($query);	
+	
+	while($row=mysql_fetch_assoc($result)) {
+   	$query1 = "SELECT id_creator FROM groups WHERE id=$row[id_group]";
+	$response = mysql_query($query1);
+	
+	while($row1 = mysql_fetch_assoc($response)){
+	$query2 = "SELECT * FROM users WHERE id=$row1[id_creator]";
+	$response2 = mysql_query($query2);
+	
+	while($friend = mysql_fetch_assoc($response2)){	
+	$message.="
+	<p class='error'>
+	<a href='profile.php?id_user=$friend[id]'>$friend[username]<img src='$friend[avatar]' width='100px height='100px'></a> is following you.
+	
+	<a href='#' onclick='confirmFollow(event,$row[id_group],$userid)'>Ok</a> 
+	
+	<script>
+	  function confirmFollow(e, idgroup, id_user, username) {
+      var a, url, x;
+      e.preventDefault();
+      a = e.target.parentNode;
+      a.parentNode.hidden = true;
+      url = './confirmFollow.php?idgroup='+ idgroup +'&id_user=' + id_user;
+      x = new XMLHttpRequest();
+      x.open('GET', url, true);
+      x.onload = function(e) {
+        a.innerHTML = this.responseText;
+        if(this.responseText !== 'success') {
+          a.innerHTML = this.responseText;
+          a.parentNode.hidden = false;
+        }
+      };
+      x.send();
+    }
+	</script>
+
+	
+	
+	
+	</p>";	
+			}
+		}
+	
+	}
+
+
+/****************************************************/
+	
  
  //Affichage des amis
  

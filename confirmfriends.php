@@ -40,12 +40,9 @@
 			}
 		
 		echo "You are now friend with $userinfos[firstname] $userinfos[surname]($userinfos[username])";
+		
 	
-
-		
-		
-			 	
- 
+	
 
   
 ?>

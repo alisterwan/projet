@@ -16,7 +16,7 @@
 			die("Error: ".mysql_error());
 		else
 			 echo "
-			 <img src='./img/templates/pendingfriend.png' width='113px' height='42px' />";	
+			 Friend request sent";	
  
 
 
