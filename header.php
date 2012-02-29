@@ -119,8 +119,8 @@ function printDocument($title = 'DigEat') {
 						if (!count) {
 							input.checked = false;
 						}
-						input.disabled = !0;
-						input.nextElementSibling.firstChild.textContent = count;
+						input.disabled = !count;
+						input.nextElementSibling.textContent = count;
 					};
 					x.send();
 					setTimeout(updateNotifications, 10000);
@@ -186,7 +186,7 @@ function printDocument($title = 'DigEat') {
 					<a href='./index.php' id='logo'>DigEat</a>
 					".navContent()."
 					<input id='notif' type='checkbox' hidden>
-					<label for='notif'><span>0</span></label>
+					<label for='notif'>0</label>
 					<div id='notifications'></div>
 					<script>updateNotifications()</script>
 				</div>

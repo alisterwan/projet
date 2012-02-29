@@ -249,7 +249,7 @@ header {
   top: .5em;
   right: .5em;
 }
-#notif + label > span {
+#notif + label {
   background: -webkit-linear-gradient(#FFF, #EEE);
   background: -moz-linear-gradient(#FFF, #EEE);
   background: -o-linear-gradient(#FFF, #EEE);
@@ -257,13 +257,14 @@ header {
   border: 1px solid #CCC;
   border-radius: 2px;
   box-shadow: inset 0 0 3px rgba(0, 0, 0, .1), 0 0 4px rgba(0, 0, 0, .1);
+  color: hsl(0, 50%, 50%);
   display: inline-block;
   font-weight: 700;
   line-height: 1.8em;
   text-align: center;
   width: 1.8em;
 }
-#notif:checked + label > span {
+#notif:checked + label {
   background: -webkit-linear-gradient(#DDD, #FFF);
   background: -moz-linear-gradient(#DDD, #FFF);
   background: -o-linear-gradient(#DDD, #FFF);
@@ -271,6 +272,9 @@ header {
 }
 #notif:not(:checked) ~ #notifications {
   display: none;
+}
+#notif:disabled ~ label {
+  color: #999;
 }
 #notifications {
   background: #EEE;
