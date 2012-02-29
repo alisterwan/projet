@@ -5,7 +5,7 @@ header('Content-type: text/plain');
 
 echo '<ol>';
 
-$query  = sprintf("SELECT * FROM groups_relations WHERE id_user='%s' AND status='0'",
+$query  = sprintf("SELECT * FROM groups_relations WHERE id_user='%s' AND approval='0' AND status='0'",
 	mysql_real_escape_string($userid));
 $result = mysql_query($query);
 
@@ -28,7 +28,7 @@ while ($row = mysql_fetch_assoc($result)) {
 }
 
 
-$query  = sprintf("SELECT id_group FROM groups_relations WHERE id_user='%s' AND status='0'",
+$query  = sprintf("SELECT id_group FROM groups_relations WHERE id_user='%s' AND approval='1' AND status='0'",
 	mysql_real_escape_string($userid));
 $result = mysql_query($query);
 
