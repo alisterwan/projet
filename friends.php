@@ -97,9 +97,9 @@ function printAvatarBadgeByURL($url) {
 
 
 function printUserBadgeById($id) {
-	$user = retrieve_user_infos($id)
+	$user = retrieve_user_infos($id);
 
-	if (!$user) {
+	if(!$user){
 		return '';
 	}
 
@@ -142,7 +142,7 @@ function printContactsByUserId($id) {
 
 if (isConnected($userid) && !isset($_GET['id'])) {
 	$userinfos    = retrieve_user_infos($userid);
-
+	$message ='';
 	/************* Friends Request **************************/
 
 	// Selection des id_group reliées à l'user.
@@ -159,12 +159,12 @@ if (isConnected($userid) && !isset($_GET['id'])) {
 			$response2 = mysql_query($query2);
 
 			while ($friend = mysql_fetch_assoc($response2)) {
-				$message .= "
-<p class='error'>
-	<a href='profile.php?id_user=$friend[id]'>$friend[username]<img src='$friend[avatar]' style='height: 100px; width: 100px;'></a> wants to be your friend.
-	<a href='#' onclick='confirmFriends(event,$row[id_group],$userid)'>Accept</a>
-	<a href='#' onclick='cancelFriends(event,$row[id_group],$userid)'>Decline</a>
-</p>";
+				$message.= "
+				<p class='error'>
+					<a href='profile.php?id_user=$friend[id]'><img src='$friend[avatar]' style='height: 50px; width: 50px;'>$friend[username]</a> wants to be your friend.
+					<a href='#' onclick='confirmFriends(event,$row[id_group],$userid)'>Accept</a>
+					<a href='#' onclick='cancelFriends(event,$row[id_group],$userid)'>Decline</a>
+				</p>";
 			}
 		}
 	}
@@ -188,7 +188,7 @@ if (isConnected($userid) && !isset($_GET['id'])) {
 			while($friend = mysql_fetch_assoc($response2)) {
 				$message .= "
 <p class='error'>
-	<a href='profile.php?id_user=$friend[id]'>$friend[username]<img src='$friend[avatar]' style='height: 100px; width: 100px;'></a> is following you.
+	<a href='profile.php?id_user=$friend[id]'><img src='$friend[avatar]' style='height: 50px; width: 50px;'>$friend[username]</a> is following you.
 	<a href='#' onclick='confirmFollow(event,$row[id_group],$userid)'>Ok</a>
 </p>";
 			}
