@@ -45,13 +45,14 @@ function getPostIdByUserId($id){ // return posts of wall's user
 
 function getPostId_filter_permission($idpost, $iduser){ // return false if no post /// return array of post id according to permissions
 	$result;
-	foreach($idpost AS $post){
-		if(checkPermission(getGroupsByWallPostId($post), $iduser) || getCreatorIdByPostId($post)==$iduser){
-			$result[] = $post;
+	if(count($idpost)<1){ // no post
+		foreach($idpost AS $post){
+			if(checkPermission(getGroupsByWallPostId($post), $iduser) || getCreatorIdByPostId($post)==$iduser){
+				$result[] = $post;
+			}
 		}
+		if (count($result)>0) return $result;
 	}
-	if (count($result)>0) return $result;
-	
 	return false;
 }
 
@@ -326,6 +327,7 @@ function printCommentByCommentId($idcomment){ // comment display
 }
 
 function printAllCommentsByWallPostId($postid){ // all comments for a post
+	global $userid;
 	$ficelle ='';
 	$sql = 'SELECT * FROM wall_post_comment WHERE id_wall_post='.$postid;
 	$query = mysql_query($sql);
