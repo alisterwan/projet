@@ -90,7 +90,7 @@ function printDocument($title = 'DigEat') {
 			<script src='jsdate/TSWFormCalendar.js'></script>
 			<link rel='stylesheet' type='text/css' href='jsdate/TSWFormCalendar_myFormCalendar.css'>
 
-			<script type='text/javascript' src='js/jquery.js'></script>
+			<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
 
 			<script src='js/TSWAccordion.js'></script>
 			<script src='js/TSWDomUtils.js'></script>
