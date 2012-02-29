@@ -13,7 +13,7 @@ function leftboxContent() {
 	$content   = "<img src= '$userinfos[avatar]' style='width: 170px; height: 200px;'>";
 
 	if (!isset($_GET['id_user'])) {
-		$content .= "<a href='./image.php'><img src='./img/templates/camera.png' style='width: 50px; height: 50px;'></a>Change my avatar";
+		$content.= "<a href='./image.php'><img src='./img/templates/camera.png' style='width: 50px; height: 50px;'></a>Change my avatar";
 	}
 
 	return $content;
@@ -35,7 +35,7 @@ function rightboxContent() {
 
 		$countryname = getCountryNameById($userinfos['country']);
 
-		$content .= "<p>Your account information:</p>
+		$content.= "<p>Your account information:</p>
 		<div>$userinfos[firstname] &nbsp;$userinfos[surname]</div>
 		<div>$userinfos[address]</div>
 		<div>$userinfos[city]</div>
@@ -112,10 +112,10 @@ function printUserBadgeById($id) {
 	global $userid;
 
 	if (!belongsToUserGroups($userid, $user['id'])) {
-		$ficelle .= '<a href="#">Add to contacts</a>';
+		$ficelle.= '<a href="#">Add to contacts</a>';
 	}
 
-	$ficelle .='</td></tr></table>';
+	$ficelle.='</td></tr></table>';
 
 	return $ficelle;
 }
@@ -125,14 +125,14 @@ function printContactsByUserId($id) {
 	$groupsids = getAllGroupsByUserId($id);
 	$ficelle   = '';
 	foreach ($groupsids AS $groupid) {
-		$ficelle .= '<br/><h4>'.getGroupNameById($groupid).'</h4>';
+		$ficelle.= '<br/><h4>'.getGroupNameById($groupid).'</h4>';
 		$users    = getUserIdByGroup($groupid);
 		if ($users) {
 			foreach ($users AS $user) {
-				$ficelle .= printUserBadgeById($user).'<br>';
+				$ficelle.= printUserBadgeById($user).'<br>';
 			}
 		} else {
-			$ficelle .= 'No contact<br>';
+			$ficelle.= 'No contact<br>';
 		}
 	}
 	return $ficelle;
@@ -219,7 +219,7 @@ if (isConnected($userid) && !isset($_GET['id'])) {
 	// Registered STALKER
 	$userinfos = retrieve_user_infos($_GET['id']);
 	$html  = "<h1>$userinfos[firstname] $userinfos[surname]</h1><h3>Contacts</h3>";
-	$html .= printContactsByUserId($_GET['id']);
+	$html.= printContactsByUserId($_GET['id']);
 }
 
 printDocument('My friends');
