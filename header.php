@@ -107,8 +107,17 @@ function printDocument($title = 'DigEat') {
 
 			<script>
 				function updateNotifications() {
-					var d = document;
-					setTimeout(updateNotifications, 1000);
+					var x = new XMLHttpRequest();
+					url = './notifications.php';
+					x.open('GET', url, true);
+					x.onload = function() {
+						var d = document;
+						notifications = d.getElementById('notifications');
+						notifications.innerHTML = this.responseText;
+						notifications.previousElementSibling.firstChild.textContent = notifications.firstChild.childElementCount;
+					};
+					x.send();
+					setTimeout(updateNotifications, 10000);
 				}
 			</script>
 		</head>
@@ -117,6 +126,7 @@ function printDocument($title = 'DigEat') {
 				<div id='header'>
 					<a href='./index.php' id='logo'>DigEat</a>
 					".navContent()."
+					<label><span>0</span><input type='checkbox' hidden></label>
 					<div id='notifications'></div>
 					<script>updateNotifications()</script>
 				</div>

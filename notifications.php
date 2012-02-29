@@ -1,30 +1,19 @@
 <?php
-  include './header.php';
- header('Content-type: text/plain');
 
+include './header.php';
+header('Content-type: text/plain');
 
-function printNotification($iduser){
+$query  = "SELECT * FROM groups_relations WHERE id_user='$iduser' AND status='0'";
+$result = mysql_query($query);
 
-  $sql = "SELECT * FROM groups_relations WHERE id_user='$iduser' AND status='0'";
-  $query = mysql_query($sql);
-
-  if(!$query) die("Error: ".mysql_error());
-  
-  $html = "<ol>";
-  	
-  while($row = mysql_fetch_assoc($query)){
-  
-  $html. = "<li>
-  <span>id Groupe: $row[id_group]</span>
-  <span>id User: $row[id_user]</span>
-  <span>Approval $row[approval]</span>
-  </li>"
-  
-  }
-			
-  $html. = "</ol>";	
-		
-  return $html;	
+if (!$result) {
+	die("Error: ".mysql_error());
 }
+
+echo "<ol>";
+while ($row = mysql_fetch_assoc($result)) {
+	echo "<li><span class=id_group>$row[id_group]</span><span class=id_user>$row[id_user]</span><span class=approval>$row[approval]</span></li>";
+}
+echo "</ol>";
 
 ?>
