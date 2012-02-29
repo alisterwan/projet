@@ -112,9 +112,9 @@ function printDocument($title = 'DigEat') {
 					x.open('GET', url, true);
 					x.onload = function() {
 						var d = document;
-						notifications = d.getElementById('notifications');
-						notifications.innerHTML = this.responseText;
-						notifications.previousElementSibling.firstChild.textContent = notifications.firstChild.childElementCount;
+						n = d.getElementById('notifications');
+						n.innerHTML = this.responseText;
+						n.previousElementSibling.firstChild.textContent = n.firstChild.childElementCount;
 					};
 					x.send();
 					setTimeout(updateNotifications, 10000);

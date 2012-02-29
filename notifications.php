@@ -3,7 +3,7 @@
 include './header.php';
 header('Content-type: text/plain');
 
-$query  = "SELECT * FROM groups_relations WHERE id_user='$iduser' AND status='0'";
+$query  = "SELECT * FROM groups_relations WHERE id_user='$userid' AND status='0'";
 $result = mysql_query($query);
 
 if (!$result) {
