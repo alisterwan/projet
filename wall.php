@@ -14,9 +14,10 @@ function getCommentsIdByWallPostId($postid){ // return array of comment id from 
 }
 
 function getGroupsByWallPostId($id){ // return allowed groups by Post ID /// False if NONE
-	$query = sprintf("SELECT * FROM wall_post_permission WHERE id_wall_post='%s'",	mysql_real_escape_string($id));
+	//$query = sprintf("SELECT * FROM wall_post_permission WHERE id_wall_post='%s'",	mysql_real_escape_string($id));
+	$query = 'SELECT id_group FROM wall_post_permission WHERE id_wall_post='.$id;
 	$result = mysql_query($query);
-
+	global $message; 
 	if (!$result) {
 		return false;
 	}else{
@@ -45,13 +46,16 @@ function getPostIdByUserId($id){ // return posts of wall's user
 
 function getPostId_filter_permission($idpost, $iduser){ // return false if no post /// return array of post id according to permissions
 	$result;
-	if(count($idpost)<1){ // no post
+	$atleastone = false;
+	if(count($idpost)>0){ // have post
 		foreach($idpost AS $post){
 			if(checkPermission(getGroupsByWallPostId($post), $iduser) || getCreatorIdByPostId($post)==$iduser){
 				$result[] = $post;
+				if(!$atleastone) $atleastone = true;
 			}
 		}
-		if (count($result)>0) return $result;
+		if(!$atleastone) return false;
+		return $result;
 	}
 	return false;
 }
@@ -196,17 +200,21 @@ function printAllPostByUserId($id){ // display ALL POSTS AND COMMENTS according 
 	global $userid;
 	$allposts;
 	if($id==$userid){ // get post from current user viewing its own wall
-		$sql = 'SELECT id FROM wall_post WHERE id_user='.$id.' ORDER BY date DESC';
+		$sql = 'SELECT id FROM wall_post WHERE id_user='.$id.' ORDER BY date DESC';  
 		$query = mysql_query($sql);
 		if(!$query || mysql_num_rows($query)<1) return false; // no post
 		while($result = mysql_fetch_assoc($query)){
 			$allposts[] = $result['id'];
 		}		
-	}
-	
-	$posts = getPostIdByUserId($id);
-	$allposts = getPostId_filter_permission($posts, $id);
-	
+	}else{ // visitor viewing a wall
+		$posts = getPostIdByUserId($id);
+		if($posts!=false){ // have post
+			$allposts = getPostId_filter_permission($posts, $userid); 
+		}else{ // no post
+			return false;
+		}
+	}	
+
 	if(!$allposts) return false; // no post
 	
 	$ficelle = '';
@@ -548,7 +556,7 @@ if(isset($userid)){
 			$comment = $_POST['newcomment'];
 			$idpost = $_POST['idpost'];
 			$sql = 'INSERT INTO wall_post_comment(id_wall_post, id_poster, comment)
-			VALUES('.$idpost.', '.$userid.', "'.$comment.'")'; $message=$sql;
+			VALUES('.$idpost.', '.$userid.', "'.$comment.'")';
 			$query = mysql_query($sql); // comment posted
 		}
 		
@@ -584,13 +592,11 @@ if(isset($userid)){
 	$html.= printNewWallPost($id); // new post
 	
 	
-	if(!printAllPostByUserId($id)){ // nothing to display
+	if(printAllPostByUserId($id)==false){ // nothing to display
 		$html.= '<br/>No post.<br/>';
 	}else{
 		$html.= '<br/>'.printAllPostByUserId($id); // display all posts
 	}
-
-
 	
 	printDocument('Wall');	
 }else{ // visitors
