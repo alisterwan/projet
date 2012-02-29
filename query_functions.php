@@ -260,8 +260,8 @@ function getGroupsByRecipeId($id){
 	}
 }
 
-function checkPermission($idgroup,$iduser){ // TRUE if $iduser belongs to any group of $idgroup
-	if (is_array($idgroup)){
+function checkPermission($idgroup,$iduser){ // TRUE if $iduser belongs to any group of $idgroup (<<<WHICH IS INTEGER OR ARRAY OF INTEGER>>>!!!!!)
+	if (is_array($idgroup)){ 
 		foreach($idgroup as $idgroupsingle){
 			// checking for others
 			$sql = 'SELECT id FROM groups_relations WHERE id_group='.$idgroupsingle.' AND id_user='.$iduser.' AND approval=1';
@@ -277,6 +277,20 @@ function checkPermission($idgroup,$iduser){ // TRUE if $iduser belongs to any gr
 				return true;
 			}		
 		}
+	}elseif(is_numeric($idgroup)){
+		// checking for others
+		$sql = 'SELECT id FROM groups_relations WHERE id_group='.$idgroup.' AND id_user='.$iduser.' AND approval=1';
+		$query = mysql_query($sql);
+		if(mysql_num_rows($query)>0){
+			return true;
+		}
+	
+		// cheking for self
+		$sql = 'SELECT id_creator FROM groups WHERE id='.$idgroup.' AND id_creator='.$iduser;
+		$query = mysql_query($sql);
+		if(mysql_num_rows($query)>0){
+				return true;
+		}		
 	}
 	
 	return false;
