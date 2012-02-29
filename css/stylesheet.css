@@ -247,7 +247,7 @@ header {
 #notif + label {
   position: absolute;
   top: .5em;
-  right: 3.5em;
+  right: 5.5em;
 }
 #notif + label {
   background: -webkit-linear-gradient(#FFF, #EEE);
@@ -263,6 +263,7 @@ header {
   line-height: 1.8em;
   text-align: center;
   width: 1.8em;
+  border-color: blue;
 }
 #notif:checked + label {
   background: -webkit-linear-gradient(#DDD, #FFF);
@@ -282,7 +283,7 @@ header {
   box-shadow: 0 5px 15px rgba(0, 0, 0, .2);
   position: absolute;
   top: 2.9em;
-  right: 3.5em;
+  right: 5.5em;
 }
 #notifications::before {
   content: "";
@@ -307,6 +308,73 @@ header {
   padding: 2px 3px;
 }
 
+
+#msg + label {
+  position: absolute;
+  top: .5em;
+  right: 3em;
+}
+#msg + label {
+  background: -webkit-linear-gradient(#FFF, #EEE);
+  background: -moz-linear-gradient(#FFF, #EEE);
+  background: -o-linear-gradient(#FFF, #EEE);
+  background: linear-gradient(#FFF, #EEE);
+  border: 1px solid #CCC;
+  border-radius: 2px;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, .1), 0 0 4px rgba(0, 0, 0, .1);
+  color: hsl(0, 50%, 50%);
+  display: inline-block;
+  font-weight: 700;
+  line-height: 1.8em;
+  text-align: center;
+  width: 1.8em;
+  border-color: green;
+}
+#msg:checked + label {
+  background: -webkit-linear-gradient(#DDD, #FFF);
+  background: -moz-linear-gradient(#DDD, #FFF);
+  background: -o-linear-gradient(#DDD, #FFF);
+  background: linear-gradient(#DDD, #FFF);
+}
+#msg:not(:checked) ~ #comments {
+  display: none;
+}
+#msg:disabled ~ label {
+  color: #999;
+}
+#messages {
+  background: #EEE;
+  border: 1px solid #CCC;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, .2);
+  position: absolute;
+  top: 2.9em;
+  right: 3em;
+}
+#messages::before {
+  content: "";
+  background: #EEE;
+  border-top: 1px solid #CCC;
+  border-left: 1px solid #CCC;
+  position: absolute;
+  top: -6px;
+  right: 8px;
+  height: 10px;
+  width: 10px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+#messages > ol {
+  margin: 0;
+  padding: 0;
+}
+#messages > ol > li {
+  padding: 2px 3px;
+}
+
+
+
 #comm + label {
   position: absolute;
   top: .5em;
@@ -326,6 +394,7 @@ header {
   line-height: 1.8em;
   text-align: center;
   width: 1.8em;
+  border-color: goldenrod;
 }
 #comm:checked + label {
   background: -webkit-linear-gradient(#DDD, #FFF);
@@ -345,7 +414,7 @@ header {
   box-shadow: 0 5px 15px rgba(0, 0, 0, .2);
   position: absolute;
   top: 2.9em;
-  right: .5em;
+  right: 0.5em;
 }
 #comments::before {
   content: "";

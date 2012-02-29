@@ -215,7 +215,27 @@ function printDocument($title = 'DigEat') {
 						input.nextElementSibling.textContent = count;
 					};
 					x.send();
-					setTimeout(updateNotifications, 10000);
+					setTimeout(updateComments, 10000);
+				}
+				
+				function updateMessages() {
+					var x = new XMLHttpRequest();
+					url = './messages.php';
+					x.open('GET', url, true);
+					x.onload = function() {
+						var d = document;
+						n = d.getElementById('messages');
+						n.innerHTML = this.responseText;
+						count = n.firstChild.childElementCount;
+						input = n.previousElementSibling.previousElementSibling;
+						if (!count) {
+							input.checked = false;
+						}
+						input.disabled = !count;
+						input.nextElementSibling.textContent = count;
+					};
+					x.send();
+					setTimeout(updateMessages, 10000);
 				}
 				
 			</script>
@@ -229,6 +249,13 @@ function printDocument($title = 'DigEat') {
 					<label for='notif'>0</label>
 					<div id='notifications'></div>
 					<script>updateNotifications()</script>
+					
+					
+				<!--<input id='msg' type='checkbox' hidden>
+					<label for='msg'>0</label>
+					<div id='messages'></div>
+					<script>updateMessages()</script>-->
+					
 					
 					<input id='comm' type='checkbox' hidden>
 					<label for='comm'>0</label>
