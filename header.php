@@ -178,6 +178,46 @@ function printDocument($title = 'DigEat') {
 					};
 					x.send();
 				}
+				
+				function readComment(e, idwall, id_user) {
+					var a, url, x;
+					e.preventDefault();
+					a = e.target.parentNode;
+					a.parentNode.hidden = true;
+					url = './readComments.php?idwall='+ idwall +'&id_user=' + id_user;
+					x = new XMLHttpRequest();
+					x.open('GET', url, true);
+					x.onload = function(e) {
+						a.innerHTML = this.responseText;
+						if(this.responseText !== 'success') {
+							a.innerHTML = this.responseText;
+							a.parentNode.hidden = false;
+						}
+					};
+					x.send();
+				}
+				
+				
+				function updateComments() {
+					var x = new XMLHttpRequest();
+					url = './comments.php';
+					x.open('GET', url, true);
+					x.onload = function() {
+						var d = document;
+						n = d.getElementById('comments');
+						n.innerHTML = this.responseText;
+						count = n.firstChild.childElementCount;
+						input = n.previousElementSibling.previousElementSibling;
+						if (!count) {
+							input.checked = false;
+						}
+						input.disabled = !count;
+						input.nextElementSibling.textContent = count;
+					};
+					x.send();
+					setTimeout(updateNotifications, 10000);
+				}
+				
 			</script>
 		</head>
 		<body>
@@ -189,6 +229,11 @@ function printDocument($title = 'DigEat') {
 					<label for='notif'>0</label>
 					<div id='notifications'></div>
 					<script>updateNotifications()</script>
+					
+					<input id='comm' type='checkbox' hidden>
+					<label for='comm'>0</label>
+					<div id='comments'></div>
+					<script>updateComments()</script>
 				</div>
 			</header>
 			<div id='body' class='clearfix'>";
