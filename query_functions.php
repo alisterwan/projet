@@ -260,18 +260,29 @@ function getGroupsByRecipeId($id){
 	}
 }
 
-function checkPermission($idgroup,$iduser){
-	foreach($idgroup as $idgroupsingle){
-		$sql = 'SELECT id FROM groups_relations WHERE id_group='.$idgroupsingle.' AND id_user='.$iduser.' AND approval=1';
-		$query = mysql_query($sql);
-		if(mysql_num_rows($query)>0){
-			return true;
+function checkPermission($idgroup,$iduser){ // TRUE if $iduser belongs to any group of $idgroup
+	if (is_array($idgroup)){
+		foreach($idgroup as $idgroupsingle){
+			// checking for others
+			$sql = 'SELECT id FROM groups_relations WHERE id_group='.$idgroupsingle.' AND id_user='.$iduser.' AND approval=1';
+			$query = mysql_query($sql);
+			if(mysql_num_rows($query)>0){
+				return true;
+			}
+			
+			// cheking for self
+			$sql = 'SELECT id_creator FROM groups WHERE id='.$idgroupsingle.' AND id_creator='.$iduser;
+			$query = mysql_query($sql);
+			if(mysql_num_rows($query)>0){
+				return true;
+			}		
 		}
-	}		
+	}
+	
 	return false;
 }
 
-function belongsToUserGroups($currentUser, $user){
+function belongsToUserGroups($currentUser, $user){ // TRUE if $user belongs to any $currentUser groups
 	$groups = getAllGroupsByUserId($user);// récupère les groups de user
 	if($groups){
 		return checkPermission($groups, $currentUser);
@@ -324,7 +335,7 @@ function getUserIdByGroup($id){
 }
 
 function getFirstnameSurnameByUserId($id){
-	$sql = 'SELECT firstname, surname FROM users WHERE id_user='.$id;
+	$sql = 'SELECT firstname, surname FROM users WHERE id='.$id;
 	$query = mysql_query($sql);
 	if(!$query) return false;
 	$result = mysql_fetch_assoc($query);
