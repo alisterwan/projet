@@ -142,8 +142,6 @@ function printContactsByUserId($id) {
 
 if (isConnected($userid) && !isset($_GET['id'])) {
 	$userinfos    = retrieve_user_infos($userid);
-	$useraddinfos = retrieve_user_add_infos($userid);
-	$userfriends  = retrieve_user_friends($userid);
 
 	/************* Friends Request **************************/
 
