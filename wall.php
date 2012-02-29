@@ -253,13 +253,22 @@ function printAvatarByUserId($id){ // display avatar miniature
 function printLikeDislikePost($idpost){ // like dislike delete bar for POST
 	global $userid;
 	$ficelle = '';
+	$wallowner = getCreatorIdByPostId($idpost);
 	if(!alreadyRatedPostByUser($idpost, $userid)){
 		// Like button
-		$ficelle.= '<form action="wall.php" method="POST">';
+		if($wallowner!=$userid){
+			$ficelle.= '<form action="wall.php?id='.$wallowner.'" method="POST" >';
+		}else{
+			$ficelle.= '<form action="wall.php" method="POST" >';
+		}
 		$ficelle.= '<input type="submit" value="Like" /><input type="hidden" name="rating_post_like" id="rating_post_like" value='.$idpost.' /></form>';
 		
 		// Dislike button
-		$ficelle.= '<form action="wall.php" method="POST">';
+		if($wallowner!=$userid){
+			$ficelle.= '<form action="wall.php?id='.$wallowner.'" method="POST" >';
+		}else{
+			$ficelle.= '<form action="wall.php" method="POST" >';
+		}
 		$ficelle.= '<input type="submit" value="Dislike" /><input type="hidden" name="rating_post_dislike" id="rating_post_dislike" value='.$idpost.' /></form>';
 	}else{ // undo rating?
 		if(getCurrentUserPostRatingByPost($idpost)==0){
@@ -267,12 +276,22 @@ function printLikeDislikePost($idpost){ // like dislike delete bar for POST
 		}else{
 			$ficelle.='You like this post. ';
 		}
-		$ficelle.='<form action="wall.php" method="POST"><input type="submit" value="Undo" /><input type="hidden" name="undo_post_rating" id="undo_post_rating" value='.$idpost.' /></form>';
+		
+		if($wallowner!=$userid){
+			$ficelle.= '<form action="wall.php?id='.$wallowner.'" method="POST" >';
+		}else{
+			$ficelle.= '<form action="wall.php" method="POST" >';
+		}
+		$ficelle.='<input type="submit" value="Undo" /><input type="hidden" name="undo_post_rating" id="undo_post_rating" value='.$idpost.' /></form>';
 	}
 	
 	// delete button
 	if(posterOrOwnerOfPost($idpost, $userid)){
-		$ficelle.= '<form action="wall.php" method="POST">';
+		if($wallowner!=$userid){
+			$ficelle.= '<form action="wall.php?id='.$wallowner.'" method="POST" >';
+		}else{
+			$ficelle.= '<form action="wall.php" method="POST" >';
+		}
 		$ficelle.= '<input type="submit" value="Delete" /><input type="hidden" name="delete_post" id="delete_post" value='.$idpost.' /></input></form>';
 	}
 	
@@ -327,8 +346,13 @@ function printAllCommentsByWallPostId($postid){ // all comments for a post
 		}
 	}
 	///////////////NEW COMMENT/////////////
-	$ficelle.= '<form action="wall.php" method="POST">
-	<input type="hidden" name="idpost" id="idpost" value='.$postid.' />
+	$wallowner = getCreatorIdByPostId($postid);
+	if($wallowner!=$userid){
+		$ficelle.= '<form action="wall.php?id='.$wallowner.'" method="POST" >';
+	}else{
+			$ficelle.= '<form action="wall.php" method="POST" >';
+	}	
+	$ficelle.= '<input type="hidden" name="idpost" id="idpost" value='.$postid.' />
 	<textarea name="newcomment" id="newcomment" /></textarea><br/>
 	<input type="submit" value="Post new comment" /></form>';
 	
@@ -364,7 +388,12 @@ function printLikeDislikeComment($idcomment){ // like dislike delete bar for com
 		}else{
 			$ficelle.='You like this comment. ';
 		}
-		$ficelle.='<form action="wall.php" method="POST"><input type="submit" value="Undo" /><input type="hidden" name="undo_comment_rating" id="undo_comment_rating" value='.$idcomment.' /></form>';
+		if($wallowner!=$userid){
+			$ficelle.= '<form action="wall.php?id='.$wallowner.'" method="POST" >';
+		}else{
+			$ficelle.= '<form action="wall.php" method="POST" >';
+		}
+		$ficelle.='<input type="submit" value="Undo" /><input type="hidden" name="undo_comment_rating" id="undo_comment_rating" value='.$idcomment.' /></form>';
 	}
 	
 	// delete button
