@@ -126,7 +126,8 @@ function printDocument($title = 'DigEat') {
 				<div id='header'>
 					<a href='./index.php' id='logo'>DigEat</a>
 					".navContent()."
-					<label><span>0</span><input type='checkbox' hidden></label>
+					<input id='notif' type='checkbox' hidden>
+					<label for='notif'><span>0</span></label>
 					<div id='notifications'></div>
 					<script>updateNotifications()</script>
 				</div>
