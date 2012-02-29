@@ -141,64 +141,6 @@ function printContactsByUserId($id) {
 ////////////////////////////////////////////////////END FUNCTIONS////////////////////////////////////////////////////////////////
 
 if (isConnected($userid) && !isset($_GET['id'])) {
-
-	$message = "
-		<script>
-			function confirmFriends(e, idgroup, id_user, username) {
-				var a, url, x;
-				e.preventDefault();
-				a = e.target.parentNode;
-				a.parentNode.hidden = true;
-				url = './confirmfriends.php?idgroup='+ idgroup +'&id_user=' + id_user;
-				x = new XMLHttpRequest();
-				x.open('GET', url, true);
-				x.onload = function(e) {
-					a.innerHTML = this.responseText;
-					if (this.responseText !== 'success') {
-						a.innerHTML = this.responseText;
-						a.parentNode.hidden = false;
-					}
-				};
-				x.send();
-			}
-
-			function cancelFriends(e, idgroup, id_user) {
-				var a, url, x;
-				e.preventDefault();
-				a = e.target.parentNode;
-				a.parentNode.hidden = true;
-				url = './cancelfriends.php?idgroup='+ idgroup +'&id_user=' + id_user;
-				x = new XMLHttpRequest();
-				x.open('GET', url, true);
-				x.onload = function(e) {
-					a.innerHTML = this.responseText;
-					if (this.responseText !== 'success') {
-						a.innerHTML = this.responseText;
-						a.parentNode.hidden = false;
-					}
-				};
-				x.send();
-			}
-
-			function confirmFollow(e, idgroup, id_user, username) {
-				var a, url, x;
-				e.preventDefault();
-				a = e.target.parentNode;
-				a.parentNode.hidden = true;
-				url = './confirmFollow.php?idgroup='+ idgroup +'&id_user=' + id_user;
-				x = new XMLHttpRequest();
-				x.open('GET', url, true);
-				x.onload = function(e) {
-					a.innerHTML = this.responseText;
-					if(this.responseText !== 'success') {
-						a.innerHTML = this.responseText;
-						a.parentNode.hidden = false;
-					}
-				};
-				x.send();
-			}
-		</script>";
-
 	$userinfos    = retrieve_user_infos($userid);
 	$useraddinfos = retrieve_user_add_infos($userid);
 	$userfriends  = retrieve_user_friends($userid);

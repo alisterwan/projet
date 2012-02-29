@@ -114,10 +114,69 @@ function printDocument($title = 'DigEat') {
 						var d = document;
 						n = d.getElementById('notifications');
 						n.innerHTML = this.responseText;
-						n.previousElementSibling.firstChild.textContent = n.firstChild.childElementCount;
+						count = n.firstChild.childElementCount;
+						input = n.previousElementSibling.previousElementSibling;
+						if (!count) {
+							input.checked = false;
+						}
+						input.disabled = !0;
+						input.nextElementSibling.firstChild.textContent = count;
 					};
 					x.send();
 					setTimeout(updateNotifications, 10000);
+				}
+
+				function confirmFriends(e, idgroup, id_user, username) {
+					var a, url, x;
+					e.preventDefault();
+					a = e.target.parentNode;
+					a.parentNode.hidden = true;
+					url = './confirmfriends.php?idgroup='+ idgroup +'&id_user=' + id_user;
+					x = new XMLHttpRequest();
+					x.open('GET', url, true);
+					x.onload = function(e) {
+						a.innerHTML = this.responseText;
+						if (this.responseText !== 'success') {
+							a.innerHTML = this.responseText;
+							a.parentNode.hidden = false;
+						}
+					};
+					x.send();
+				}
+
+				function cancelFriends(e, idgroup, id_user) {
+					var a, url, x;
+					e.preventDefault();
+					a = e.target.parentNode;
+					a.parentNode.hidden = true;
+					url = './cancelfriends.php?idgroup='+ idgroup +'&id_user=' + id_user;
+					x = new XMLHttpRequest();
+					x.open('GET', url, true);
+					x.onload = function(e) {
+						a.innerHTML = this.responseText;
+						if (this.responseText !== 'success') {
+							a.innerHTML = this.responseText;
+							a.parentNode.hidden = false;
+						}
+					};
+					x.send();
+				}
+				function confirmFollow(e, idgroup, id_user, username) {
+					var a, url, x;
+					e.preventDefault();
+					a = e.target.parentNode;
+					a.parentNode.hidden = true;
+					url = './confirmFollow.php?idgroup='+ idgroup +'&id_user=' + id_user;
+					x = new XMLHttpRequest();
+					x.open('GET', url, true);
+					x.onload = function(e) {
+						a.innerHTML = this.responseText;
+						if(this.responseText !== 'success') {
+							a.innerHTML = this.responseText;
+							a.parentNode.hidden = false;
+						}
+					};
+					x.send();
 				}
 			</script>
 		</head>
