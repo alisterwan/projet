@@ -121,6 +121,10 @@ function leftboxContent(){
 			$content.= '<a href="private_messages.php?id_recipient='.$_GET['id_user'].'" >Private Messages</a>';
 		}elseif(isOwner()){
 			$content.= '<a href="private_messages.php" >Private Messages</a>';
+			$content.= '<br/>';
+			$content.= '<a href="fridge.php" >Fridge</a>';
+			$content.= '<br/>';
+			$content.= '<a href="shoplist.php" >Shoplist</a>';	
 		}
 		$content.= '<br/>';
 	}
