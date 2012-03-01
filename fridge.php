@@ -169,24 +169,6 @@ function printProfileBanner(){
 }
 
 
-//fonction de redirection vers la page de recette crée
-function redirect() {
-	$query = mysql_fetch_row(
-		mysql_query(
-			sprintf("SELECT id FROM recipes WHERE name_en LIKE '%s'",
-				mysql_real_escape_string(
-					strip_tags($_POST['name'])
-				)
-			)
-		)
-	);
-
-	$id = $query[0];
-	header("Location: fridge.php");
-	exit;
-}
-
-
 function MyFridge($userid){
 	$html = "<h2>My Fridge</h2>";
 	$sql="SELECT * from fridge WHERE id_user='$userid'";
