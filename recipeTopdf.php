@@ -152,7 +152,7 @@ $pdf->RecipeImage();
 $pdf->SetLeftMargin(100);
 $pdf->IngredientRecipe($_GET['id']);
 $pdf->SetLeftMargin(10); 
-$pdf->Ln(50);
+$pdf->Ln(10);
 
 $pdf->InfosRecipe($_GET['id']);
 $pdf->Output();
