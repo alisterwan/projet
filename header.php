@@ -197,6 +197,24 @@ function printDocument($title = 'DigEat') {
 					x.send();
 				}
 				
+				function readPrivate(e, id, id_user) {
+					var a, url, x;
+					e.preventDefault();
+					a = e.target.parentNode;
+					a.parentNode.hidden = true;
+					url = './readPrivate.php?id='+ id +'&id_user=' + id_user;
+					x = new XMLHttpRequest();
+					x.open('GET', url, true);
+					x.onload = function(e) {
+						a.innerHTML = this.responseText;
+						if(this.responseText !== 'success') {
+							a.innerHTML = this.responseText;
+							a.parentNode.hidden = false;
+						}
+					};
+					x.send();
+				}
+				
 			</script>
 		</head>
 		<body>

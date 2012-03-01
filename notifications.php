@@ -5,6 +5,23 @@ header('Content-type: text/plain');
 
 echo '<ol>';
 
+$query  = sprintf("SELECT * FROM private_messages WHERE id_recipient='%s' AND status='0'",
+	mysql_real_escape_string($userid));
+$result = mysql_query($query);
+
+
+	while ($row1 = mysql_fetch_assoc($result)) {
+		$query2    = "SELECT * FROM users WHERE id=$row1[id_sender]";
+		$response2 = mysql_query($query2);
+
+		while ($friend = mysql_fetch_assoc($response2)) {
+			echo "<li><a href='profile.php?id_user=$friend[id]'>$friend[username]</a><img src='$friend[avatar]' style='height: 20px; width: 20px;'> wrote you a private message.
+				<a href='#' onclick='readPrivate(event,$row1[id],$userid)'>See</a>
+			</li>";
+		}
+}
+
+
 $query  = sprintf("SELECT * FROM groups_relations WHERE id_user='%s' AND approval='0' AND status='0'",
 	mysql_real_escape_string($userid));
 $result = mysql_query($query);
