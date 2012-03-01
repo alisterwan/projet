@@ -1,5 +1,6 @@
 <?php include 'header.php';
 
+
 /***************fonctions***************************/
 
 //fonction pour verifier si deux users sont amis
@@ -80,16 +81,7 @@ function leftboxContent(){
 				global $userid;
 				$userinfos=retrieve_user_infos($userid);
 				$content.= "<img src= '$userinfos[avatar]' width='170px' height='200px'><a href='./image.php'><img src= './img/templates/camera.png' width='50px' height='50px'></a>Change my avatar";
-				$content.="<div class='stack'>
-					<img src='img/stacks/stack.png' alt='stack'>
-					<ul id='stack'>
-						<li><a href='objectivesform.php'><span>Objectives</span><img src='img/stacks/objectives.png' alt='My Objectives'></a></li>
-						<li><a href='information.php'><span>Information</span><img src='img/stacks/information.png' alt='My infos'></a></li>			
-						<li><a href='albums.php'><span>Albums</span><img src='img/stacks/albums.png' alt='My albums'></a></li>
-						<li><a href='friends.php'><span>Friends</span><img src='img/stacks/myfriends.png' alt='My friends'></a></li>	
-						<li><a href='recipes.php'><span>Recipes</span><img src='img/stacks/recipes.png' alt='My recipes'></a></li>				
-					</ul>
-					</div>"; // printstack
+				
 			}
 		}else if(isset($_GET['id_user'])){ // non logged in visitor
 			// Requête qui récupère toutes les coordonnées du client
@@ -132,6 +124,24 @@ function leftboxContent(){
 }
 
 
+if ($_POST) { // si le user submit
+	$i = CountProduct($userid);
+	$i = $i+1;
+		while ($_POST[$i]) {
+			$ing = getidIngredient($_POST[$i]);
+				if($ing){
+				$sql = insertIntoShoplistExistingProduct($_POST[$i],$userid);
+				$i++;
+				}
+				else{
+				$sql = insertIntoShoplistProduct($_POST[$i],$userid);
+				$i++;
+				}
+					
+		}
+
+	}
+
 
 /////////////////////////////// PRINTERS /////////////////////////////
 function printInfoMember($id){
@@ -158,54 +168,114 @@ function printProfileBanner(){
 		</div>";
 }
 
-function printAddNewFriend($userid){
-	return "
-		  <a href='#' id='removeing' onclick='addFriends(event,$userid,$_GET[id_user])'><img src='./img/templates/addfriends.png' width='113px' height='42px'></a>
-		 
-		 <script>
-		  function addFriends(e, id_user, id_friend) {
-		  var a, url, x;
-		  e.preventDefault();
-		  a = e.target.parentNode;
-		  a.parentNode.hidden = true;
-		  url = './addFriends.php?id_user='+ id_user +'&id_friend=' + id_friend;
-		  x = new XMLHttpRequest();
-		  x.open('GET', url, true);
-		  x.onload = function(e) {
-			a.innerHTML = this.responseText;
-			if(this.responseText !== 'success') {
-			  a.innerHTML = this.responseText;
-			  a.parentNode.hidden = false;
-			}
-		  };
-		  x.send();
-		}
-		</script>";	
+
+
+function MyShop($userid){
+	$html = "<h2>My Shoplist</h2>";
+	$sql="SELECT * from shoplist WHERE id_user='$userid'";
+	$result = mysql_query($sql);
+	$verif = mysql_num_rows($result);
+		if($verif>0){
+		    $html.= "<div>What you have in your shoplist: </div>";
+		    $html.= "<ol>";
+		    	while ($var = mysql_fetch_assoc($result)){
+		    		$html.= "
+		    		<li>
+		    		$var[product] status:$var[status]
+		    		<a>Available</a> 
+		    		<a>Unavailaible</a>
+		    		<a href='#' onclick='removeIngOnShop(event,$var[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a>
+		    		</li>";
+		   		}
+			$html.= "</ol>";
+			return $html;
+		}	
+		else{
+			$html.= "<p class='error'>Your fridge is empty. Please fill it.</p>";
+			return $html;
+		} 
 }
 
-function printAddNewSubscriber($userid){
-	return "<a href='#' onclick='addSubscribers(event,$userid,$_GET[id_user])'><img src='./img/templates/follow.png' width='113px' height='42px'></a>
+
+function CountProduct($userid){
+	$sql="SELECT * from shoplist WHERE id_user='$userid'";
+	$result = mysql_query($sql);
+	$verif = mysql_num_rows($result);
 	
-		 <script>
-		  function addSubscribers(e, id_user, id_friend) {
-		  var a, url, x;
-		  e.preventDefault();
-		  a = e.target.parentNode;
-		  a.parentNode.hidden = true;
-		  url = './addSubscribers.php?id_user='+ id_user +'&id_friend=' + id_friend;
-		  x = new XMLHttpRequest();
-		  x.open('GET', url, true);
-		  x.onload = function(e) {
-			a.innerHTML = this.responseText;
-			if(this.responseText !== 'success') {
-			  a.innerHTML = this.responseText;
-			  a.parentNode.hidden = false;
-			}
-		  };
-		  x.send();
-		}
-		</script>";	
+	return $verif;
 }
+
+function ProductAdd($j){
+	return "
+	<a id='more' href='#'>Add product</a><br>
+		<script>
+			var i = $j+1;
+			$('#more').on('click', function(e) {
+				e.preventDefault();
+				$(this).before('<label>Product '+i+'<input type=\"text\" name='+i+' list=\"ingredientList\"></label>');
+				$(this).prev().updatePolyfill();
+				i++;
+			});
+		</script>
+
+	";
+
+}
+
+function printFormAddProduct($userid){
+	$var = CountProduct($userid);
+	$html ="
+	<form action='shoplist.php' method='post' id='contribution' enctype='multipart/form-data'>";
+	$html.= ProductAdd($var);
+	$html.="<input type='submit' value='Submit'>
+	";
+	return $html;
+}
+
+
+//fonction pour recuperer les infos de l'ingredient
+function getidIngredient($name){
+	$query = "SELECT * FROM ingredients WHERE name_en='$name'";
+	$result = mysql_query($query);
+	$verif = mysql_num_rows($result);
+	if ($verif==0) {
+		return false;
+		}  
+	return mysql_fetch_assoc($result);
+}
+
+
+function insertIntoShoplistExistingProduct($i,$userid){
+	$i = getidIngredient($i);
+	
+	$query = sprintf("INSERT INTO shoplist(id_user,product,status) VALUES('%s','%s',2);",
+		mysql_real_escape_string(strip_tags($userid)),
+		mysql_real_escape_string(strip_tags($i['name_en'])));
+	$result = mysql_query($query);
+	if ($result) {
+		return $result;
+		} 
+	else {
+			die('Error: '.mysql_error());
+		   }
+
+}
+
+function insertIntoShoplistProduct($text,$userid){
+	$query = sprintf("INSERT INTO shoplist(id_user,product,status) VALUES('%s','%s',2);",
+		mysql_real_escape_string(strip_tags($userid)),
+		mysql_real_escape_string(strip_tags($text)),
+		mysql_real_escape_string(strip_tags('2')));
+	$result = mysql_query($query);
+	
+		if ($result) {
+		return $result;
+		} 
+	else {
+			die('Error: '.mysql_error());
+		   }
+}
+
 
 ////////////////////////////////////////////END FUNCTIONS////////////////////////////////////////////////////
 
@@ -217,47 +287,45 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 	$useraddinfos=retrieve_user_add_infos($userid);
 	$userfriends = retrieve_user_friends($userid);  
   
+	$html.="<script>	
+			function removeIngOnShop(e, id) {
+      var a, url, x;
+      e.preventDefault();
+      a = e.target.parentNode;
+      a.parentNode.hidden = true;
+      url = './deleteOnShop.php?id=' + id;
+      x = new XMLHttpRequest();
+      x.open('GET', url, true);
+      x.onload = function(e) {
+        a.innerHTML = this.responseText;
+        if(this.responseText !== 'success') {
+          a.innerHTML = this.responseText;
+          a.parentNode.hidden = false;
+        }
+      };
+      x.send();
+    }
+	</script>
+	";
 
-		
+	$html.= MyShop($userid);
+	$html.= printFormAddProduct($userid);
 
-	if(isset($_GET['id_user']) && $_GET['id_user']!= $userid){ //pour les users qui visitent les profiles
-		$userinfos=retrieve_user_infos($_GET['id_user']);
-		$useraddinfos=retrieve_user_add_infos($_GET['id_user']);
-		  
-		$html.= "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>";
-		//$html.= printProfileBanner();
-		  
-		if(!$useraddinfos){ // "visiteur", mais no content available
-			$html.="<div>Sorry, there's no content available to show.</div>";
-		 
-			$vargroup = getAllGroupsByUserId($userid);
-			$var = checkPermission($vargroup,$_GET['id_user']);
-		   
-		    if(!$var){
-				$html.= printAddNewSubscriber($userid);
-				$html.= printAddNewFriend($userid);
-				
-			}		
-		}else{ // "visiteur", content available 	 
-			$html.= printInfoMember($_GET['id_user']);
-			$vargroup = getAllGroupsByUserId($userid);
-			$var = checkPermission($vargroup,$_GET['id_user']);
 
-			if(!$var) $html.= printAddNewFriend($userid);
-		}
-	}else{ // user viewing its own profile
-	
-		/////////////////////// Affichage du nom et bannière élémentaire ////////////////////////
-		$html.= "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>";
-		//$html.= printProfileBanner();
-		/////////////////////// FIN Affichage du nom et bannière élémentaire ////////////////////////
-		
-		if($useraddinfos){ // affichage infos passion du membre
-			$html.=printInfoMember($userid);
-		}
+	//requête pour recupérer les ingrédients
+	$ingredients = mysql_query("SELECT name_en,id FROM ingredients");
+	while ($ingredient = mysql_fetch_array($ingredients)) {
+	$list2 .= "<option value='$ingredient[0]'>$ingredient[0]</option>";
 	}
-	 printDocument('Profile Page'); 
+	$html .= "<datalist id='ingredientList'>$list2</datalist>";
+	
+	
+	
+
+	 printDocument('My Shoplist'); 
 }
+
+
 
 /*******************************VISITEURS NON INSCRITS*************************************/
 
