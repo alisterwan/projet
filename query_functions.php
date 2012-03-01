@@ -307,6 +307,15 @@ function belongsToUserGroups($currentUser, $user){ // TRUE if $user belongs to a
 function isConnected($userid){
 	return isset($userid);
 }
+
+function userIdExists($id){ // Does $id exist ?
+	$sql = 'SELECT id FROM users WHERE id='.$id;
+	$query = mysql_query($sql);
+	if(!$query) return false;
+	if (mysql_num_rows($query)<1) return false;
+	
+	return true;
+}
 ///////////////////FIN////////////////////// FONCTIONS QUI GERENT LES PERMiSSIONS! /////////////////////FIN///////////////////
 
 
