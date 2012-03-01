@@ -6,16 +6,118 @@ include 'header.php';
 
 /**************************************************/
 
-function leftboxContent() {
-	$id = isset($_GET['id_user']) ? $_GET['id_user'] : $_SESSION['id'];
-	// Requête qui récupère les infos de l'utilisteur.
-	$userinfos = retrieve_user_infos($id);
-	$content   = "<img src= '$userinfos[avatar]' style='width: 170px; height: 200px;'>";
+//////////////////// BOXES ////////////
 
-	if (!isset($_GET['id_user'])) {
-		$content.= "<a href='./image.php'><img src='./img/templates/camera.png' style='width: 50px; height: 50px;'></a>Change my avatar";
+function getAllGroupsExceptFollowersByUserId($idcreator){
+	$query = sprintf("SELECT * FROM groups	WHERE id_creator='%s'",	mysql_real_escape_string($idcreator));
+	$result = mysql_query($query);
+
+	if (!$result) {
+		return false;
+	}else{
+		$reponse;
+		while ($row = mysql_fetch_assoc($result)) {
+			if($row['name']!='Followers') $reponse[]=$row['id'];
+		}
+		return $reponse;
 	}
+}
 
+function isLoggedVisitor(){
+	global $userid;
+	return (isConnected($userid) && isset($_GET['id']) && $_GET['id']!=$userid);
+}
+
+function isFriend(){
+	global $userid;
+	if(isConnected($userid)){
+		if(isLoggedVisitor()){
+			return checkPermission(getAllGroupsExceptFollowersByUserId($_GET['id']), $userid);
+		}
+	}	
+	return false;
+}
+
+function isVisitor(){
+	global $userid;
+	if(!isConnected($userid) || isLoggedVisitor()){
+		return true;
+	}
+	return false;
+}
+
+function isLost(){ // non connected and not visiting anything lol
+	global $userid;
+	if(!isConnected($userid) && !isVisitor()) return true;
+	
+	return false;
+}
+
+function isOwner(){
+	return (!isLost() && !isFriend() && !isVisitor());
+}
+////////////// END GETTERS
+
+
+function leftboxContent(){
+	$content ='';
+	global $userid;
+	
+	if(!isLost()){
+		if (isset($_SESSION['id'])) { // if logged in
+			if (isLoggedVisitor()) { // if visitor 
+				// Requête qui récupère toutes les coordonnées du client
+				$userinfos=retrieve_user_infos($_GET['id']);
+				$content.= "<img src= '$userinfos[avatar]' width='170px' height='200px' />";
+			}else{
+				// Requête qui récupère toutes les coordonnées du client
+				global $userid;
+				$userinfos=retrieve_user_infos($userid);
+				$content.= "<img src= '$userinfos[avatar]' width='170px' height='200px'><a href='./image.php'><img src= './img/templates/camera.png' width='50px' height='50px'></a>Change my avatar";
+				$content.="<div class='stack'>
+					<img src='img/stacks/stack.png' alt='stack'>
+					<ul id='stack'>
+						<li><a href='objectivesform.php'><span>Objectives</span><img src='img/stacks/objectives.png' alt='My Objectives'></a></li>
+						<li><a href='information.php'><span>Information</span><img src='img/stacks/information.png' alt='My infos'></a></li>			
+						<li><a href='albums.php'><span>Albums</span><img src='img/stacks/albums.png' alt='My albums'></a></li>
+						<li><a href='friends.php'><span>Friends</span><img src='img/stacks/myfriends.png' alt='My friends'></a></li>	
+						<li><a href='recipes.php'><span>Recipes</span><img src='img/stacks/recipes.png' alt='My recipes'></a></li>				
+					</ul>
+					</div>"; // printstack
+			}
+		}else if(isset($_GET['id'])){ // non logged in visitor
+			// Requête qui récupère toutes les coordonnées du client
+			$userinfos=retrieve_user_infos($_GET['id']);
+			$content.= "<img src= '$userinfos[avatar]' width='170px' height='200px' />";
+		}
+		
+		$content.= '<br/><br/>';
+		
+		if(isVisitor()){ // print link to Profile
+			$content.= '<a href="profile.php?id_user='.$_GET['id'].'" >Profile</a>';
+		}else{
+			$content.= '<a href="profile.php" >Profile</a>';
+		}		
+		$content.= '<br/>';		
+		if(isVisitor()){ // print link to wall
+			$content.= '<a href="wall.php?id='.$_GET['id'].'" >Wall</a>';
+		}else{
+			$content.= '<a href="wall.php" >Wall</a>';
+		}
+		$content.= '<br/>';
+		if(isVisitor()){ // print link to friend list
+			$content.= '<a href="friends.php?id='.$_GET['id'].'" >Friends list</a>';
+		}else{
+			$content.= '<a href="friends.php" >Friends list</a>';
+		}
+		$content.= '<br/>';	
+		if(isFriend()){ // print link to messages
+			$content.= '<a href="private_messages.php?id_recipient='.$_GET['id'].'" >Private Messages</a>';
+		}elseif(isOwner()){
+			$content.= '<a href="private_messages.php" >Private Messages</a>';
+		}
+		$content.= '<br/>';
+	}
 	return $content;
 }
 
