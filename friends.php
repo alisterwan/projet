@@ -199,15 +199,15 @@ function printUserBadgeById($id) {
 	<table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
 		<tr>
 			<td>'.printAvatarBadgeByURL($user['avatar']).'</td>
-			<td>'.$user['firstname'].' '.$user['surname'].'<br>';
-
+			<td><a href=profile.php?id_user='.$user['id'].'>'.$user['firstname'].' '.$user['surname'].'<br>';
+			
 	global $userid;
 
 	if (!belongsToUserGroups($userid, $user['id'])) {
 		$ficelle.= '<a href="#">Add to contacts</a>';
 	}
 
-	$ficelle.='</td></tr></table>';
+	$ficelle.='</a></td></tr></table>';
 
 	return $ficelle;
 }
