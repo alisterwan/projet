@@ -673,8 +673,13 @@ if(isset($userid)){
 		if(isset($_POST['newcomment']) && isset($_POST['idpost'])){ // NEW COMMENT!!
 			$comment = $_POST['newcomment'];
 			$idpost = $_POST['idpost'];
-			$sql = 'INSERT INTO wall_post_comment(id_wall_post, id_poster, comment)
-			VALUES('.$idpost.', '.$userid.', "'.$comment.'")';
+			if(isset($_GET['id']) && $_GET['id']!=$userid){ // poster is not owner
+				$sql = 'INSERT INTO wall_post_comment(id_wall_post, id_poster, comment)
+				VALUES('.$idpost.', '.$userid.', "'.$comment.'")';
+			}else{
+				$sql = 'INSERT INTO wall_post_comment(id_wall_post, id_poster, comment, status)
+				VALUES('.$idpost.', '.$userid.', "'.$comment.'", 1)';
+			}
 			$query = mysql_query($sql); // comment posted
 		}
 		
