@@ -297,7 +297,7 @@ function checkPermission($idgroup,$iduser){ // TRUE if $iduser belongs to any gr
 }
 
 function belongsToUserGroups($currentUser, $user){ // TRUE if $user belongs to any $currentUser groups
-	$groups = getAllGroupsByUserId($user);// récupère les groups de user
+	$groups = getAllGroupsByUserId($user);// get les groups de user
 	if($groups){
 		return checkPermission($groups, $currentUser);
 	}
@@ -357,7 +357,7 @@ function getFirstnameSurnameByUserId($id){
 }
 
 function printLinkToProfileByUserId($id){
-	return '<a href="profile.php?id='.$id.'" target="_blank" >'.getFirstnameSurnameByUserId($id).'</a>';
+	return '<a href="profile.php?id_user='.$id.'" target="_blank" >'.getFirstnameSurnameByUserId($id).'</a>';
 }
 
 //////////////////////////////// FIN GET DES TEXTS BY ID /////////////////////////////////////////////////////////////
