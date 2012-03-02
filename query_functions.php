@@ -266,13 +266,14 @@ function checkPermission($idgroup,$iduser){ // TRUE if $iduser belongs to any gr
 			// checking for others
 			$sql = 'SELECT id FROM groups_relations WHERE id_group='.$idgroupsingle.' AND id_user='.$iduser.' AND approval=1';
 			$query = mysql_query($sql);
+			if(!$query) return false; // fix test
 			if(mysql_num_rows($query)>0){
 				return true;
 			}
 			
 			// cheking for self
 			$sql = 'SELECT id_creator FROM groups WHERE id='.$idgroupsingle.' AND id_creator='.$iduser;
-			$query = mysql_query($sql);
+			$query = mysql_query($sql); if(!$query) return false; // fix test
 			if(mysql_num_rows($query)>0){
 				return true;
 			}		
@@ -280,14 +281,14 @@ function checkPermission($idgroup,$iduser){ // TRUE if $iduser belongs to any gr
 	}elseif(is_numeric($idgroup)){
 		// checking for others
 		$sql = 'SELECT id FROM groups_relations WHERE id_group='.$idgroup.' AND id_user='.$iduser.' AND approval=1';
-		$query = mysql_query($sql);
+		$query = mysql_query($sql); if(!$query) return false; // fix test
 		if(mysql_num_rows($query)>0){
 			return true;
 		}
 	
 		// cheking for self
 		$sql = 'SELECT id_creator FROM groups WHERE id='.$idgroup.' AND id_creator='.$iduser;
-		$query = mysql_query($sql);
+		$query = mysql_query($sql); if(!$query) return false; // fix test
 		if(mysql_num_rows($query)>0){
 				return true;
 		}		
