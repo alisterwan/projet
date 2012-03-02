@@ -119,7 +119,9 @@ function leftboxContent(){
 		$content.= '<br/>';	
 		if(isFriend()){ // print link to messages
 			$content.= '<a href="private_messages.php?id_recipient='.$_GET['id_user'].'" >Private Messages</a>';
-		}elseif(isOwner()){
+		}
+		
+		if(isOwner()){
 			$content.= '<a href="private_messages.php" >Private Messages</a>';
 			$content.= '<br/>';
 			$content.= '<a href="fridge.php" >Fridge</a>';
