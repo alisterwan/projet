@@ -118,6 +118,13 @@ function leftboxContent(){
 			$content.= '<a href="private_messages.php" >Private Messages</a>';
 		}
 		$content.= '<br/>';
+		
+		if(isOwner()){ // fridge and shoplist
+			$content.= '<a href="fridge.php" >Fridge</a>';
+			$content.= '<br/>';
+			$content.= '<a href="shoplist.php" >Shoplist</a>';	
+		}
+		$content.= '<br/>';
 	}
 	return $content;
 }
