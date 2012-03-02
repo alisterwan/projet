@@ -53,10 +53,16 @@ function isOwner(){
 }
 ////////////// END GETTERS
 
+function rightboxContent(){
+	$content = '';
+	return $content;
+}
 
 function leftboxContent(){
 	$content ='';
 	global $userid;
+	
+	if(!isConnected($userid) && !isset($_GET['id'])) return $content; // visitor lost
 	
 	if(!isLost()){
 		if (isset($_SESSION['id'])) { // if logged in
@@ -69,7 +75,16 @@ function leftboxContent(){
 				global $userid;
 				$userinfos=retrieve_user_infos($userid);
 				$content.= "<img src= '$userinfos[avatar]' width='170px' height='200px'><a href='./image.php'><img src= './img/templates/camera.png' width='50px' height='50px'></a>Change my avatar";
-				
+				$content.="<div class='stack'>
+					<img src='img/stacks/stack.png' alt='stack'>
+					<ul id='stack'>
+						<li><a href='objectivesform.php'><span>Objectives</span><img src='img/stacks/objectives.png' alt='My Objectives'></a></li>
+						<li><a href='information.php'><span>Information</span><img src='img/stacks/information.png' alt='My infos'></a></li>			
+						<li><a href='albums.php'><span>Albums</span><img src='img/stacks/albums.png' alt='My albums'></a></li>
+						<li><a href='friends.php'><span>Friends</span><img src='img/stacks/myfriends.png' alt='My friends'></a></li>	
+						<li><a href='recipes.php'><span>Recipes</span><img src='img/stacks/recipes.png' alt='My recipes'></a></li>				
+					</ul>
+					</div>"; // printstack
 			}
 		}else if(isset($_GET['id'])){ // non logged in visitor
 			// Requête qui récupère toutes les coordonnées du client
@@ -101,25 +116,9 @@ function leftboxContent(){
 			$content.= '<a href="private_messages.php?id_recipient='.$_GET['id'].'" >Private Messages</a>';
 		}elseif(isOwner()){
 			$content.= '<a href="private_messages.php" >Private Messages</a>';
-			$content.= '<br/>';
-			$content.= '<a href="fridge.php" >Fridge</a>';
-			$content.= '<br/>';
-			$content.= '<a href="shoplist.php" >Shoplist</a>';	
 		}
 		$content.= '<br/>';
 	}
-	
-	$content.="<div class='stack'>
-					<img src='img/stacks/stack.png' alt='stack'>
-					<ul id='stack'>
-						<li><a href='objectivesform.php'><span>Objectives</span><img src='img/stacks/objectives.png' alt='My Objectives'></a></li>
-						<li><a href='information.php'><span>Information</span><img src='img/stacks/information.png' alt='My infos'></a></li>			
-						<li><a href='albums.php'><span>Albums</span><img src='img/stacks/albums.png' alt='My albums'></a></li>
-						<li><a href='friends.php'><span>Friends</span><img src='img/stacks/myfriends.png' alt='My friends'></a></li>	
-						<li><a href='recipes.php'><span>Recipes</span><img src='img/stacks/recipes.png' alt='My recipes'></a></li>				
-					</ul>
-					</div>"; // printstack
-	
 	return $content;
 }
 
@@ -617,7 +616,7 @@ function printRatingComment($idcomment){
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if(isset($userid)){
+if(isset($userid) || isVisitor() ){
 	$html =''; // I summon God!
 	
 	
@@ -714,7 +713,7 @@ if(isset($userid)){
 
 	////// DISPLAY
 	
-	if(isset($_GET['id'])){
+	if(isset($_GET['id']) ){
 		$id = $_GET['id'];
 	}else{
 		$id = $userid;
