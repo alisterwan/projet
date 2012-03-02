@@ -1,18 +1,20 @@
 <?php
 	include './header.php';
 
-	function form($conn,$id) {
-		$query = pg_query($conn,"SELECT firstname,surname,address,city,country,username,password,mail,id_customer FROM users WHERE id_customer=$id");
-		$customer = pg_fetch_row($query);
+	function form($id) {
+		$query = "SELECT * FROM users WHERE id=$id";
+		
+		$result = mysql_query($query);
+		
+		$customer = mysql_fetch_assoc($result);
 		echo "<form action='./managecustomers.php' method='post'>
-			<p>Delete or update its details.</p>
-			<div><input type='text' name='firstname' value='$customer[0]' required> Firstname</div>
-			<div><input type='text' name='surname' value='$customer[1]' required> Surname</div>
-			<div><input type='text' name='username' value='$customer[5]' required> Username</div>
-			<div><input type='text' name='address' value='$customer[2]' required> Address</div>
-			<div><input type='text' name='city' value='$customer[3]' required> City</div>
-			<div><input type='text' name='country' value='$customer[4]' required> Country</div>
-			<div><input type='text' name='mail' value='$customer[7]' required> Email</div>
+			<p>You can now delete or update details.</p>
+			<div><input type='text' name='firstname' value='$customer[firstname]' required> Firstname</div>
+			<div><input type='text' name='surname' value='$customer[surname]' required> Surname</div>
+			<div><input type='text' name='username' value='$customer[username]' required> Username</div>
+			<div><input type='text' name='address' value='$customer[address]' required> Address</div>
+			<div><input type='text' name='country' value='$customer[country]' required> Country</div>
+			<div><input type='text' name='mail' value='$customer[mail]' required> email</div>
 			<div>
 				<button type='submit' name='update' value='$id'>Update</button>
 				<button type='submit' name='delete' value='$id'>Delete</button>
@@ -21,13 +23,12 @@
 	}
 
 	// On affiche une liste des clients
-	echo "<p>Select a customer in the drop-down list.</p>";
-
-	echo "<form action='./customers.php' method='post'>
+	
+	echo "<form action='./index.php?' method='post'>
 		<button type='submit' name='select' value='customer'>Select</button>
 		<select name='choice'>";
-	$query = pg_query($conn,"SELECT id_customer, firstname, surname, username FROM users");
-	while ($customer = pg_fetch_row($query))
+	$query = "SELECT id, firstname, surname, username FROM users";
+	while ($customer = mysql_fetch_row($query))
 		echo "<option value='$customer[0]'>$customer[1] $customer[2] ($customer[3])</option>";
 	echo "</select></form>";
 
