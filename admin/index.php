@@ -3,7 +3,7 @@
 
 	/********************************GESTION DES CUSTOMERS **********************************/ 
 	//si le formulaire validé et update
-	if (isset($_GET['mode'])  && $_GET['mode']=="customers" && $_POST['update']){
+	if (isset($_GET['mode'])  && $_GET['mode']=="customers" && isset($_POST['update'])){
 	$update = updateUser($_POST['update']);
 		if($update){
 		echo " Update Successful";
@@ -14,7 +14,7 @@
 	}
 	
 	//si le formulaire validé et delete
-	if (isset($_GET['mode'])  && $_GET['mode']=="customers" && $_POST['delete']){
+	if (isset($_GET['mode'])  && $_GET['mode']=="customers" && isset($_POST['delete'])){
 	$delete = DeleteOnTable('users',$_POST['delete']);
 		if($delete){
 		echo " Delete Successful";
@@ -56,7 +56,7 @@
 
 	/*********************************GESTION DES RECETTES **********************************/
 	//si le formulaire validé et update
-	if (isset($_GET['mode'])  && $_GET['mode']=="recipes" && $_POST['update']){
+	if (isset($_GET['mode'])  && $_GET['mode']=="recipes" && isset($_POST['update'])){
 	$update = updateRecipe($_POST['update']);
 		if($update){
 		echo " Update Successful";
@@ -67,7 +67,7 @@
 	}
 	
 	//si le formulaire validé et delete
-	if (isset($_GET['mode'])  && $_GET['mode']=="recipes" && $_POST['delete']){
+	if (isset($_GET['mode'])  && $_GET['mode']=="recipes" && isset($_POST['delete'])){
 	$delete = DeleteOnTable('recipes',$_POST['delete']);
 		if($delete){
 		echo " Delete Successful";
@@ -111,7 +111,7 @@
 	/************************************GESTION DES INGREDIENTS ******************************/
 	
 	//si le formulaire validé et update
-	if (isset($_GET['mode'])  && $_GET['mode']=="ingredients" && $_POST['update']){
+	if (isset($_GET['mode'])  && $_GET['mode']=="ingredients" && isset($_POST['update'])){
 	$update = updateIngredient($_POST['update']);
 		if($update){
 		echo " Update Successful";
@@ -122,7 +122,7 @@
 	}
 	
 	//si le formulaire validé et delete
-	if (isset($_GET['mode'])  && $_GET['mode']=="ingredients" && $_POST['delete']){
+	if (isset($_GET['mode'])  && $_GET['mode']=="ingredients" && isset($_POST['delete'])){
 	$delete = DeleteOnTable('ingredients',$_POST['delete']);
 		if($delete){
 		echo " Delete Successful";
