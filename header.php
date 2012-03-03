@@ -258,7 +258,7 @@ function navContent() {
 		<li><a href='./index.php'>Home</a></li>
 		<li><a href='./profile.php'>Profile</a>
 			<ul>
-				<li><a href='./logout.php'>Log out</a></li>
+				<li><a href='./index.php?action=logout'>Log out</a></li>
 			</ul>
 		</li>
 				<li><a href='#'>Community</a></li>
