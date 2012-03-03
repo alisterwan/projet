@@ -31,3 +31,20 @@ a:hover {
   color: red;
   font-weight: 700;
 }
+
+#contribution div {
+  font-size: 1em;
+  font-weight: 700;
+}
+#contribution input, #contribution select {
+  display: block;
+  margin:2px 2px auto;
+  width: 50%;
+}
+#contribution textarea {
+  display: block;
+  height: 100px;
+  margin:2px 2px auto;
+  width: 50%;
+}
+
