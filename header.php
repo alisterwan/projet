@@ -258,18 +258,6 @@ function navContent() {
 		<li><a href='./index.php'>Home</a></li>
 		<li><a href='./profile.php'>Profile</a>
 			<ul>
-				<li><a href='#'>Edit Profile</a>
-					<ul>
-						<li><a href='edit_profile.php'>Account information</a></li>
-						<li><a href='information.php'>Personal information</a></li>
-					</ul>
-				</li>
-				<li><a href='#'>Objectives</a>
-					<ul>
-						<li><a href='objectivesform.php'>Set Objectives</a></li>
-						<li><a href='graphique.php'>View My Chart</a></li>
-					</ul>
-				</li>
 				<li><a href='./logout.php'>Log out</a></li>
 			</ul>
 		</li>
