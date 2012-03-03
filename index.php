@@ -48,6 +48,11 @@ function leftboxContent(){
 	return $content;
 }
 
+if(isset($_GET['action']) && $_GET['action']=="logout"){
+	session_unset();
+	header('Location: index.php');
+}
+
 printDocument('Homepage');
 
 ?>
