@@ -62,9 +62,10 @@ function printCountrydatalist(){
 //recupere une datalist d'ingredients pour l'autocompletion
 function printIngdatalist(){
 	$html='';
+	$list2 = '';
 	$ingredients = mysql_query("SELECT name_en,id FROM ingredients");
 	while ($ingredient = mysql_fetch_array($ingredients)) {
-	$list2 .= "<option value='$ingredient[0]'>$ingredient[0]</option>";
+	$list2.= "<option value='$ingredient[0]'>$ingredient[0]</option>";
 	}
 	$html.= "<datalist id='ingredientList'>$list2</datalist>";
 	return $html;	
@@ -104,7 +105,7 @@ function getDifficultyNameById($id){
 
 
 function printIngredientsByIdRecipe($id){
-	
+	$html = ''; // always summon this
 	//selection des ingredients reliees a la recette
 	$query = sprintf("SELECT id_ingredient FROM recipe_ingredients WHERE id_recipe='%s'",
 	mysql_real_escape_string($id)); 	
