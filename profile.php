@@ -133,16 +133,81 @@ function leftboxContent(){
 	return $content;
 }
 
+////////////////////////////// PROCESS ////////////////////////////////
+//fonction update users
+function updateUser($firstname,$surname,$address,$country,$username,$email, $userid){ // fonction qui update sur la BDD
 
+	if($country==0) {
+		$country=NULL;
+		$query = sprintf("UPDATE users SET firstname='%s', surname='%s', address='%s',country=NULL, username='$username', mail='$email' WHERE id=$userid;",
+		mysql_real_escape_string(strip_tags($firstname)),
+		mysql_real_escape_string(strip_tags($surname)),
+		mysql_real_escape_string(strip_tags($address)));
+	}else{
+		$query = sprintf("UPDATE users SET firstname='%s', surname='%s', address='%s',country=$country, username='$username', mail='$email' WHERE id=$userid;",
+		mysql_real_escape_string(strip_tags($firstname)),
+		mysql_real_escape_string(strip_tags($surname)),
+		mysql_real_escape_string(strip_tags($address)));
+	}
+	$res = @mysql_query($query);
+	if(!$res)
+		die("Error: ".mysql_error());
+	else
+		return $res;
+}
+
+// Fonction qui insere les infos perso d'un user dans la bdd
+	function insertInfo($date,$hobbies,$job,$music,$films,$books,$aboutme,$favouritefood, $userid){
+		$query = sprintf("INSERT INTO information(date_birth,hobbies,job,music,films,books,aboutme,favouritefood,id_user) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s');",
+		mysql_real_escape_string(strip_tags($date)),
+		mysql_real_escape_string(strip_tags($hobbies)),
+		mysql_real_escape_string(strip_tags($job)),
+		mysql_real_escape_string(strip_tags($music)),
+		mysql_real_escape_string(strip_tags($films)),
+		mysql_real_escape_string(strip_tags($books)),
+		mysql_real_escape_string(strip_tags($aboutme)),
+		mysql_real_escape_string(strip_tags($favouritefood)),
+		mysql_real_escape_string(strip_tags($userid)));
+		$res = @mysql_query($query);
+		if(!$res)
+			die("Error: ".mysql_error());
+		else
+			return $res;
+	}
+function updateInfo($date,$hobbies,$job,$music,$films,$books,$aboutme,$favouritefood,$userid){ // fonction qui update sur la BDD
+	
+	$query = "UPDATE information SET date_birth='$date', hobbies='$hobbies', job='$job', 
+	music='$music', films='$films', books='$books', aboutme='$aboutme', favouritefood='$favouritefood' WHERE id_user=$userid ";
+	$res = @mysql_query($query);
+	if(!$res){
+		//die("Error: ".mysql_error());
+		return false;
+	}
+	else{
+		return $res;
+	}
+}
+	
+	
 
 /////////////////////////////// PRINTERS /////////////////////////////
 function printInfoMember($id){
-	$infos = retrieve_user_add_infos($id);
-	$ficelle = "<h4>";
+	$info = retrieve_user_add_infos($id);
+	/*$ficelle = "<h4>";
 	
 	if($infos['date_birth']!="") $ficelle.= 'Born in '.$infos['date_birth'].'<br/>';
 	if($infos['job']!="") $ficelle.= 'Works as '.$infos['job'].'<br/>';
-	if($infos['music']!="") $ficelle.= 'Listens to '.$infos['music'].'<br/></h4>';
+	if($infos['music']!="") $ficelle.= 'Listens to '.$infos['music'].'<br/></h4>';*/
+	
+	$ficelle ="
+	Born: $info[date_birth]
+		<br/>Hobbies: $info[hobbies]
+		<br/>Job: $info[job]
+		<br/>Music: $info[music]
+		<br/>Films: $info[films]
+		<br/>Books: $info[books]
+		<br/>About me: $info[aboutme]
+		<br/>Favourite food: $info[favouritefood]";
 	
 	return $ficelle;
 }
@@ -209,6 +274,88 @@ function printAddNewSubscriber($userid){
 		</script>";	
 }
 
+function printEditAccountInfoForm($userinfos){
+	$content = '';
+	$username=$userinfos['username'];
+	$firstname=$userinfos['firstname'];
+	$surname=$userinfos['surname'];
+	$mail=$userinfos['mail'];
+	$address=$userinfos['address'];
+	//$city=$userinfos['city'];
+	$country=getCountryNameById($userinfos['country']);		
+					
+	// affichage champs profile, c'est tout ce pâté
+	$content.= '<p><h4>Your profile information:</h4></p>
+					<form action="profile.php?mode=edit_account_infos&action=edit_account_infos_process " method="post" id="contribution">
+					<label>Firstname:<input type="text" name="firstname" value='.$firstname.' required></label>
+					<label>Surname:<input type="text" name="surname" value='.$surname.' required></label>			
+					<label>Country:<input type="text" name="id_country" list="countryList" value="'.$country.'" /></label>			
+					<label>Address:<input type="text" name="address" value="'.$address.'"></label>
+					<label>Username:<input type="text" name="username" value='.$username.' required></label>
+					<label>Email:<input type="text" name="mail" value='.$mail.' required></label>
+					<div><button type="submit">Update</button></div>
+	</form>';
+
+	//requete pour recuperer les pays 
+	$countries = mysql_query("SELECT id_country,name_en FROM country");
+	$list='';// ne pas oublier d'initialiser
+	while($res = mysql_fetch_assoc($countries)) {
+		$list .= "<option value='$res[name_en]' >";
+	}
+	$content.= "<datalist id='countryList'>$list</datalist>";
+	
+	return $content;
+}
+
+function printProfileForm($useraddinfos, $do){
+	$date=$useraddinfos['date_birth'];
+	$hobbies=$useraddinfos['hobbies'];
+	$job=$useraddinfos['job'];
+	$music=$useraddinfos['music'];
+	$films=$useraddinfos['films'];
+	$books=$useraddinfos['books'];
+	$aboutme=$useraddinfos['aboutme'];
+	$favouritefood=$useraddinfos['favouritefood'];
+			
+	$content = '';
+	$content.= "<p><h4>Edit your personal information:</h4></p><br/>";
+	
+	if($do == "insert") {
+		$content.= '<form action="profile.php?mode=edit_profile&action=new_insert_process" method="post" id="contribution">';
+	}
+	if($do == "update"){
+		$content.= '<form action="profile.php?mode=edit_profile&action=update_process" method="post" id="contribution">';
+	}
+	
+	$content.="
+		<span id='myFormCalendar' class='tswFormCalendar'>
+		<label for='myDateInput'>Date of birth (yyyy-mm-dd):</label> 
+			<a href='javascript:tswFormCalendarGetForId(\"myFormCalendar\").togglePopUp();'>
+			<span id='myFormCalendar_tswButton'
+				class='tswFormCalendarButton'></span></a>
+	</span>
+	<script type='text/javascript'>
+		//Initialize Form Calendar
+		var tswFormCalendar = tswFormCalendarGetForId(\"myFormCalendar\");
+		tswFormCalendar.dateFormat = 'yyyy-MM-dd';
+	</script>
+		<input id='myFormCalendar_tswInput' 
+			name='myDateInput' value='$date'
+			onkeyup='tswFormCalendarGetForId(\"myFormCalendar\").updateDates();'
+			type='text' size='20' maxlength='10'/> 
+			<label>Hobbies:</td><td><input type='textarea' name='hobbies' value='$hobbies'></label>
+			<label>Job:</td><td><input type='text' name='job' value='$job'></label>
+			<label>Music:</td><td><input type='textarea' name='music' value='$music'></label>
+			<label>Films:</td><td><input type='textarea' name='films' value='$films'></label>
+			<label>Books:</td><td><input type='textarea' name='books' value='$books'></label>
+			<label>About me:</td><td><input type='textarea' name='aboutme' value='$aboutme'></label>
+			<label>Favourite food:</td><td><input type='textarea' name='favouritefood' value='$favouritefood'></label>
+			<label><button type='submit'>Update my information &rarr;</button></label>
+			</table>
+	</form>";
+
+	return $content;
+}
 ////////////////////////////////////////////END FUNCTIONS////////////////////////////////////////////////////
 
 
@@ -249,13 +396,133 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 		}
 	}else{ // user viewing its own profile
 	
-		/////////////////////// Affichage du nom et bannière élémentaire ////////////////////////
-		$html.= "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>";
-		//$html.= printProfileBanner();
-		/////////////////////// FIN Affichage du nom et bannière élémentaire ////////////////////////
+		if(!isset($_GET['mode'])){ // no mod defined
+			/////////////////////// Affichage du nom et bannière élémentaire ////////////////////////
+			$html.= "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>";
+			//$html.= printProfileBanner();
+			/////////////////////// FIN Affichage du nom et bannière élémentaire ////////////////////////
+			
+			if($useraddinfos){ // affichage infos passion du membre
+				$html.=printInfoMember($userid);
+			}
 		
-		if($useraddinfos){ // affichage infos passion du membre
-			$html.=printInfoMember($userid);
+			$html.= '<br/><br/><a href="profile.php?mode=edit_profile" />Edit your profile</a> | <a href="profile.php?mode=edit_account_infos" />Edit your account informations</a>';
+		
+		}elseif(isset($_GET['mode']) && $_GET['mode']=="edit_account_infos"){ // edit account infos
+			// Mise à jour des données
+			if ($_POST && isset($_GET['action']) && $_GET['action']=="edit_account_infos_process") { // ça va appeler la fonction qui va modifier la BDD : updateUser
+				
+				$query1 = mysql_query("SELECT * FROM country WHERE name_en='$_POST[id_country]'");
+				if(!$query1){ // pays non reconnu
+					$country=0;
+				}else{
+					$res2 = mysql_fetch_assoc($query1);	
+					$country   = $res2['id_country'];			
+				}
+				
+				$firstname = $_POST['firstname'];
+				$surname   = $_POST['surname'];
+				$address   = $_POST['address'];
+				//$city      = $_POST['city'];		
+				$username  = $_POST['username'];
+				$mail      = $_POST['mail'];
+				
+				//mise a jour dans la bdd
+				$res = updateUser($firstname,$surname,$address,$country,$username,$mail, $userid);
+
+				if(!$res){
+					$message = "Query error";  
+				}else{
+					unset($_POST);
+					header("Location: profile.php?mode=edit_account_infos&updatesuccess=1");
+					//Echo "Update successfully";
+				}	    	
+
+				// Ne pas envoyer le POST dans header.php
+				unset($_POST);
+				
+			}else{ // Affichage edit_account_infos
+
+				if (isset($_GET['updatesuccess'])){
+					$html.="Update successful";
+				}
+
+				$userinfos=retrieve_user_infos($userid); // retrieve_user_infos renvoit un tableau associatif contenant toutes les infos d'un user
+
+				if($userinfos!=false){// vérifie si la fonction est bien passée
+					$html.= printEditAccountInfoForm($userinfos);
+
+				}else{
+					$message = "<p class='error'>Table USER error</p>";
+				}
+
+			} // fin affichage profile
+			
+			$html.= '<br/><a href="profile.php" />Back to Profile</a>';
+			
+		}elseif(isset($_GET['mode']) && $_GET['mode']=="edit_profile"){ // edit profile
+			if (isset($_GET['updatesuccess'])) $html.= 'Update successful';
+			
+			$sql = 'SELECT * FROM information WHERE id_user ='.$userid; // gets user profile
+			
+			if(mysql_num_rows(mysql_query($sql))<1){
+				$do = "insert";
+			}else{
+				$do = "update";
+			}
+			
+			if(isset($_GET['action']) && $_GET['action']=="new_insert_process"){ // new insert process
+				$date          = $_POST['myDateInput'];
+				$hobbies       = $_POST['hobbies'];
+				$job           = $_POST['job'];
+				$music         = $_POST['music'];
+				$films   	 = $_POST['films'];
+				$books   	 = $_POST['books'];	
+				$aboutme  	 = $_POST['aboutme'];
+				$favouritefood = $_POST['favouritefood'];
+				
+				//mise a jour dans la bdd
+				$res = insertInfo($date,$hobbies,$job,$music,$films,$books,$aboutme,$favouritefood,$userid);
+			  
+				if(!$res){
+					echo "Query error";  
+				}else{
+					unset($_POST);
+					header("Location: profile.php?mode=edit_profile&updatesuccess=1");			
+					//Echo "Update successfully";
+				}	    	
+			  
+				// Ne pas envoyer le POST dans header.php
+				unset($_POST);
+			}elseif(isset($_GET['action']) && $_GET['action']=="update_process"){
+				$message=$_GET['action'];
+				$date          = $_POST['myDateInput'];
+				$hobbies       = $_POST['hobbies'];
+				$job           = $_POST['job'];
+				$music         = $_POST['music'];
+				$films   	 = $_POST['films'];
+				$books   	 = $_POST['books'];	
+				$aboutme  	 = $_POST['aboutme'];
+				$favouritefood = $_POST['favouritefood'];				
+			  
+				//mise a jour dans la bdd
+				$res = updateInfo($date,$hobbies,$job,$music,$films,$books,$aboutme,$favouritefood,$userid);
+			  
+				if(!$res){
+					echo "Query error";  
+				}else{
+					unset($_POST);
+					header("Location: profile.php?mode=edit_profile&updatesuccess=1");
+					//Echo "Update successfully";
+				}	    	
+			  
+				// Ne pas envoyer le POST dans header.php
+				unset($_POST);				
+			}
+		
+			$useraddinfos=retrieve_user_add_infos($userid); // retrieve_user_infos renvoit un tableau associatif contenant toutes les infos d'un user
+			$html.= printProfileForm($useraddinfos, $do);
+			$html.= '<br/><br/><a href="profile.php" />Back to Profile</a>';
 		}
 	}
 	 printDocument('Profile Page'); 
