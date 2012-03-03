@@ -1,12 +1,12 @@
-<?php
+<?php 
 	
-	include('../includes/config.php');
-	include('query_admin.php');
+include('../includes/config.php');
+include('query_admin.php');
 	
 
-	session_start();
+	
 	// On redirige l'utilisateur s'il n'est pas connecté en tant qu'administrateur
-	if($_SESSION[masterpass] != 'f6793a9e6ca5356123fe0ab34bb46443894a5edf')
+	if($_SESSION['masterpass'] != 'f6793a9e6ca5356123fe0ab34bb46443894a5edf')
 		header("location: ../index.php");
 
 ?>
