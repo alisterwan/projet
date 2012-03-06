@@ -305,9 +305,6 @@ function belongsToUserGroups($currentUser, $user){ // TRUE if $user belongs to a
 	return false; // user n'a aucun groupe
 }
 
-function isConnected($userid){
-	return isset($userid);
-}
 
 function userIdExists($id){ // Does $id exist ?
 	$sql = 'SELECT id FROM users WHERE id='.$id;
@@ -317,6 +314,11 @@ function userIdExists($id){ // Does $id exist ?
 	
 	return true;
 }
+
+function isConnected(){
+	return isset($_SESSION['id']);
+}
+
 ///////////////////FIN////////////////////// FONCTIONS QUI GERENT LES PERMiSSIONS! /////////////////////FIN///////////////////
 
 
