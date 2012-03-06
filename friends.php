@@ -25,12 +25,12 @@ function getAllGroupsExceptFollowersByUserId($idcreator){
 
 function isLoggedVisitor(){
 	global $userid;
-	return (isConnected($userid) && isset($_GET['id']) && $_GET['id']!=$userid);
+	return (isConnected() && isset($_GET['id']) && $_GET['id']!=$userid);
 }
 
 function isFriend(){
 	global $userid;
-	if(isConnected($userid)){
+	if(isConnected()){
 		if(isLoggedVisitor()){
 			return checkPermission(getAllGroupsExceptFollowersByUserId($_GET['id']), $userid);
 		}
@@ -40,7 +40,7 @@ function isFriend(){
 
 function isVisitor(){
 	global $userid;
-	if(!isConnected($userid) || isLoggedVisitor()){
+	if(!isConnected() || isLoggedVisitor()){
 		return true;
 	}
 	return false;
@@ -48,7 +48,7 @@ function isVisitor(){
 
 function isLost(){ // non connected and not visiting anything lol
 	global $userid;
-	if(!isConnected($userid) && !isVisitor()) return true;
+	if(!isConnected() && !isVisitor()) return true;
 	
 	return false;
 }
@@ -232,7 +232,7 @@ function printContactsByUserId($id) {
 
 ////////////////////////////////////////////////////END FUNCTIONS////////////////////////////////////////////////////////////////
 
-if (isConnected($userid) && !isset($_GET['id'])) {
+if (isConnected() && !isset($_GET['id'])) {
 	$userinfos    = retrieve_user_infos($userid);
 	$message ='';
 	/************* Friends Request **************************/
@@ -307,7 +307,7 @@ if (isConnected($userid) && !isset($_GET['id'])) {
 	/////////////  AFFICHAGE DES CONTACTS
 	$html.= printContactsByUserId($userid);
 	////////////  AFFICHAGE DES CONTACTS FIN
-} else if (isConnected($userid) && isset($_GET['id'])) {
+} else if (isConnected() && isset($_GET['id'])) {
 	// Registered STALKER
 	$userinfos = retrieve_user_infos($_GET['id']);
 	$html  = "<h1>$userinfos[firstname] $userinfos[surname]</h1><h3>Contacts</h3>";
