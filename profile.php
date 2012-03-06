@@ -31,12 +31,12 @@ function getAllGroupsExceptFollowersByUserId($idcreator){
 
 function isLoggedVisitor(){
 	global $userid;
-	return (isConnected($userid) && isset($_GET['id_user']) && $_GET['id_user']!=$userid);
+	return (isConnected() && isset($_GET['id_user']) && $_GET['id_user']!=$userid);
 }
 
 function isFriend(){
 	global $userid;
-	if(isConnected($userid)){
+	if(isConnected()){
 		if(isLoggedVisitor()){
 			return checkPermission(getAllGroupsExceptFollowersByUserId($_GET['id_user']), $userid);
 		}
@@ -46,7 +46,7 @@ function isFriend(){
 
 function isVisitor(){
 	global $userid;
-	if(!isConnected($userid) || isLoggedVisitor()){
+	if(!isConnected() || isLoggedVisitor()){
 		return true;
 	}
 	return false;
@@ -54,7 +54,7 @@ function isVisitor(){
 
 function isLost(){ // non connected and not visiting anything lol
 	global $userid;
-	if(!isConnected($userid) && !isVisitor()) return true;
+	if(!isConnected() && !isVisitor()) return true;
 	
 	return false;
 }
