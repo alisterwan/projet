@@ -230,6 +230,29 @@ function getAllGroupsByUserId($idcreator){
 	}
 }
 
+function getAllUsersOfGroups($groups){ // returns all userID (array) who belong to $groups (array) EXCEPT owners|| returns FALSE if none
+	if(count($groups)<1) return false;
+	
+	$users;
+	foreach($groups AS $group){
+		$sql = 'SELECT DISTINCT id_user FROM groups_relations WHERE id_group='.$group.' AND approval=1';
+		$query = mysql_query($sql);
+		if($query!=false && mysql_num_rows($query)>0){
+			while ($result = mysql_fetch_assoc($query)){
+				if(isset($users) && is_array($users) && count($users)>0 && !in_array($result['id_user'], $users)){ // add to array
+					$users[] = $result['id_user'];
+				}elseif(!isset($users)){ // creates new array
+					$users[] = $result['id_user'];
+				}
+			}
+		}
+	}
+	
+	if(is_array($users)) return $users; // returns userID
+	
+	return false; // none
+}
+
 function getAllGroupNameByUserId($idcreator){
 	$query = sprintf("SELECT name FROM groups	WHERE id_creator='%s'",	mysql_real_escape_string($idcreator));
 	$result = mysql_query($query);
@@ -314,6 +337,7 @@ function userIdExists($id){ // Does $id exist ?
 	
 	return true;
 }
+
 
 function isConnected(){
 	return isset($_SESSION['id']);
