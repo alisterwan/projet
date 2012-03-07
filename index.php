@@ -1,5 +1,6 @@
 <?php include 'header.php';
 
+////////////////// BOXES //////////////////
 function leftboxContent(){
 		 // ATTENTION IL FAUT METTRE LES QUOTES POUR id !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			  // Requête qui récupère toutes les coordonnées du client
@@ -47,12 +48,70 @@ function leftboxContent(){
 
 	return $content;
 }
+///////////////////////// END BOXES ///////////////////////////////
+
+///////////////////////// GETTERS//////////////
+function getLatestPostsOfContacts(){ // returns 10 latest posts ID of all contacts | FALSE if no post or not connected
+	if(!isConnected()) return false;
+		
+	global $userid;
+	$groups = getAllGroupsByUserId($userid);
+	if(!$groups || count($groups)<1) return false;
+	
+	$users = getAllUsersOfGroups($groups);
+	
+	if($users == false || count($users)<1 ) return false;
+	
+	$sql = 'SELECT id, date FROM wall_post WHERE ';
+	$nbusers = count($users);
+	$i = 0;
+	foreach($users AS $user){
+		$i++;
+		$sql.= 'id_user='.$user;
+		if($i < $nbusers) $sql.= ' OR ';		
+	}
+	
+	$sql.= ' ORDER BY date DESC LIMIT 0, 10';
+	$query = mysql_query($sql);
+	if(!$query || mysql_num_rows($query)<1) return false;
+	
+	$posts;
+	while($result = mysql_fetch_assoc($query)){
+		$posts[] = $result['id'];
+	}
+	return $posts;
+}
+
+function getLatestPublicPosts(){ // returns 10 latest public posts ID of public | FALSE if no post
+	$sql = 'SELECT id, date FROM wall_post ORDER BY date DESC LIMIT 0,10';
+	$query = mysql_query($sql);
+	if(!$query || mysql_num_rows($query)<1) return false;
+	
+	$posts;
+	while ($result = mysql_fetch_assoc($query)){
+		$posts[] = $result['id'];
+	}
+	return $posts;
+}
+/////////////////////////////////////////////////////////////////
+
 
 if(isset($_GET['action']) && $_GET['action']=="logout"){
 	session_unset();
 	header('Location: index.php');
 }
 
+if(isConnected()){
+	$html = '';
+
+	/*
+	$posts = getLatestPostsOfContacts();
+	if($posts!=false){
+		foreach($posts AS $post){
+			$html.= $post.'<br/>';
+		}
+	}*/
+}
 printDocument('Homepage');
 
 ?>
