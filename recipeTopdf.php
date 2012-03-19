@@ -114,19 +114,19 @@ function InfosRecipe($id){
   
    $i[difficulty]= $row[name_en];
 
-$this->MultiCell(0,8,'Description:'.$i['description_en']);
+$this->MultiCell(0,8,'Description: '.$i['description_en']);
 
-$this->MultiCell(0,8,'Origin:'.$i['country_origin']);
+$this->MultiCell(0,8,'Origin: '.$i['country_origin']);
 
-$this->MultiCell(0,8,'Difficulty:'.$i['difficulty']);
+$this->MultiCell(0,8,'Difficulty: '.$i['difficulty']);
 
-$this->MultiCell(0,8,'Serves:'.$i['num_serves']);
+$this->MultiCell(0,8,'Serves: '.$i['num_serves']);
 
-$this->MultiCell(0,8,'Preparation:'.$i['duration_preparation'].'minutes');
+$this->MultiCell(0,8,'Preparation: '.$i['duration_preparation'].' minute(s)');
 
-$this->MultiCell(0,8,'Cooking:'.$i['duration_cook'].'minutes');
+$this->MultiCell(0,8,'Cooking: '.$i['duration_cook'].' minute(s)');
 
-$this->MultiCell(0,8,'Instructions:'.$i['preparation_en']);
+$this->MultiCell(0,8,'Instructions: '.$i['preparation_en']);
 
 }
 
