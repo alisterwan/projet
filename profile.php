@@ -119,9 +119,13 @@ function leftboxContent(){
 		$content.= '<br/>';	
 		if(isFriend()){ // print link to messages
 			$content.= '<a href="private_messages.php?id_recipient='.$_GET['id_user'].'" >Private Messages</a>';
+			$content.= '<br/>';
+			$content.= '<a href="recipes.php?iduser='.$_GET['id_user'].'">Recipes</a>';
 		}
 		
 		if(isOwner()){
+			$content.= '<a href="recipes.php">Recipes</a>';
+			$content.= '<br/>';
 			$content.= '<a href="private_messages.php" >Private Messages</a>';
 			$content.= '<br/>';
 			$content.= '<a href="fridge.php" >Fridge</a>';
