@@ -178,7 +178,7 @@ function printDocument($title = 'DigEat') {
 					};
 					x.send();
 				}
-				
+
 				function readComment(e, idwall, id_user) {
 					var a, url, x;
 					e.preventDefault();
@@ -196,7 +196,7 @@ function printDocument($title = 'DigEat') {
 					};
 					x.send();
 				}
-				
+
 				function readPrivate(e, id, id_user) {
 					var a, url, x;
 					e.preventDefault();
@@ -214,28 +214,27 @@ function printDocument($title = 'DigEat') {
 					};
 					x.send();
 				}
-				
+
 			</script>
 		</head>
 		<body>
 			<header>
-				<div id='header'>
-					<a href='./index.php' id='logo'>DigEat</a>
-					".navContent()."
-					<input id='notif' type='checkbox' hidden>
-					<label for='notif'>0</label>
-					<div id='notifications'></div>
-					<script>updateNotifications()</script>
-			
-				</div>
+				<a href='./index.php' id='logo'>DigEat</a>
+				<form action='search_advanced.php' method='GET' id='search'>
+					<input type='search' name='recherche' placeholder='Search' value=\"".htmlentities($_GET['recherche'])."\">
+				</form>
+				<nav>".navContent()."</nav>
+				<input id='notif' type='checkbox' hidden>
+				<label for='notif'>0</label>
+				<div id='notifications'><script>updateNotifications()</script></div>
 			</header>
 			<div id='body' class='clearfix'>";
-
+/*
 	if (function_exists('leftboxContent')) {
 		// Displays leftBox if exists
 		echo "<div id='leftbox' class='panel'>".leftboxContent()."</div>";
 	}
-
+*/
 	echo "<div id='content' class='panel'> $message $html $friend $notifications </div>";
 
 	if (function_exists('rightboxContent')) {
@@ -248,63 +247,29 @@ function printDocument($title = 'DigEat') {
 
 
 function navContent() {
-    if (isset($_SESSION['id'])) { // ATTENTION IL FAUT METTRE LES QUOTES POUR id !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      // Requête qui récupère toutes les coordonnées du client
+	// ATTENTION IL FAUT METTRE LES QUOTES POUR id
+	if (isset($_SESSION['id'])) {
+		$content = "
+		<a href='./profile.php'>Profile</a>
+		<a href='./recipes.php'>Recipes</a>
+		<a href='./friends.php'>Friends</a>
+		<a href='./albums.php'>Albums</a>
+		<!-- <a href='./information.php'>Information</a> -->
+		<a href='./objectivesform.php'>Objectives</a>
+		<a href='./index.php?action=logout'>Log out</a>";
+	} else {
+		$content = "
+		<form action='./index.php?mode=logon' method='POST'>
+			<strong>Log in</strong>
+			<input type='text' name='name' placeholder='Username' required>
+			<input type='password' name='pass' placeholder='password' required>
+			<input type='submit' value='Submit'>
+		</form>
+		<!-- <a href='./#'>Forgot your password?</a> -->
+		<a href='./registration.php'>Registration</a>";
+	}
 
-      $content = "
-
-      	 <nav>
-   	<ul id='myNavigationMenu'>
-		<li><a href='./index.php'>Home</a></li>
-		<li><a href='./profile.php'>Profile</a>
-			<ul>
-				<li><a href='./index.php?action=logout'>Log out</a></li>
-			</ul>
-		</li>
-				<li><a href='#'>Community</a></li>
-		<li><a href='./search_advanced.php'>Search</a></li>
-	</ul>
-	<!-- Create a MenuMatic Instance -->
-	<script type='text/javascript' >
-		window.addEvent('load', function() {
-			var myMenu = new MenuMatic({
-				id: 'myNavigationMenu',
-				subMenusContainerId: 'myNavigationMenu_menuContainer',
-				orientation: 'horizontal',
-				effect: 'slide & fade',
-				duration: 800,
-				hideDelay: 1000,
-				opacity: 100});
-		});
-	</script>
-
-        </nav>";
-    }else{
-	$content = "
-	<nav>
-	<ul id='myNavigationMenu'>
-		<li><a href='./index.php'>Home</a></li>
-		<li><a href='#'>Recipes</a></li>
-		<li><a href='#'>Community</a></li>
-		<li><a href='./registration.php'>Registration</a></li>
-		<li><a href='./search_advanced.php'>Search</a></li>
-	</ul>
-	<!-- Create a MenuMatic Instance -->
-	<script type='text/javascript' >
-		window.addEvent('load', function() {
-			var myMenu = new MenuMatic({
-				id: 'myNavigationMenu',
-				subMenusContainerId: 'myNavigationMenu_menuContainer',
-				orientation: 'horizontal',
-				effect: 'slide & fade',
-				duration: 800,
-				hideDelay: 1000,
-				opacity: 100});
-		});
-	</script>
-	 </nav>";
-    }
-
-    return $content;
+	return $content;
 }
+
 ?>
