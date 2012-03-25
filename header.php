@@ -77,7 +77,8 @@ function printDocument($title = 'DigEat') {
 			<meta name='description' content='Projet tuto'>
 			<meta name='author' content='John Olivier Equina Nicolas'>
 			<link href='http://fonts.googleapis.com/css?family=Clara' rel='stylesheet'>
-			<link rel='stylesheet' type='text/css' media='screen' href='css/all-examples.css'>
+			<link href='http://fonts.googleapis.com/css?family=Open+Sans:800' rel='stylesheet'>
+			<link href='http://fonts.googleapis.com/css?family=Gentium+Book+Basic:400,400italic,700,700italic&subset=latin,latin-ext' rel='stylesheet'>
 			<link href='./css/stylesheet.css' rel='stylesheet'>
 
 			<script src='js/MooTools/mootools.js'></script>
@@ -228,14 +229,14 @@ function printDocument($title = 'DigEat') {
 				<label for='notif'>0</label>
 				<div id='notifications'><script>updateNotifications()</script></div>
 			</header>
-			<div id='body' class='clearfix'>";
+			<div id='body'>";
 /*
 	if (function_exists('leftboxContent')) {
 		// Displays leftBox if exists
 		echo "<div id='leftbox' class='panel'>".leftboxContent()."</div>";
 	}
 */
-	echo "<div id='content' class='panel'> $message $html $friend $notifications </div>";
+	echo "<div id='content' class='panel'>$message $html $friend $notifications</div>";
 
 	if (function_exists('rightboxContent')) {
 		// Displays rightBox if exists
