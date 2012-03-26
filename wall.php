@@ -382,8 +382,8 @@ function printWallPostById($idpost){ // display a Post and Comments
 	$ficelle.= printRatingPost($idpost); // ratings
 
 	$ficelle.= printLinkToProfileByUserId($id_user).' - '.$date.'<br/>';
-	$ficelle.= $content.'<hr/>';
-	$ficelle.= printLikeDislikePost($id_post).'<br/>'.printPermissionChoices($id_post, getCreatorIdByPostId($id_post)).'</form><hr/>';
+	$ficelle.= $content;
+	$ficelle.= printLikeDislikePost($id_post).'<br/>'.printPermissionChoices($id_post, getCreatorIdByPostId($id_post)).'</form>';
 	$ficelle.= printAllCommentsByWallPostId($id_post);
 	$ficelle.= '</div>';
 	return $ficelle;
