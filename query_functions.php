@@ -393,7 +393,7 @@ function getFirstnameSurnameByUserId($id){
 }
 
 function printLinkToProfileByUserId($id){
-	return '<a href="profile.php?id_user='.$id.'" target="_blank" >'.getFirstnameSurnameByUserId($id).'</a>';
+	return '<a href="profile.php?id_user='.$id.'" >'.getFirstnameSurnameByUserId($id).'</a>';
 }
 
 //////////////////////////////// FIN GET DES TEXTS BY ID /////////////////////////////////////////////////////////////
