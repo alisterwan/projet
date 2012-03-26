@@ -221,9 +221,14 @@ function printDocument($title = 'DigEat') {
 		<body>
 			<header>
 				<a href='./index.php' id='logo'>DigEat</a>
-				<form action='search_advanced.php' method='GET' id='search'>
-					<input type='search' name='recherche' placeholder='Search' value=\"".htmlentities($_GET['recherche'])."\">
-				</form>
+				<form action='search_advanced.php' method='GET' id='search'>";
+				
+				if(isset($_GET['recherche']) && $_GET['recherche']!=""){
+					echo "<input type='search' name='recherche' placeholder='Search' value=\"".htmlentities($_GET['recherche'])."\">";
+				}else{
+					echo "<input type='search' name='recherche' placeholder='Search' value='' />";
+				}
+				echo "</form>
 				<nav>".navContent()."</nav>
 				<input id='notif' type='checkbox' hidden>
 				<label for='notif'>0</label>
