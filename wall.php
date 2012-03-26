@@ -383,9 +383,9 @@ function printWallPostById($idpost){ // display a Post and Comments
 
 	$ficelle.= printLinkToProfileByUserId($id_user).' - '.$date.'<br/>';
 	$ficelle.= $content.'<hr/>';
-	$ficelle.= printLikeDislikePost($id_post).'<br/>'.printPermissionChoices($id_post, getCreatorIdByPostId($id_post)).'<hr/>';
+	$ficelle.= printLikeDislikePost($id_post).'<br/>'.printPermissionChoices($id_post, getCreatorIdByPostId($id_post)).'</form><hr/>';
 	$ficelle.= printAllCommentsByWallPostId($id_post);
-	$ficelle.= '</form></div>';
+	$ficelle.= '</div>';
 	return $ficelle;
 }
 
