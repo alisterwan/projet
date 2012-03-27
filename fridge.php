@@ -228,8 +228,96 @@ function printFormAddIngredient($userid){
 	$html.= IngredientAdd($var);
 	$html.="<input type='submit' value='Submit'>
 	";
+		
+	//instructions pour rechercher
+	if(isset($_POST)){	
+		//recupere tous les ingredients de la liste dans un tableau
+		$toto = getAllInMyFridge($userid);
+		
+		if($toto){
+		$html.= "<h4>Search Results</h4>";
+		}
+		else {
+		$html.= "<h4>No Results found</h4>";
+		}
+		
+		foreach($toto as $to){
+		$coco = getidIngredient($to);
+			//si l'ingredient existe on recherche les recettes liées par l'id
+			if($coco){
+			$titi = getRecipesIdbyIngredientId($coco['id']);
+ 				foreach($titi as $ti){	
+				$wawa = retrieve_recipe_infos($ti); 
+				$user = retrieve_user_infos($wawa['id_user']);		
+				$html.= "<p><div>
+				<span>";
+				$html.= getRecipesPhotobyId($wawa['id']);
+				$html.="</span>
+				<span><a href='recipe.php?id=$wawa[id]'>$wawa[name_en]</a> by <a href='profile.php?id_user=$wawa[id_user]'>$user[username]</a></span>
+				</div></p>";
+					
+				}
+			}
+		}
+		
+		return $html;
+		} 
+		
 	return $html;
 }
+
+function getRecipesIdbyIngredientId($ingid){
+	$query = sprintf("SELECT id_recipe FROM recipe_ingredients WHERE id_ingredient='$ingid'",	mysql_real_escape_string($ingid));
+	$result = mysql_query($query);
+	if (!$result) {
+		return false;
+	}else{
+		while ($row = mysql_fetch_assoc($result)) {
+			$reponse[] = $row['id_recipe'];
+		}
+	}
+	return $reponse;
+}
+
+function getRecipesPhotobyId($idrecipe){
+	$query = sprintf("SELECT path_source FROM recipe_photos WHERE id_recipe='%s'", mysql_real_escape_string($idrecipe));
+	$result2 = mysql_query($query);
+
+	if(mysql_num_rows($result2) == 1){
+		$ij = mysql_fetch_assoc($result2);
+		$html = "<img src='$ij[path_source]' width='100px' height='75px' />";
+	}
+	return $html;
+}
+
+
+function retrieve_recipe_infos($id){ // prend en paramètre l'id de la recette
+	$sql='SELECT * FROM recipes WHERE id='.$id;
+	$query=mysql_query($sql);
+	$verif = mysql_num_rows($query);
+
+	if ($verif > 0){
+	return $result=mysql_fetch_assoc($query);
+	}
+	return false;
+  }
+
+
+function getAllInMyFridge($iduser){
+	$query = sprintf("SELECT text_default FROM fridge WHERE status='2' AND  id_user='$iduser'",	mysql_real_escape_string($id));
+	$result = mysql_query($query);
+
+	if (!$result) {
+		return false;
+	}else{
+		$reponse;
+		while ($row = mysql_fetch_assoc($result)) {
+			$reponse[]=$row['text_default'];
+		}
+		return $reponse;
+	}
+}
+
 
 
 //fonction pour recuperer les infos de l'ingredient
@@ -280,8 +368,8 @@ function insertIntoFridgeIng($text,$userid){
 ////////////////////////////////////////////END FUNCTIONS////////////////////////////////////////////////////
 
 
-
 if (isset($userid)){  // vérification si logué en tant qu'utilisateur
+
 	$html = '';
 	$userinfos=retrieve_user_infos($userid);
 	$useraddinfos=retrieve_user_add_infos($userid);
