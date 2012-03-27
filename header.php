@@ -262,6 +262,8 @@ function navContent() {
 		<a href='./albums.php'>Albums</a>
 		<!-- <a href='./information.php'>Information</a> -->
 		<a href='./objectivesform.php'>Objectives</a>
+		<a href='./fridge.php'>My Fridge</a>
+		<a href='./shoplist.php'>My Shoplist</a>
 		<a href='./index.php?action=logout'>Log out</a>";
 	} else {
 		$content = "
