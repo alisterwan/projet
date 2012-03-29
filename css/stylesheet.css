@@ -228,7 +228,6 @@ body {
   background-color: hsl(0, 0%, 90%);
   margin: 0 auto;
   padding: 100px 0 50px 150px;
-  position: relative;
   width: 960px;
 }
 header {
@@ -251,8 +250,7 @@ header > * {
 #logo {
   color: hsl(0, 0%, 100%);
   display: inline-block;
-  font: 2.5em/100px Clara, serif;
-  font-weight: 700;
+  font: 700 2.5em/100px Clara, serif;
   text-decoration: none;
   /* mothereffingtextshadow.com */
   text-shadow: 0 1px 0 hsl(0, 0%, 80%),
