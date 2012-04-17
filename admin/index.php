@@ -164,7 +164,10 @@
 	echo  "$html"; 
 	}
 	
-	
+	if(isset($_GET['mode']) && $_GET['mode']=="logout"){
+		session_unset();
+		header("location: ../index.php");
+	}
 
 	
 	printFooter();
