@@ -54,7 +54,7 @@ if (isset($_GET['recherche']) && $_GET['recherche']) {
 
 		$mots = explode(' ',$rec);//En separre lexpression en mots cles
 		foreach ($mots as $mot) {
-			$req .= ' username LIKE "%'.$mot.'%" OR';
+			$req .= 'username LIKE "%'.$mot.'%" OR firstname LIKE "%'.$mot.'%" OR surname LIKE "%'.$mot.'%" OR';
 		}
 
 		$req     .= ' 1=0';
@@ -75,6 +75,8 @@ if (isset($_GET['recherche']) && $_GET['recherche']) {
 			</div>";
 		}
 	}
+
+	
 } else {
 	$html .= "<h2>No Results Found</h2>";
 }
