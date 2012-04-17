@@ -360,6 +360,89 @@ function printProfileForm($useraddinfos, $do){
 
 	return $content;
 }
+
+function getRecipeInfosbyUser($iduser){ 
+	$sql='SELECT * FROM recipes WHERE id_user='.$iduser;
+	$query=mysql_query($sql);
+	$verif = mysql_num_rows($query);
+
+	if ($verif > 0){
+	return $result=mysql_fetch_assoc($query);
+	}
+	return false;
+  }
+
+
+function getUserRecipesbyUserID($userid){
+$query = sprintf("SELECT * FROM recipes WHERE id_user='%s'",
+	mysql_real_escape_string($userid));
+	$result = mysql_query($query);
+
+	if (!$result){
+	$html ="
+	<p>You haven't got recipes</p>";
+	}
+	else {
+	$html ="";
+		while($row3=mysql_fetch_assoc($result)) {
+		$query2 = "SELECT * FROM recipe_photos WHERE id_recipe=$row3[id]";
+		$result2 = mysql_query($query2);
+		$row2=mysql_fetch_assoc($result2);
+
+		$html.="<div><a href='./recipe.php?id=$row3[id]'><img 		src='$row2[path_source]' width='60px' height='60px' alt='$row3[name_en]' 	title='$row3[name_en]'/><br/>$row3[name_en]</a> $row3[creation]</div>";
+		}
+
+	}
+return $html;
+}
+
+function getLatestPosts(){
+
+	global $userid;
+
+	$sql = 'SELECT id, date FROM wall_post WHERE ';
+	$sql.= 'id_user='.$userid;
+	$sql.= ' ORDER BY date DESC LIMIT 0, 10';
+	
+	$query = mysql_query($sql);
+	if(!$query || mysql_num_rows($query)<1) return false;
+
+	$posts;
+	while($result = mysql_fetch_assoc($query)){
+		$posts[] = $result['id'];
+	}
+	return $posts;
+}
+
+function printWallPostById($idpost){ // display a Post and Comments
+	global $userid;
+	$sql = 'SELECT * FROM wall_post WHERE id='.$idpost;
+	$query = mysql_query($sql);
+	if(!$query) return false;
+
+	$result = mysql_fetch_assoc($query);
+	$id_post = $result['id'];
+	$id_user = $result['id_user'];
+	$post_type = $result['post_type'];
+	$content = $result['content'];
+	$approval = $result['approval'];
+	$date = $result['date'];
+
+	$ficelle ='';
+	$ficelle.= '<table style="text-align: left; " border="1" cellpadding="2" cellspacing="2">';
+	$ficelle.= '<tr><td>'.printAvatarByUserId($id_user).'<br/>';// case avatar
+	$ficelle.= printRatingPost($idpost).'</td>'; // ratings
+
+	$ficelle.= '<td>'.printLinkToProfileByUserId($id_user).' - '.$date.'<br/>';
+	$ficelle.= $content.'<hr/>';
+	$ficelle.= printLikeDislikePost($id_post).'<br/>'.printPermissionChoices($id_post, getCreatorIdByPostId($id_post)).'<hr/>';
+	$ficelle.= printAllCommentsByWallPostId($id_post);
+	$ficelle.= '</td></tr></table>';
+
+	return $ficelle;
+}
+
+
 ////////////////////////////////////////////END FUNCTIONS////////////////////////////////////////////////////
 
 
@@ -411,6 +494,8 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 			}
 		
 			$html.= '<br/><br/><a href="profile.php?mode=edit_profile" />Edit your profile</a> | <a href="profile.php?mode=edit_account_infos" />Edit your account informations</a>';
+			$html.="<h4>Lastest posts</h4>";
+			$html.= getUserRecipesbyUserID($userid);
 		
 		}elseif(isset($_GET['mode']) && $_GET['mode']=="edit_account_infos"){ // edit account infos
 			// Mise à jour des données
