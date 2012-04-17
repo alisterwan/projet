@@ -54,5 +54,5 @@ include('query_admin.php');
 			<div><a href='./index.php?mode=customers'>Customer's list</a></div>
 			<div><a href='./index.php?mode=recipes'>Recipe's list</a></div>
 			<div><a href='./index.php?mode=ingredients'>Ingredients list</a></div>
-			<div><a href='../logout.php'>Log out</a></div>
+			<div><a href='index.php?mode=logout'>Log out</a></div>
 		</div>
