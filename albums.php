@@ -4,11 +4,11 @@
 function getRandomAlbumCover($idalbum){
 $query = "SELECT path_thumbnail,id_album from albums_photos WHERE id_album='$idalbum' ORDER BY RAND() LIMIT 1";
 $result = mysql_query($query);
-		$html ="<div id='albums'>";
+		//$html ="<div id='allalbums'>";
 		while($row = mysql_fetch_assoc($result)){
-		$html.= "<a href='./albums.php?id=$row[id_album]'><img src='$row[path_thumbnail]'></a>";
+		$html = "<a href='./albums.php?id=$row[id_album]'><img src='$row[path_thumbnail]'></a>";
 		}
-		$html.="</div>";
+		//$html.="</div>";
 return $html;
 }  
   
@@ -43,10 +43,12 @@ function getAllAlbumsbyUserId($id){
 	}
 	else{
 		$html.="<h4>Your albums</h4>"; 
+		$html.="<div id='allalbums'>";
 		while($row = mysql_fetch_assoc($result)){
 		$html.= getRandomAlbumCover($row['id']);
-		$html.=" <div><a href='./albums.php?id=$row[id]'><span>$row[name] </span></a><a href='#' onclick='removeAlbum(event,$row[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a></div>";
+		$html.=" <a href='./albums.php?id=$row[id]'>$row[name]</a><a href='#' onclick='removeAlbum(event,$row[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a>";
 		}
+		$html.="</div>";
 		$html.="<p><a href='create_album.php'>Create a new album</a></p>";
 	}
 	return $html;
