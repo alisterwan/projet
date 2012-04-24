@@ -255,7 +255,7 @@ function getAllUsersOfGroups($groups){ // returns all userID (array) who belong 
 		}
 	}
 	
-	if(is_array($users)) return $users; // returns userID
+	if(isset($users) && is_array($users)) return $users; // returns userID
 	
 	return false; // none
 }
