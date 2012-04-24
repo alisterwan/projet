@@ -125,22 +125,18 @@ function leftboxContent(){
 
 
 if ($_POST) { // si le user submit
-	$i = CountIngredients($userid);
-	$i = $i+1;
-		while ($_POST[$i]) {
-			$ing = getidIngredient($_POST[$i]);
-				if($ing){
-				$sql = insertIntoFridgeExistingIng($_POST[$i],$userid);
-				$i++;
-				}
-				else{
-				$sql = insertIntoFridgeIng($_POST[$i],$userid);
-				$i++;
-				}
-					
-		}
-
+	$i = CountIngredients($userid)+1;
+	while (isset($_POST[$i])) {
+		$ing = getidIngredient($_POST[$i]);
+		if($ing){
+			$sql = insertIntoFridgeExistingIng($_POST[$i],$userid);
+			$i++;
+		}else{
+			$sql = insertIntoFridgeIng($_POST[$i],$userid);
+			$i++;
+		}					
 	}
+}
 
 
 /////////////////////////////// PRINTERS /////////////////////////////
@@ -235,33 +231,32 @@ function printFormAddIngredient($userid){
 		$toto = getAllInMyFridge($userid);
 		
 		if($toto){
-		$html.= "<h4>Search Results</h4>";
-		}
-		else {
-		$html.= "<h4>No Results found</h4>";
-		}
-		
-		foreach($toto as $to){
-		$coco = getidIngredient($to);
-			//si l'ingredient existe on recherche les recettes liées par l'id
-			if($coco){
-			$titi = getRecipesIdbyIngredientId($coco['id']);
- 				foreach($titi as $ti){	
-				$wawa = retrieve_recipe_infos($ti); 
-				$user = retrieve_user_infos($wawa['id_user']);		
-				$html.= "<p><div>
-				<span>";
-				$html.= getRecipesPhotobyId($wawa['id']);
-				$html.="</span>
-				<span><a href='recipe.php?id=$wawa[id]'>$wawa[name_en]</a> by <a href='profile.php?id_user=$wawa[id_user]'>$user[username]</a></span>
-				</div></p>";
-					
+			$html.= "<h4>Search Results</h4>";
+			foreach($toto as $to){
+				$coco = getidIngredient($to);
+				//si l'ingredient existe on recherche les recettes liées par l'id
+				if($coco){
+					$titi = getRecipesIdbyIngredientId($coco['id']);
+					if($titi!=false){
+						foreach($titi as $ti){	
+							$wawa = retrieve_recipe_infos($ti); 
+							$user = retrieve_user_infos($wawa['id_user']);		
+							$html.= "<p><div>
+							<span>";
+							$html.= getRecipesPhotobyId($wawa['id']);
+							$html.="</span>
+							<span><a href='recipe.php?id=$wawa[id]'>$wawa[name_en]</a> by <a href='profile.php?id_user=$wawa[id_user]'>$user[username]</a></span>
+							</div></p>";					
+						}
+					}
 				}
 			}
+		}else{
+			$html.= "<h4>No Results found</h4>";
 		}
 		
 		return $html;
-		} 
+	} 
 		
 	return $html;
 }
@@ -271,9 +266,10 @@ function printFormAddIngredient($userid){
 function getRecipesIdbyIngredientId($ingid){
 	$query = sprintf("SELECT id_recipe FROM recipe_ingredients WHERE id_ingredient='$ingid'",	mysql_real_escape_string($ingid));
 	$result = mysql_query($query);
-	if (!$result) {
+	if (!$result || mysql_num_rows($result) < 1) {
 		return false;
 	}else{
+		$reponse;
 		while ($row = mysql_fetch_assoc($result)) {
 			$reponse[] = $row['id_recipe'];
 		}
@@ -306,15 +302,14 @@ function retrieve_recipe_infos($id){ // prend en paramètre l'id de la recette
 
 
 function getAllInMyFridge($iduser){
-	$query = sprintf("SELECT text_default FROM fridge WHERE status='2' AND  id_user='$iduser'",	mysql_real_escape_string($id));
-	$result = mysql_query($query);
+	$result = mysql_query('SELECT * FROM fridge WHERE status=2 AND id_user='.$iduser);
 
-	if (!$result) {
+	if (!$result || mysql_num_rows($result) < 1) {
 		return false;
 	}else{
 		$reponse;
 		while ($row = mysql_fetch_assoc($result)) {
-			$reponse[]=$row['text_default'];
+			$reponse[] = $row['text_default'];
 		}
 		return $reponse;
 	}
@@ -404,10 +399,11 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 
 	//requête pour recupérer les ingrédients
 	$ingredients = mysql_query("SELECT name_en,id FROM ingredients");
+	$list2 = "";
 	while ($ingredient = mysql_fetch_array($ingredients)) {
-	$list2 .= "<option value='$ingredient[0]'>$ingredient[0]</option>";
+	$list2.= "<option value='$ingredient[0]'>$ingredient[0]</option>";
 	}
-	$html .= "<datalist id='ingredientList'>$list2</datalist>";
+	$html.= "<datalist id='ingredientList'>$list2</datalist>";
 	
 	
 	
