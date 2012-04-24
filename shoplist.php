@@ -125,9 +125,8 @@ function leftboxContent(){
 
 
 if ($_POST) { // si le user submit
-	$i = CountProduct($userid);
-	$i = $i+1;
-		while ($_POST[$i]) {
+	$i = CountProduct($userid)+1;
+		while (isset($_POST[$i])) {
 			$ing = getidIngredient($_POST[$i]);
 				if($ing){
 				$sql = insertIntoShoplistExistingProduct($_POST[$i],$userid);
@@ -314,10 +313,11 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 
 	//requête pour recupérer les ingrédients
 	$ingredients = mysql_query("SELECT name_en,id FROM ingredients");
+	$list2 = "";
 	while ($ingredient = mysql_fetch_array($ingredients)) {
-	$list2 .= "<option value='$ingredient[0]'>$ingredient[0]</option>";
+	$list2.= "<option value='$ingredient[0]'>$ingredient[0]</option>";
 	}
-	$html .= "<datalist id='ingredientList'>$list2</datalist>";
+	$html.= "<datalist id='ingredientList'>$list2</datalist>";
 	
 	
 	
