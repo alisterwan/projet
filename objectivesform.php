@@ -4,9 +4,8 @@
   
 
 if (isset($userid)){ // vérification si logué ou pas
-
-
-
+	
+	$html = "";
  $html.="  <h3>Objectives</h3> 
 <form action='objectivesform.php' enctype='multipart/form-data' method='post'> 
 	  Weight (kilograms):<br/> 
