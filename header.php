@@ -101,6 +101,10 @@ function printDocument($title = 'DigEat') {
 
 			<script src='js/fisheye-iutil.min.js'></script>
 			<script src='js/dock-example1.js'></script>
+			
+			<script src= 'js/TSWUtils.js'></script>
+			<script src= 'js/TSWBrowserDetect.js'></script>
+			<script src= 'js/TSWImageZoom.js'></script>
 
 			<script src='js/modernizr.custom.65662.js'></script>
 			<script src='js-webshim/minified/polyfiller.js'></script>
@@ -222,6 +226,7 @@ function printDocument($title = 'DigEat') {
 			<header>
 				<a href='./index.php' id='logo'>DigEat</a>
 				<form action='search_advanced.php' method='GET' id='search'>";
+
 				
 				if(isset($_GET['recherche']) && $_GET['recherche']!=""){
 					echo "<input type='search' name='recherche' placeholder='Search' value=\"".htmlentities($_GET['recherche'])."\">";

@@ -17,12 +17,13 @@ function getRandomAlbumCover($idalbum){
 }  
   
 function printPhotosFromAlbum($idalbum){
-	$query = "SELECT path_thumbnail from albums_photos WHERE id_album='$idalbum'";
+	$query = "SELECT * from albums_photos WHERE id_album='$idalbum'";
 	$result = mysql_query($query);
 	$html="<div id='albums'>";
 
 	while($row = mysql_fetch_assoc($result)){
-		$html.= "<a href='#'><img src='$row[path_thumbnail]'></a>";
+		$html.= "<a href='$row[path]' onclick='return tswImageZoomAnimate(this);'
+		onmouseover='tswImageZoomPreloadImage(this);'><img src='$row[path_thumbnail]'></a>";
 	}
 	$html.="</div>";
 	return $html;
