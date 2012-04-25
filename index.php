@@ -71,7 +71,7 @@ function getLatestPostsOfContacts(){ // returns 10 latest posts ID of all contac
 		if($i < $nbusers) $sql.= ' OR ';
 	}
 
-	$sql.= ' ORDER BY date DESC LIMIT 0, 10';
+	$sql.= ' ORDER BY date DESC LIMIT 0, 4';
 	$query = mysql_query($sql);
 	if(!$query || mysql_num_rows($query)<1) return false;
 
@@ -114,7 +114,7 @@ function getLastestRecipesofContact(){
 		if($i < $nbusers) $sql.= ' OR ';
 	}
 
-	$sql.= ' ORDER BY creation DESC LIMIT 0, 10';
+	$sql.= ' ORDER BY creation DESC LIMIT 0, 4';
 	$query = mysql_query($sql);
 	if(!$query || mysql_num_rows($query)<1) return false;
 
