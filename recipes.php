@@ -184,15 +184,22 @@ if(isset($_GET['mode']) && $_GET['mode'] == "new_recipe"){
 		if (!in_array($extension, $imgExtensions)) {
 			$message.= "<p class='error'>The uploaded file's type is not supported.</p>";
 		} else {
-			$file_path = './img/recipes/'.$userid.'_'.$id_recipe.'.'.$extension;
+			$rep = './img/recipes/';
+			$file_path = $userid.'_'.$id_recipe.'.'.$extension;
+			$destination = $rep.$file_path;
 
 			// Transfère de l'image du répertoire temporaire vers le dossier './img/recipes/'.
-			move_uploaded_file($_FILES['picture']['tmp_name'], $file_path);
+			if(!move_uploaded_file($_FILES['picture']['tmp_name'], $destination)){
+			exit("cannot upload");
+			};
+			
+			$thumb = "img/recipesthumb/$file_path";
+			createThumb($destination,$thumb,150,"left");
 
 			// Créer le lien entre la recette et l'image.
 			$query = sprintf("INSERT into recipe_photos(id_recipe, path_source) VALUES('%s', '%s');",
 				mysql_real_escape_string(strip_tags($id_recipe)),
-				mysql_real_escape_string(strip_tags($file_path)));
+				mysql_real_escape_string(strip_tags($thumb)));
 			@mysql_query($query);
 		}
 	}
