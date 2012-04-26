@@ -44,7 +44,12 @@ function is_approved_public_ByRecipeId($id){
 	return false;	
 }
 
-
+function is_CurrentUser_RecipeCreator_ByRecipeID($id){
+	global $userid;
+	$recipe = retrieve_recipe_infos($id);
+	if(!$recipe) return false;
+	return $userid == $recipe['id_user'];
+}
 /******************** PRINTERS **************************/
 function printPublicApproval(){
 	global $userid;
@@ -73,6 +78,124 @@ function printPublicApproval(){
 	return $ficelle;
 }
 
+function printMandatoryJScript($recipeID){
+	$df = "";
+	
+	if(is_CurrentUser_RecipeCreator_ByRecipeID($recipeID)){
+		$df.= "<script type='text/javascript'>
+				$(document).ready(function () {
+				$('ul.menu_body li:even').addClass('alt');
+				$('img.menu_head').click(function () {
+				$('ul.menu_body').slideToggle('medium');
+				});
+				$('ul.menu_body li a').mouseover(function () {
+				$(this).animate({ fontSize: '14px', paddingLeft: '20px' }, 50 );
+				});
+				$('ul.menu_body li a').mouseout(function () {
+				$(this).animate({ fontSize: '12px', paddingLeft: '10px' }, 50 );
+					});
+				});
+				</script>";
+	}
+	
+	return $df;
+}
+
+function printUserActions_ByRecipeId($recipeID){
+	$df = "";
+	
+	if(is_CurrentUser_RecipeCreator_ByRecipeID($recipeID)){
+		$df.= "<div>
+		<img src='img/templates/option.png' width='150' height='40' class='menu_head' />
+			<ul class='menu_body'>
+				<li><a href='editrecipe.php?id=$_GET[id]'>Edit</a></li>
+				<li><a id='removerec' onclick='removeRecipe(event,$_GET[id])' href='#'>Delete</a></li>
+
+
+				<script>
+		  function removeRecipe(e, id) {
+		  var a, url, x;
+		  e.preventDefault();
+		  a = e.target.parentNode;
+		  a.parentNode.hidden = true;
+		  url = './deleterecipe.php?id=' + id;
+		  x = new XMLHttpRequest();
+		  x.open('GET', url, true);
+		  x.onload = function(e) {
+			a.innerHTML = this.responseText;
+			if(this.responseText !== 'success') {
+			  a.innerHTML = this.responseText;
+			  a.parentNode.hidden = false;
+			} else {
+			  location.pathname = '/~jwankutk/projet/recipes.php';
+			}
+		  };
+		  x.send();
+		}
+		</script>
+
+
+
+				<li><a href='recipeTopdf.php?id=$_GET[id]'>Export to PDF</a></li>
+				<li><a href='#'>Share</a></li>
+
+				<script>
+		  function exportRecipe(e, data) {
+		  var a, url, x;
+		  e.preventDefault();
+		  a = e.target.parentNode;
+		  a.parentNode.hidden = true;
+		  url = './recipeTopdf.php?data=' + data;
+		  x = new XMLHttpRequest();
+		  x.open('GET', url, true);
+		  x.onload = function(e) {
+			a.innerHTML = this.responseText;
+			if(this.responseText !== 'success') {
+			  a.innerHTML = this.responseText;
+			  a.parentNode.hidden = false;
+			}
+		  };
+		  x.send();
+		}
+		</script>
+
+			</ul>
+		</div>";
+	}else{
+		$df.= "<div>
+			<img src='img/templates/option.png' width='150' height='40' class='menu_head'>
+				<ul class='menu_body'>
+
+
+					<li><a href='recipeTopdf.php?id=$_GET[id]'>Export to PDF</a></li>
+					<li><a href='#'>Share</a></li>
+
+					<script>
+			  function exportRecipe(e, data) {
+			  var a, url, x;
+			  e.preventDefault();
+			  a = e.target.parentNode;
+			  a.parentNode.hidden = true;
+			  url = './recipeTopdf.php?data=' + data;
+			  x = new XMLHttpRequest();
+			  x.open('GET', url, true);
+			  x.onload = function(e) {
+				a.innerHTML = this.responseText;
+				if(this.responseText !== 'success') {
+				  a.innerHTML = this.responseText;
+				  a.parentNode.hidden = false;
+				}
+			  };
+			  x.send();
+			}
+			</script>
+
+				</ul>
+			</div>";
+	}
+	
+	return $df;
+}
 
 /***********************************************************/
 if (isset($userid)){ // vérification si logué ou pas
@@ -116,38 +239,11 @@ if (isset($userid)){ // vérification si logué ou pas
 
 		$i['difficulty']= $row['name_en'];
 
+		$html.= printMandatoryJScript($_GET['id']);
+		
 		$data = '<h2>'.$i['name_en'].'</h2> by '.printLinkToProfileByUserId($i['id_user']).printPublicApproval().'<br><br>';
 
-		$html.="<div>
-			<img src='img/templates/option.png' width='150' height='40' class='menu_head'>
-				<ul class='menu_body'>
-
-
-					<li><a href='recipeTopdf.php?id=$_GET[id]'>Export to PDF</a></li>
-					<li><a href='#'>Share</a></li>
-
-					<script>
-			  function exportRecipe(e, data) {
-			  var a, url, x;
-			  e.preventDefault();
-			  a = e.target.parentNode;
-			  a.parentNode.hidden = true;
-			  url = './recipeTopdf.php?data=' + data;
-			  x = new XMLHttpRequest();
-			  x.open('GET', url, true);
-			  x.onload = function(e) {
-				a.innerHTML = this.responseText;
-				if(this.responseText !== 'success') {
-				  a.innerHTML = this.responseText;
-				  a.parentNode.hidden = false;
-				}
-			  };
-			  x.send();
-			}
-			</script>
-
-				</ul>
-			</div>";
+		$html.= printUserActions_ByRecipeId($_GET['id']);
 
 		$data.="<strong>Ingredients</strong>:<ul>";
 
