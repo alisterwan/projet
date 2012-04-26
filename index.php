@@ -1,5 +1,6 @@
 <?php include 'header.php';
 
+define("NOIMAGE", 'img/default/noimage.gif');
 ////////////////// BOXES //////////////////
 function leftboxContent(){
 		 // ATTENTION IL FAUT METTRE LES QUOTES POUR id !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -619,17 +620,18 @@ function printRecipesBadgeById($id) {
 	mysql_real_escape_string($id));
 	$result2 = mysql_query($query);
 
-	if(mysql_num_rows($result2) == 1){
+	if(mysql_num_rows($result2) > 0){
 		$recip = mysql_fetch_assoc($result2);
+	}else{
+		$recip['path_source'] = NOIMAGE;
 	}
 
 	if(!$recipe){
 		return '';
 	}
 
-	$ficelle  = "
-	<table style='text-align: left;' border='0' cellpadding='2' cellspacing='2'>
-		<tr>
+	$ficelle  = "<table style='text-align: left;' border='0' cellpadding='2' cellspacing='2'>
+			<tr>
 			<td><img src='$recip[path_source]' width='60px' height='60px'> </td>
 			<td><a href='recipe.php?id=$recipe[id]&iduser=$recipe[id_user]'>
 			$recipe[name_en]</a>&nbsp<br>
