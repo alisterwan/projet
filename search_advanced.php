@@ -41,10 +41,11 @@ if (isset($_GET['recherche']) && $_GET['recherche']) {
 	}
 	$req    .= ' 1=0';
 	$requete = mysql_query($req);
-
-
-
-
+	
+	if(mysql_num_rows($requete)>0){
+	$html.= "<h4>Results on recipes:</h4>";
+	}
+	
 	//On affiche les resultats
 	while ($dnn = mysql_fetch_array($requete)) {
 		//recupere le username
@@ -57,7 +58,7 @@ if (isset($_GET['recherche']) && $_GET['recherche']) {
 		$query2  = "SELECT path_source FROM recipe_photos WHERE id_recipe=$dnn[id]";
 		$result2 = mysql_query($query2);
 		$res2    = mysql_fetch_assoc($result2);
-
+		
 		$html   .= "
 		<div>
 			<a href='./searchrecipe.php?id=$dnn[id]&id_user=$dnn[id_user]'>
@@ -81,10 +82,10 @@ if (isset($_GET['recherche']) && $_GET['recherche']) {
 
 		$req     .= ' 1=0';
 		$requete2 = mysql_query($req);
-		/*
-		if (mysql_num_rows($requete2) == 0) {
-			$html .= "<h2>No Results Found</h2>";
-		}*/
+	
+		if(mysql_num_rows($requete2)>0){
+		$html.= "<h4>Results on Ingredients:</h4>";
+		}
 
 		//On recupere l'id de l'ingredient
 		while ($dnn = mysql_fetch_array($requete2)) {
@@ -118,9 +119,9 @@ if (isset($_GET['recherche']) && $_GET['recherche']) {
 		$req     .= ' 1=0';
 		$requete2 = mysql_query($req);
 
-		/*if (mysql_num_rows($requete2) == 0) {
-			$html .= "<h2>No Results Found</h2>";
-		}*/
+		if(mysql_num_rows($requete2)>0){
+	$html.= "<h4>Results on users:</h4>";
+	}
 
 		//On affiche les resultats
 		while ($dnn = mysql_fetch_array($requete2)) {
