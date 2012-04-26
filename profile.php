@@ -246,8 +246,11 @@ function printAccountInformation ($id){
 			$ficelle.="	<br/> <b> Address </b> : $res2[address] ";
 		if ($res2[city])
 			$ficelle.="	<br/> <b> City </b> : $res2[city] ";
+			
+			$country= getCountryNameById($res2['country']);
+			
 		if ($res2[country])
-			$ficelle.="	<br/> <b> Country </b> : $res2[country] ";
+			$ficelle.="	<br/> <b> Country </b> : $country ";
 	$ficelle.="
 		<br/> <b> Email </b>: $res2[mail]";
 	
@@ -328,7 +331,7 @@ function printEditAccountInfoForm($userinfos){
 	$mail=$userinfos['mail'];
 	$address=$userinfos['address'];
 	//$city=$userinfos['city'];
-	$country=getCountryNameById($userinfos['country']);		
+	$country= getCountryNameById($userinfos['country']);		
 					
 	// affichage champs profile, c'est tout ce pâté
 	$content.= '<p><h4>Your profile information:</h4></p>
