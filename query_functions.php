@@ -318,6 +318,22 @@ function getAllGroupsByUserId($idcreator){
 	}
 }
 
+function getFriendsByUserId($idcreator){
+	$query = sprintf("SELECT * FROM groups	WHERE id_creator='%s' AND name='Friends'",	
+	mysql_real_escape_string($idcreator));
+	$result = mysql_query($query);
+
+	if (!$result) {
+		return false;
+	}else{
+		$reponse;
+		while ($row = mysql_fetch_assoc($result)) {
+			$reponse[]=$row['id'];
+		}
+		return $reponse;
+	}
+}
+
 function getAllUsersOfGroups($groups){ // returns all userID (array) who belong to $groups (array) EXCEPT owners|| returns FALSE if none
 	if(count($groups)<1) return false;
 	
@@ -453,6 +469,17 @@ function getGroupNameById($id){
 	if($query){
 		$result = mysql_fetch_assoc($query);
 		return $result['name'];
+	}
+	return '';
+}
+
+function getFriendsById($id){
+$sql='SELECT * FROM groups WHERE id_creator='.$id.' AND name="Friends"';
+	$query = mysql_query($sql);
+	
+	if($query){
+		$result = mysql_fetch_assoc($query);
+		return $result;
 	}
 	return '';
 }

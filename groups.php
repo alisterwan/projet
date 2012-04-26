@@ -1,6 +1,55 @@
 <?php
 include './header.php';
 
+function getAllGroupsExceptFollowersByUserId($idcreator){
+	$query = sprintf("SELECT * FROM groups	WHERE id_creator='%s'",	mysql_real_escape_string($idcreator));
+	$result = mysql_query($query);
+
+	if (!$result) {
+		return false;
+	}else{
+		$reponse;
+		while ($row = mysql_fetch_assoc($result)) {
+			if($row['name']!='Followers') $reponse[]=$row['id'];
+		}
+		return $reponse;
+	}
+}
+
+function isLoggedVisitor(){
+	global $userid;
+	return (isConnected() && isset($_GET['id']) && $_GET['id']!=$userid);
+}
+
+function isFriend(){
+	global $userid;
+	if(isConnected()){
+		if(isLoggedVisitor()){
+			return checkPermission(getAllGroupsExceptFollowersByUserId($_GET['id']), $userid);
+		}
+	}
+	return false;
+}
+
+function isVisitor(){
+	global $userid;
+	if(!isConnected() || isLoggedVisitor()){
+		return true;
+	}
+	return false;
+}
+
+function isLost(){ // non connected and not visiting anything lol
+	global $userid;
+	if(!isConnected() && !isVisitor()) return true;
+
+	return false;
+}
+
+function isOwner(){
+	return (!isLost() && !isFriend() && !isVisitor());
+}
+
 function retrieve_group_member($groupid){ // prend en paramètre l'id de groupe, soit $_SESSION['id']
 	$sql='SELECT id_creator,name FROM groups_relations WHERE id_group='.$groupid;
 	$query=mysql_query($sql);
@@ -23,6 +72,15 @@ function createGroup($name,$creatorid){
 	return $res;
 }
 
+function getGroupName($idgroup){
+	$query = "SELECT * from groups WHERE id='$idgroup'";
+	$result = mysql_query($query);
+	if(!$result)
+	die("Error: ".mysql_error());
+	else
+	return $row = mysql_fetch_assoc($result);
+}
+
 function redirect() { //fonction de redirection vers la page de groupe créé
     $query = mysql_fetch_row(mysql_query(
 		sprintf("SELECT id FROM groups WHERE name LIKE '%s'",
@@ -32,6 +90,58 @@ function redirect() { //fonction de redirection vers la page de groupe créé
     header("Location: groups.php?id=$id");
     exit;
 } 
+
+function printAvatarBadgeByURL($url) {
+	return "<img src='$url' style='width: 48px; height: 48px;' alt=avatar>";
+}
+
+
+function printUserBadgeById($id) {
+	$user = retrieve_user_infos($id);
+
+	if(!$user){
+		return '';
+	}
+	$ficelle  = '
+	<table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
+		<tr>
+			<td>'.printAvatarBadgeByURL($user['avatar']).'</td>
+			<td><a href=profile.php?id_user='.$user['id'].'>'.$user['firstname'].' '.$user['surname'].'<br>';
+
+	global $userid;
+	$ficelle.='</a></td></tr></table>';
+
+	return $ficelle;
+}
+
+function addFriendToGroupId($idgroup,$iduser){
+$query  = "INSERT INTO groups_relations(id_group,id_user,approval,status) VALUES ($idgroup,$iduser,1,1)";
+$result = mysql_query($query);
+
+if (!$result) {
+	die("Error: ".mysql_error());
+}
+	
+else return "<div>Contacts successfully added.</div>";			
+
+}
+
+
+function printContactsByUserId($id,$idgroup) {	
+	$groupsids = getFriendsByUserId($id);
+	$ficelle   = "<form action='groups.php?mode=addcontact&id=$idgroup' method='post'>";
+	foreach ($groupsids AS $groupid){
+		$users    = getUserIdByGroup($groupid);
+		if ($users) {
+			foreach ($users AS $user) {
+				$ficelle.= printUserBadgeById($user)."<input type='checkbox'  name='users[]' value='$user'><br>";
+			}
+		} 
+	}
+	$ficelle.= "<input type='submit' value='submit'></form>";
+
+	return $ficelle;
+}
 
 //////////////////////////////////////////////////////
 
@@ -55,16 +165,7 @@ if (isset($userid)){  // vérification si logué ou pas
 		$useraddinfos=retrieve_user_add_infos($userid);
 	  
 		$html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>	
-			<div id='content'>
-				<div id='dock'>
-					<div class='dock-container'>			
-						<a class='dock-item' href='newmessage.php'><span>Messages</span><img src='img/dock/email.png' alt='messages' /></a>	
-						<a class='dock-item' href='groups.php'><span>Groups</span><img src='img/dock/portfolio.png' alt='history' /></a>			
-						<a class='dock-item' href='followers.php'><span>Followers</span><img src='img/dock/link.png' alt='links' /></a> 
-						<a class='dock-item' href='#'><span>RSS</span><img src='img/dock/rss.png' alt='rss' /></a>		
-					</div>
-				</div>
-			</div>	 
+		
 		 
 			<form action='newgroup.php' method='post' id='contribution'>
 				<p>Create a group</p>
@@ -74,24 +175,51 @@ if (isset($userid)){  // vérification si logué ou pas
 		
 		printDocument('Create a new group');
 		
-	}else{	// group page
+	}
+	
+	if(isset($_GET['mode']) && $_GET['mode'] == "addcontact" && $_GET['id']){
+	if(isset($_POST['users'])) { 
+  	$group = getGroupName($_GET['id']);
+  	$html = "<h3>Contact has been added to $group[name]</h3>";
+  	for ($i = 0; $i <count($_POST['users']); $i++){
+      		$html = addFriendToGroupId($_GET['id'],$_POST['users'][$i]);
+    	}
+    }
+    
+    
+ 	else{
+	//content to add
+	$group = getGroupName($_GET['id']);
+	$html = "<h3>Add contact to $group[name]</h3>";
+	$html.= printContactsByUserId($userid,$_GET['id']);
+	}
+	printDocument('Add contact to group');
+	}
+	
+	elseif($_GET['id']){
+	$group = getGroupName($_GET['id']);
+  	$html = "<h3>$group[name]</h3>";
+  	$users = getUserIdByGroup($_GET['id']);
+  	if ($users) {
+			foreach ($users AS $user) {
+				$html.= printUserBadgeById($user).'<br>';
+			}
+			$html.="<a href='groups.php?mode=addcontact&id=$_GET[id]'>Add contacts</a>";
+		} else {
+			$html.= 'No contact<br>';
+			$html.="<a href='groups.php?mode=addcontact&id=$_GET[id]'>Add contacts</a>";
+		}
+  	printDocument('My Groups');
+    }
+	
+	else{	// group page
 	
 		$userinfos=retrieve_user_infos($userid);
 		$useraddinfos=retrieve_user_add_infos($userid);
 	  
 		//$i = retrieve_group_member($_GET['id']);
 	  
-		$html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>		
-			<div id='content'>
-				<div id='dock'>
-					<div class='dock-container'>			
-						<a class='dock-item' href='newmessage.php'><span>Messages</span><img src='img/dock/email.png' alt='messages' /></a> 		
-						<a class='dock-item' href='groups.php'><span>Groups</span><img src='img/dock/portfolio.png' alt='history' /></a> 		
-						<a class='dock-item' href='followers.php'><span>Followers</span><img src='img/dock/link.png' alt='links' /></a> 
-						<a class='dock-item' href='#'><span>RSS</span><img src='img/dock/rss.png' alt='rss' /></a> 		
-					</div>
-				</div>
-			</div>	  
+		$html = "  
 			<h2>My Groups</h2>";	
 		
 		//requete pour recuperer les groupes  
@@ -103,7 +231,7 @@ if (isset($userid)){  // vérification si logué ou pas
 			
 			$html .= "<li><a href='groups.php?mode=new_group'>Add a new group</li></a></ul>";
 		
-		printDocument('Compose a message');
+		printDocument('My Groups');
 	}
 }else{	
 	header('Location: index.php');
