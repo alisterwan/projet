@@ -205,21 +205,21 @@ function printInfoMember($id){
 	
 	$ficelle="";
 		
-	if ($info[date_birth])
+	if ($info['date_birth'])
 		$ficelle.="	<b> Born </b>: $info[date_birth] ";
-	if ($info[hobbies])
+	if ($info['hobbies'])
 		$ficelle.="<br>	<b> Hobbies </b>: $info[hobbies] ";
-	if ($info[job])
+	if ($info['job'])
 		$ficelle.="<br>	<b> Job </b>: $info[job] ";
-	if ($info[music])
+	if ($info['music'])
 		$ficelle.="	<br> <b> Music </b>: $info[music] ";
-	if ($info[films])
+	if ($info['films'])
 		$ficelle.="	<br> <b> Films </b>: $info[films] ";
-	if ($info[books])
+	if ($info['books'])
 		$ficelle.="<br>	<b> Books </b>: $info[books] ";
-	if ($info[aboutme])
-		$ficelle.="<br>	<b> About me  </b>:". $info[aboutme] ;
-	if ($info[favouritefood])
+	if ($info['aboutme'])
+		$ficelle.="<br>	<b> About me  </b>:". $info['aboutme'] ;
+	if ($info['favouritefood'])
 		$ficelle.="	<br><b> Favourite food  </b>: $info[favouritefood] ";
 		
 	return $ficelle;
@@ -238,18 +238,18 @@ function printAccountInformation ($id){
 	$ficelle ="
 		<br/> <b> Firstname </b>:  $res2[firstname]
 		<br/> <b> Surname </b> : $res2[surname]";
-		if ($res2[sex]==1)	
+		if ($res2['sex']==1)	
 			$ficelle.=" <br/> <b> Sex </b> : Masculin";
 		else $ficelle.=" <br/> <b> Sex </b> : Feminin";
 		
-		if ($res2[address])
+		if ($res2['address'])
 			$ficelle.="	<br/> <b> Address </b> : $res2[address] ";
-		if ($res2[city])
+		if ($res2['city'])
 			$ficelle.="	<br/> <b> City </b> : $res2[city] ";
 			
 			$country= getCountryNameById($res2['country']);
 			
-		if ($res2[country])
+		if ($res2['country'])
 			$ficelle.="	<br/> <b> Country </b> : $country ";
 	$ficelle.="
 		<br/> <b> Email </b>: $res2[mail]";
@@ -540,55 +540,55 @@ function printWallPostById($idpost){ // display a Post and Comments
 	
 	
 	function getAllInMyProhib($userid){
-	$html = "<fieldset>
-	<legend>User Preference Prohibition<a href=\"profile.php?mode=edit_prohib\" /> EDIT </a></legend>";
-	$html.= "<ul>";
-	$sql="SELECT * from user_preference_prohibition WHERE id_user='$userid'";
-	$result = mysql_query($sql);
-	
-	if(mysql_num_rows($result)==0){
-	$html.= "<div>Empty, please fill it</div>";
-	}
+		$html = "<fieldset>
+		<legend>User Preference Prohibition<a href=\"profile.php?mode=edit_prohib\" > EDIT </a></legend>";
+		$html.= "<ul>";
+		$sql="SELECT * from user_preference_prohibition WHERE id_user='$userid'";
+		$result = mysql_query($sql);
 		
-	while($row = mysql_fetch_assoc($result)){
-	$html.= "<li>$row[name_en]<a href='#' onclick='removeIngOnProhib(event,$row[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a></li>";
-	}	
-	$html.= "</ul></fieldset>";
-	return $html;
+		if(!$result || mysql_num_rows($result)==0){
+			$html.= "<div>Empty, please fill it</div>";
+		}else{			
+			while($row = mysql_fetch_assoc($result)){
+				$html.= "<li>$row[name_en]<a href='#' onclick='removeIngOnProhib(event,$row[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a></li>";
+			}	
+		}
+		$html.= "</ul></fieldset>";
+		return $html;
 	}
 	
 	function getAllIngILike($userid){
 	$html = "<fieldset>
-	<legend>User Preference Like <a href=\"profile.php?mode=edit_like\" /> EDIT </a></legend>";
+	<legend>User Preference Like <a href=\"profile.php?mode=edit_like\" > EDIT </a></legend>";
 	$html.= "<ul>";
 	$sql="SELECT * from user_preference_like WHERE id_user='$userid'";
 	$result = mysql_query($sql);
 	
-	if(mysql_num_rows($result)==0){
-	$html.= "<div>Empty, please fill it</div>";
+	if(!$result || mysql_num_rows($result)==0){
+		$html.= "<div>Empty, please fill it</div>";
+	}else{		
+		while($row = mysql_fetch_assoc($result)){
+			$html.= "<li>$row[name_en]<a href='#' onclick='removeIngOnLike(event,$row[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a></li>";
+		}	
 	}
-		
-	while($row = mysql_fetch_assoc($result)){
-	$html.= "<li>$row[name_en]<a href='#' onclick='removeIngOnLike(event,$row[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a></li>";
-	}	
 	$html.= "</ul></fieldset>";
 	return $html;
 	}
 	
 	function getAllIngIDislike($userid){
 	$html = "<fieldset>
-	<legend>User Preference Dislike <a href=\"profile.php?mode=edit_dislike\" /> EDIT </a></legend>";
+	<legend>User Preference Dislike <a href=\"profile.php?mode=edit_dislike\" > EDIT </a></legend>";
 	$html.= "<ul>";
 	$sql="SELECT * from user_preference_dislike WHERE id_user='$userid'";
 	$result = mysql_query($sql);
 	
-	if(mysql_num_rows($result)==0){
-	$html.= "<div>Empty, please fill it</div>";
+	if(!$result || mysql_num_rows($result)==0){
+		$html.= "<div>Empty, please fill it</div>";
+	}else{		
+		while($row = mysql_fetch_assoc($result)){
+			$html.= "<li>$row[name_en]<a href='#' onclick='removeIngOnDislike(event,$row[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a></li>";
+		}	
 	}
-		
-	while($row = mysql_fetch_assoc($result)){
-	$html.= "<li>$row[name_en]<a href='#' onclick='removeIngOnDislike(event,$row[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a></li>";
-	}	
 	$html.= "</ul></fieldset>";
 	return $html;
 	}
@@ -856,9 +856,9 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 			/////////////////////// FIN Affichage du nom et bannière élémentaire ////////////////////////
 			
 			if($useraddinfos){ // affichage infos passion du membre
-				$html.=" <b> <p align=\"center\"> INFORMATIONS PERSONELLES |  <a href=\"profile.php?mode=edit_account_infos\" />Edit</a> </p> </b> ";
+				$html.=" <b> <p align=\"center\"> INFORMATIONS PERSONELLES |  <a href=\"profile.php?mode=edit_account_infos\" >Edit</a> </p> </b> ";
 				$html.=printAccountInformation($userid);
-				$html.=" <br> <b> <p align=\"center\">  HOBBIES / ABOUT ME | <a href=\"profile.php?mode=edit_profile\" />Edit</a></p> </b>";
+				$html.=" <br> <b> <p align=\"center\">  HOBBIES / ABOUT ME | <a href=\"profile.php?mode=edit_profile\" >Edit</a></p> </b>";
 				$html.=printInfoMember($userid);
 				$html.=" <br> <b> <p align=\"center\">  CONTRAINTES ALIMENTAIRES </p> </b>";
 				$html.=	getAllInMyProhib($userid);
@@ -923,7 +923,7 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 
 			} // fin affichage profile
 			
-			$html.= '<br/><a href="profile.php" />Back to Profile</a>';
+			$html.= '<br/><a href="profile.php" >Back to Profile</a>';
 			
 		}
 		
