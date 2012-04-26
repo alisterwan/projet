@@ -23,7 +23,8 @@ function printPhotosFromAlbum($idalbum){
 
 	while($row = mysql_fetch_assoc($result)){
 		$html.= "<a href='$row[path]' onclick='return tswImageZoomAnimate(this);'
-		onmouseover='tswImageZoomPreloadImage(this);'><img src='$row[path_thumbnail]'></a>";
+		onmouseover='tswImageZoomPreloadImage(this);'><img src='$row[path_thumbnail]'></a>
+<a href='#' onclick='removePicture(event,$row[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a>";
 	}
 	$html.="</div>";
 	return $html;
@@ -38,6 +39,14 @@ function getAlbumName($idalbum){
 	}
 	return false;
 } 
+
+function countPhotosOnAlbums($idalbum){
+$query = "SELECT * FROM albums_photos WHERE id_album='$idalbum'";
+$result = mysql_query($query);
+$verif = mysql_num_rows($result);
+
+return $verif;
+}
   
 function getAllAlbumsbyUserId($id){
 	$html ="";
@@ -49,13 +58,14 @@ function getAllAlbumsbyUserId($id){
 	}
 	else{
 		$html.="<h4>Your albums</h4>"; 
-		$html.="<div id='allalbums'>";
+		$html.="<div><ul id='pictures'>";
 		while($row = mysql_fetch_assoc($result)){
-			$html.= getRandomAlbumCover($row['id']);
-			$html.=" <a href='albums.php?id=$row[id]'>$row[name]</a><a href='#' onclick='removeAlbum(event,$row[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a>";
+			//$html.= 
+			$countphotos = countPhotosOnAlbums($row['id']);
+			$html.=" <li class='legend-top'>".getRandomAlbumCover($row['id'])."<a href='albums.php?id=$row[id]'></a><span>$row[name]($countphotos photos) <a href='#' onclick='removeAlbum(event,$row[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a></li>";
 		}
-		$html.="</div>";
-		$html.="<p><a href='albums.php?mode=create_album'>Create a new album</a></p>";
+		$html.="</ul></div>";
+		$html.="<div><a href='albums.php?mode=create_album'>Create a new album</a></div>";
 	}
 	return $html;
 }
@@ -116,8 +126,8 @@ function addPhotoToAlbum($idalbum,$pathfull,$paththum){
 function printMultiUploadForm($idalbum){
 
 	$taillemax = 2000000; // taille max d'un fichier (multiple de 1024)
-	$filetype = "/jpeg|gif|png/i"; // types de fichiers accepteacute;s, separes par |
-	$nametype = "/\.jpeg|\.jpg|\.gif|\.png/i"; // extensions correspondantes
+	$filetype = "/jpeg|png/i"; // types de fichiers accepteacute;s, separes par |
+	$nametype = "/\.jpeg|\.jpg|\.png/i"; // extensions correspondantes
 	$rep = "img/albums/"; // reacute;pertoire de destination
 	$maxfichier = 10; // nombre maximal de fichiers
 	// 1 fichier par deacute;faut (ou supeacute;rieur à $maxfichier)
@@ -214,6 +224,13 @@ if (isset($userid)){ // vérification si logué ou pas
 		if(!$query) die("Error: ".mysql_error());
 		echo "success";
 	
+	}else if(isset($_GET['mode']) && $_GET['mode'] == "delete_picture" && isset($_GET['id'])){		
+		$sql = "DELETE from albums_photos WHERE id='$_GET[id]'";
+		$query = @mysql_query($sql);
+
+		if(!$query) die("Error: ".mysql_error());
+		echo "success";
+	
 	}elseif(isset($_GET['mode']) && $_GET['mode'] == "upload_album" && isset($_GET['idalbum'])){
 		$userinfos=retrieve_user_infos($userid);
 		$idalbum = $_GET['idalbum'];
@@ -249,7 +266,26 @@ if (isset($userid)){ // vérification si logué ou pas
 		 
 			//affichage des thumbnails de l'album
 			$albumname = getAlbumName($_GET['id']); 
-			$html = "<b>$albumname[name]</b>";
+			$html = "<script>	
+				function removePicture(e,id) {
+				var a, url, x;
+				e.preventDefault();
+				a = e.target.parentNode;
+				a.parentNode.hidden = true;
+				url = './albums.php?mode=delete_picture&id='+id;
+				x = new XMLHttpRequest();
+				x.open('GET', url, true);
+				x.onload = function(e) {
+					a.innerHTML = this.responseText;
+					if(this.responseText !== 'success') {
+						a.innerHTML = this.responseText;
+						a.parentNode.hidden = false;
+					}
+				};
+				x.send();
+		}
+		</script>";
+			$html.= "<b>$albumname[name]</b>";
 			$html.= printPhotosFromAlbum($_GET['id']);
 			//lien pour ajouter nouvelle photo
 			$html.="<p><a href='albums.php?mode=upload_album&idalbum=$_GET[id]'>Add photos to your album</a></p>";

@@ -489,6 +489,61 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+/*--------------------------------------------------
+	  Albums Display John
+-------------------------------------------------- */
+#pictures {
+	list-style: none outside none;
+	margin: auto;
+	width: 700px;
+	position:relative;
+	
+}
+
+#pictures li {
+	border: 5px solid grey; /* Ajout d'une bordure blanche */
+	border-radius: 10px;
+	float: left;
+	height: 150px; /* Hauteur de l'image */
+	margin: 5px;
+	overflow: hidden;
+	position: relative;
+	width: 160px; /* Largeur de l'image */
+}
+
+#pictures li img {
+	z-index: 10;
+
+}
+ 
+#pictures li span {
+	background: rgba(0, 0, 0, 0.5); /* Les légendes auront un arrière-plan noir avec une opacité de 50% */
+	color: #fff;
+	display: block;
+	font-weight: bold;
+	height: 30px;
+	left: 0;
+	line-height: 30px;
+	padding: 5px 10px;
+	position: absolute;
+	text-shadow: 2px 2px #333;
+	width: 280px;
+	z-index: 20;
+}
+
+#pictures li.legend-top span {
+	border-bottom: 10px solid rgba(255, 255, 255, 0.2);
+	top: -50px;
+	transition: top 0.3s ease-in-out;
+	-moz-transition: top 0.3s ease-in-out;
+	-o-transition: top 0.3s ease-in-out;
+	-webkit-transition: top 0.3s ease-in-out;
+}
+ 
+#pictures li.legend-top:hover span {
+	top: 0;
+}
+
 
 /*--------------------------------------------------
 	  Reveal Modals

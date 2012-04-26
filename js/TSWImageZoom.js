@@ -119,7 +119,7 @@ function _tswImageZoomSetup()
 	tswImageZoomSpinnerImg = document.createElement('img');
 	tswImageZoomSpinnerImg.style.display = 'block';
 	tswImageZoomSpinnerImg.setAttribute('border', '0');
-	tswImageZoomSpinnerImg.setAttribute('src', tswUtilsGetResourcesDirectory()+'Images/TSWSpinner1.png');
+	tswImageZoomSpinnerImg.setAttribute('src = http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWSpinner1.png');
 	tswImageZoomSpinnerImg.style.position = 'relative';
 	tswImageZoomSpinnerDiv.appendChild(tswImageZoomSpinnerImg);
 	
@@ -245,7 +245,7 @@ function _tswImageZoomShowSpinner(anchorElement)
 
 function _tswImageZoomDoSpinnerAnimation()
 {
-	var imageUrl = tswUtilsGetResourcesDirectory()+'Images/TSWSpinner'+tswImageZoomSpinnerFrame+'.png';
+	var imageUrl = 'http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWSpinner'+tswImageZoomSpinnerFrame+'.png';
 	if(tswImageZoomLoadedImages[imageUrl] != null)
 	{
 		//image loaded; display it
@@ -436,9 +436,9 @@ function _tswImageZoomDoAnimation()
 					var topLeftDiv = document.createElement('div');
 					topLeftDiv.style.position = 'absolute';
 					if(isIE)
-						topLeftDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+tswUtilsGetResourcesDirectory()+"Images/TSWDropShadowTopLeft.png', sizingMethod='crop')";
+						topLeftDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowTopLeft.png', sizingMethod='crop')";
 					else
-						topLeftDiv.style.backgroundImage = 'url(\''+tswUtilsGetResourcesDirectory()+'Images/TSWDropShadowTopLeft.png\')';
+						topLeftDiv.style.backgroundImage = 'url(\'http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowTopLeft.png\')';
 					tswUtilsSetDimensions(topLeftDiv,
 										  [-14, -12, 32, 30]);
 					tswImageZoomDropShadowDiv.appendChild(topLeftDiv);
@@ -446,9 +446,9 @@ function _tswImageZoomDoAnimation()
 					var topDiv = document.createElement('div');
 					topDiv.style.position = 'absolute';
 					if(isIE)
-						topDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+tswUtilsGetResourcesDirectory()+"Images/TSWDropShadowTop.png', sizingMethod='scale')";
+						topDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowTop.png', sizingMethod='scale')";
 					else
-						topDiv.style.backgroundImage = 'url(\''+tswUtilsGetResourcesDirectory()+'Images/TSWDropShadowTop.png\')';
+						topDiv.style.backgroundImage = 'url(\'http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowTop.png\')';
 					tswUtilsSetDimensions(topDiv,
 										  [18, -12, tswImageZoomAnimationEndRect[2] - 36, 30]);
 					tswImageZoomDropShadowDiv.appendChild(topDiv);
@@ -456,9 +456,9 @@ function _tswImageZoomDoAnimation()
 					var topRightDiv = document.createElement('div');
 					topRightDiv.style.position = 'absolute';
 					if(isIE)
-						topRightDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+tswUtilsGetResourcesDirectory()+"Images/TSWDropShadowTopRight.png', sizingMethod='crop')";
+						topRightDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowTopRight.png', sizingMethod='crop')";
 					else
-						topRightDiv.style.backgroundImage = 'url(\''+tswUtilsGetResourcesDirectory()+'Images/TSWDropShadowTopRight.png\')';
+						topRightDiv.style.backgroundImage = 'url(\''+'http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowTopRight.png\')';
 					tswUtilsSetDimensions(topRightDiv,
 										  [tswImageZoomAnimationEndRect[2] - 18, -12, 32, 30]);
 					tswImageZoomDropShadowDiv.appendChild(topRightDiv);
@@ -466,9 +466,9 @@ function _tswImageZoomDoAnimation()
 					var leftDiv = document.createElement('div');
 					leftDiv.style.position = 'absolute';
 					if(isIE)
-						leftDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+tswUtilsGetResourcesDirectory()+"Images/TSWDropShadowLeft.png', sizingMethod='scale')";
+						leftDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowLeft.png', sizingMethod='scale')";
 					else
-						leftDiv.style.backgroundImage = 'url(\''+tswUtilsGetResourcesDirectory()+'Images/TSWDropShadowLeft.png\')';
+						leftDiv.style.backgroundImage = 'url(\'http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowLeft.png\')';
 					tswUtilsSetDimensions(leftDiv,
 										  [-14, 18, 32, tswImageZoomAnimationEndRect[3] - 30]);
 					tswImageZoomDropShadowDiv.appendChild(leftDiv);
@@ -476,9 +476,9 @@ function _tswImageZoomDoAnimation()
 					var rightDiv = document.createElement('div');
 					rightDiv.style.position = 'absolute';
 					if(isIE)
-						rightDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+tswUtilsGetResourcesDirectory()+"Images/TSWDropShadowRight.png', sizingMethod='scale')";
+						rightDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowRight.png', sizingMethod='scale')";
 					else
-						rightDiv.style.backgroundImage = 'url(\''+tswUtilsGetResourcesDirectory()+'Images/TSWDropShadowRight.png\')';
+						rightDiv.style.backgroundImage = 'url(\'http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowRight.png\')';
 					tswUtilsSetDimensions(rightDiv,
 										  [tswImageZoomAnimationEndRect[2] - 18, 18, 32, tswImageZoomAnimationEndRect[3] - 30]);
 					tswImageZoomDropShadowDiv.appendChild(rightDiv);
@@ -486,9 +486,9 @@ function _tswImageZoomDoAnimation()
 					var bottomLeftDiv = document.createElement('div');
 					bottomLeftDiv.style.position = 'absolute';
 					if(isIE)
-						bottomLeftDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+tswUtilsGetResourcesDirectory()+"Images/TSWDropShadowBottomLeft.png', sizingMethod='crop')";
+						bottomLeftDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowBottomLeft.png', sizingMethod='crop')";
 					else
-						bottomLeftDiv.style.backgroundImage = 'url(\''+tswUtilsGetResourcesDirectory()+'Images/TSWDropShadowBottomLeft.png\')';
+						bottomLeftDiv.style.backgroundImage = 'url(\'http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowBottomLeft.png\')';
 					tswUtilsSetDimensions(bottomLeftDiv,
 										  [-14, tswImageZoomAnimationEndRect[3] - 12, 32, 30]);
 					tswImageZoomDropShadowDiv.appendChild(bottomLeftDiv);
@@ -496,9 +496,9 @@ function _tswImageZoomDoAnimation()
 					var bottomDiv = document.createElement('div');
 					bottomDiv.style.position = 'absolute';
 					if(isIE)
-						bottomDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+tswUtilsGetResourcesDirectory()+"Images/TSWDropShadowBottom.png', sizingMethod='scale')";
+						bottomDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowBottom.png', sizingMethod='scale')";
 					else
-						bottomDiv.style.backgroundImage = 'url(\''+tswUtilsGetResourcesDirectory()+'Images/TSWDropShadowBottom.png\')';
+						bottomDiv.style.backgroundImage = 'url(\'http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowBottom.png\')';
 					tswUtilsSetDimensions(bottomDiv,
 										  [18, tswImageZoomAnimationEndRect[3] - 12, tswImageZoomAnimationEndRect[2] - 36, 30]);
 					tswImageZoomDropShadowDiv.appendChild(bottomDiv);
@@ -506,9 +506,9 @@ function _tswImageZoomDoAnimation()
 					var bottomRightDiv = document.createElement('div');
 					bottomRightDiv.style.position = 'absolute';
 					if(isIE)
-						bottomRightDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+tswUtilsGetResourcesDirectory()+"Images/TSWDropShadowBottomRight.png', sizingMethod='crop')";
+						bottomRightDiv.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowBottomRight.png', sizingMethod='crop')";
 					else
-						bottomRightDiv.style.backgroundImage = 'url(\''+tswUtilsGetResourcesDirectory()+'Images/TSWDropShadowBottomRight.png\')';
+						bottomRightDiv.style.backgroundImage = 'url(\'http://etudiant.univ-mlv.fr/~jwankutk/projet/js/Images/TSWDropShadowBottomRight.png\')';
 					tswUtilsSetDimensions(bottomRightDiv,
 										  [tswImageZoomAnimationEndRect[2] - 18, tswImageZoomAnimationEndRect[3] - 12, 32, 30]);
 					tswImageZoomDropShadowDiv.appendChild(bottomRightDiv);
