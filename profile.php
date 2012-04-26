@@ -203,18 +203,60 @@ function printInfoMember($id){
 	if($infos['job']!="") $ficelle.= 'Works as '.$infos['job'].'<br/>';
 	if($infos['music']!="") $ficelle.= 'Listens to '.$infos['music'].'<br/></h4>';*/
 	
+	$ficelle="";
+		
+	if ($info[date_birth])
+		$ficelle.="	<b> Born </b>: $info[date_birth] ";
+	if ($info[hobbies])
+		$ficelle.="<br>	<b> Hobbies </b>: $info[hobbies] ";
+	if ($info[job])
+		$ficelle.="<br>	<b> Job </b>: $info[job] ";
+	if ($info[music])
+		$ficelle.="	<br> <b> Music </b>: $info[music] ";
+	if ($info[films])
+		$ficelle.="	<br> <b> Films </b>: $info[films] ";
+	if ($info[books])
+		$ficelle.="<br>	<b> Books </b>: $info[books] ";
+	if ($info[aboutme])
+		$ficelle.="<br>	<b> About me  </b>:". $info[aboutme] ;
+	if ($info[favouritefood])
+		$ficelle.="	<br><b> Favourite food  </b>: $info[favouritefood] ";
+		
+	return $ficelle;
+}
+
+/************************************************************************************************************************************************************************************************************/
+/************************************************************************************************************************************************************************************************************/
+/************************************************************************************************************************************************************************************************************/
+/************************************************************************************************************************************************************************************************************/
+
+function printAccountInformation ($id){
+
+	$res2 = retrieve_user_infos($id);
+
+
 	$ficelle ="
-	Born: $info[date_birth]
-		<br/>Hobbies: $info[hobbies]
-		<br/>Job: $info[job]
-		<br/>Music: $info[music]
-		<br/>Films: $info[films]
-		<br/>Books: $info[books]
-		<br/>About me: $info[aboutme]
-		<br/>Favourite food: $info[favouritefood]";
+		<br/> <b> Firstname </b>:  $res2[firstname]
+		<br/> <b> Surname </b> : $res2[surname]";
+		if ($res2[sex]==1)	
+			$ficelle.=" <br/> <b> Sex </b> : Masculin";
+		else $ficelle.=" <br/> <b> Sex </b> : Feminin";
+		
+		if ($res2[address])
+			$ficelle.="	<br/> <b> Address </b> : $res2[address] ";
+		if ($res2[city])
+			$ficelle.="	<br/> <b> City </b> : $res2[city] ";
+		if ($res2[country])
+			$ficelle.="	<br/> <b> Country </b> : $res2[country] ";
+	$ficelle.="
+		<br/> <b> Email </b>: $res2[mail]";
 	
 	return $ficelle;
 }
+/************************************************************************************************************************************************************************************************************/
+/************************************************************************************************************************************************************************************************************/
+/************************************************************************************************************************************************************************************************************/
+/************************************************************************************************************************************************************************************************************/
 
 function printProfileBanner(){
 	return "<div id='content'>
@@ -310,6 +352,7 @@ function printEditAccountInfoForm($userinfos){
 	
 	return $content;
 }
+
 
 function printProfileForm($useraddinfos, $do){
 	$date=$useraddinfos['date_birth'];
@@ -442,6 +485,326 @@ function printWallPostById($idpost){ // display a Post and Comments
 	return $ficelle;
 }
 
+/**************** CONTRAINTES *********************/	
+			
+	function IngredientAddProhib($j){
+	return "
+	<a id='more' href='#'>Add ingredient</a><br>
+		<script>
+			var i = $j+1;
+			$('#more').on('click', function(e) {
+				e.preventDefault();
+				$(this).before('<label>Ingredient '+i+'<input type=\"text\" name='+i+' list=\"ingredientList\"></label>');
+				$(this).prev().updatePolyfill();
+				i++;
+			});
+		</script>
+
+	";
+	}
+	
+	function IngredientAddLike($k){
+	return "
+	<a id='more' href='#'>Add ingredient</a><br>
+		<script>
+			var i = $k+1;
+			$('#more').on('click', function(e) {
+				e.preventDefault();
+				$(this).before('<label>Ingredient '+i+'<input type=\"text\" name='+i+' list=\"ingredientList\"></label>');
+				$(this).prev().updatePolyfill();
+				i++;
+			});
+		</script>
+
+	";
+	}
+	
+	function IngredientAddDislike($k){
+	return "
+	<a id='more' href='#'>Add ingredient</a><br>
+		<script>
+			var i = $k+1;
+			$('#more').on('click', function(e) {
+				e.preventDefault();
+				$(this).before('<label>Ingredient '+i+'<input type=\"text\" name='+i+' list=\"ingredientList\"></label>');
+				$(this).prev().updatePolyfill();
+				i++;
+			});
+		</script>
+
+	";
+	}
+	
+	
+	function getAllInMyProhib($userid){
+	$html = "<fieldset>
+	<legend>User Preference Prohibition<a href=\"profile.php?mode=edit_prohib\" /> EDIT </a></legend>";
+	$html.= "<ul>";
+	$sql="SELECT * from user_preference_prohibition WHERE id_user='$userid'";
+	$result = mysql_query($sql);
+	
+	if(mysql_num_rows($result)==0){
+	$html.= "<div>Empty, please fill it</div>";
+	}
+		
+	while($row = mysql_fetch_assoc($result)){
+	$html.= "<li>$row[name_en]<a href='#' onclick='removeIngOnProhib(event,$row[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a></li>";
+	}	
+	$html.= "</ul></fieldset>";
+	return $html;
+	}
+	
+	function getAllIngILike($userid){
+	$html = "<fieldset>
+	<legend>User Preference Like <a href=\"profile.php?mode=edit_like\" /> EDIT </a></legend>";
+	$html.= "<ul>";
+	$sql="SELECT * from user_preference_like WHERE id_user='$userid'";
+	$result = mysql_query($sql);
+	
+	if(mysql_num_rows($result)==0){
+	$html.= "<div>Empty, please fill it</div>";
+	}
+		
+	while($row = mysql_fetch_assoc($result)){
+	$html.= "<li>$row[name_en]<a href='#' onclick='removeIngOnLike(event,$row[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a></li>";
+	}	
+	$html.= "</ul></fieldset>";
+	return $html;
+	}
+	
+	function getAllIngIDislike($userid){
+	$html = "<fieldset>
+	<legend>User Preference Dislike <a href=\"profile.php?mode=edit_dislike\" /> EDIT </a></legend>";
+	$html.= "<ul>";
+	$sql="SELECT * from user_preference_dislike WHERE id_user='$userid'";
+	$result = mysql_query($sql);
+	
+	if(mysql_num_rows($result)==0){
+	$html.= "<div>Empty, please fill it</div>";
+	}
+		
+	while($row = mysql_fetch_assoc($result)){
+	$html.= "<li>$row[name_en]<a href='#' onclick='removeIngOnDislike(event,$row[id])'><img src='./img/templates/deleteing.png' width='10px' height='10px'></a></li>";
+	}	
+	$html.= "</ul></fieldset>";
+	return $html;
+	}
+	
+	
+	function CountIngredientsProhib($userid){
+	$sql="SELECT * from user_preference_prohibition WHERE id_user='$userid'";
+	$result = mysql_query($sql);
+	$verif = mysql_num_rows($result);
+	
+	return $verif;
+}
+
+	function CountIngredientsLike($userid){
+	$sql="SELECT * from user_preference_like WHERE id_user='$userid'";
+	$result = mysql_query($sql);
+	$verif = mysql_num_rows($result);
+	
+	return $verif;
+}
+
+	function CountIngredientsDislike($userid){
+	$sql="SELECT * from user_preference_dislike WHERE id_user='$userid'";
+	$result = mysql_query($sql);
+	$verif = mysql_num_rows($result);
+	
+	return $verif;
+}
+
+function printFormAddIngredientProhib($userid){
+		//instructions pour rechercher
+	if(isset($_POST)){	
+	$i = CountIngredientsProhib($userid)+1;
+	while (isset($_POST[$i])) {
+		$ing = getidIngredient($_POST[$i]);
+		if($ing){
+			$sql = insertIntoUserProhibExistingIng($_POST[$i],$userid);
+			$i++;
+		}else{
+			$sql = insertIntoUserProhibIng($_POST[$i],$userid);
+			$i++;
+		}					
+	}	
+	}
+	
+	$var = CountIngredientsProhib($userid);
+
+	$html ="
+	<form action='profile.php?mode=edit_contrainte' method='post' id='contribution' enctype='multipart/form-data'>";
+	$html.= IngredientAddProhib($var);
+	$html.="<input type='submit' value='Submit'>
+	";
+
+
+	return $html;
+}
+
+
+function printFormAddIngredientLike($userid){
+		//instructions pour rechercher
+	if(isset($_POST)){	
+	$i = CountIngredientsLike($userid)+1;
+	while (isset($_POST[$i])) {
+		$ing = getidIngredient($_POST[$i]);
+		if($ing){
+			$sql = insertIntoUserLikeExistingIng($_POST[$i],$userid);
+			$i++;
+		}else{
+			$sql = insertIntoUserLikeIng($_POST[$i],$userid);
+			$i++;
+		}					
+	}	
+	}
+	
+	$var = CountIngredientsLike($userid);
+
+	$html ="
+	<form action='profile.php?mode=edit_like' method='post' id='contribution' enctype='multipart/form-data'>";
+	$html.= IngredientAddLike($var);
+	$html.="<input type='submit' value='Submit'>
+	";
+
+
+			return $html;
+}
+	
+function printFormAddIngredientDislike($userid){
+		//instructions pour rechercher
+	if(isset($_POST)){	
+	$i = CountIngredientsDislike($userid)+1;
+	while (isset($_POST[$i])) {
+		$ing = getidIngredient($_POST[$i]);
+		if($ing){
+			$sql = insertIntoUserDislikeExistingIng($_POST[$i],$userid);
+			$i++;
+		}else{
+			$sql = insertIntoUserDislikeIng($_POST[$i],$userid);
+			$i++;
+		}					
+	}	
+	}
+	
+	$var = CountIngredientsDislike($userid);
+
+	$html ="
+	<form action='profile.php?mode=edit_dislike' method='post' id='contribution' enctype='multipart/form-data'>";
+	$html.= IngredientAddDislike($var);
+	$html.="<input type='submit' value='Submit'>
+	";
+
+
+			return $html;
+}	
+	
+//fonction pour recuperer les infos de l'ingredient
+function getidIngredient($name){
+	$query = "SELECT * FROM ingredients WHERE name_en='$name'";
+	$result = mysql_query($query);
+	$verif = mysql_num_rows($result);
+	if ($verif==0) {
+		return false;
+		}  
+	return mysql_fetch_assoc($result);
+}
+
+
+function insertIntoUserProhibExistingIng($i,$userid){
+	$i = getidIngredient($i);
+	
+	$query = sprintf("INSERT INTO user_preference_prohibition(id_user,name_en,name_fr) VALUES('%s','%s', '%s');",
+		mysql_real_escape_string(strip_tags($userid)),
+		mysql_real_escape_string(strip_tags($i['name_en'])),
+		mysql_real_escape_string(strip_tags($i['name_fr'])));
+	$result = mysql_query($query);
+	if ($result) {
+		return $result;
+		} 
+	else {
+			die('Error: '.mysql_error());
+		   }
+
+}
+
+function insertIntoUserLikeExistingIng($i,$userid){
+	$i = getidIngredient($i);
+	
+	$query = sprintf("INSERT INTO user_preference_like(id_user,name_en,name_fr) VALUES('%s','%s', '%s');",
+		mysql_real_escape_string(strip_tags($userid)),
+		mysql_real_escape_string(strip_tags($i['name_en'])),
+		mysql_real_escape_string(strip_tags($i['name_fr'])));
+	$result = mysql_query($query);
+	if ($result) {
+		return $result;
+		} 
+	else {
+			die('Error: '.mysql_error());
+		   }
+
+}
+
+function insertIntoUserDislikeExistingIng($i,$userid){
+	$i = getidIngredient($i);
+	
+	$query = sprintf("INSERT INTO user_preference_dislike(id_user,name_en,name_fr) VALUES('%s','%s', '%s');",
+		mysql_real_escape_string(strip_tags($userid)),
+		mysql_real_escape_string(strip_tags($i['name_en'])),
+		mysql_real_escape_string(strip_tags($i['name_fr'])));
+	$result = mysql_query($query);
+	if ($result) {
+		return $result;
+		} 
+	else {
+			die('Error: '.mysql_error());
+		   }
+
+}
+
+
+function insertIntoUserProhibIng($name_en,$userid){
+	$query = sprintf("INSERT INTO user_preference_prohibition(id_user,name_en) VALUES('%s', '%s');",
+		mysql_real_escape_string(strip_tags($userid)),
+		mysql_real_escape_string(strip_tags($name_en)));
+	$result = mysql_query($query);
+	
+		if ($result) {
+		return $result;
+		} 
+	else {
+			die('Error: '.mysql_error());
+		   }
+}
+	
+function insertIntoUserLikeIng($name_en,$userid){
+	$query = sprintf("INSERT INTO user_preference_like(id_user,name_en) VALUES('%s', '%s');",
+		mysql_real_escape_string(strip_tags($userid)),
+		mysql_real_escape_string(strip_tags($name_en)));
+	$result = mysql_query($query);
+	
+		if ($result) {
+		return $result;
+		} 
+	else {
+			die('Error: '.mysql_error());
+		   }
+}			
+
+function insertIntoUserDislikeIng($name_en,$userid){
+	$query = sprintf("INSERT INTO user_preference_dislike(id_user,name_en) VALUES('%s', '%s');",
+		mysql_real_escape_string(strip_tags($userid)),
+		mysql_real_escape_string(strip_tags($name_en)));
+	$result = mysql_query($query);
+	
+		if ($result) {
+		return $result;
+		} 
+	else {
+			die('Error: '.mysql_error());
+		   }
+}				
 
 ////////////////////////////////////////////END FUNCTIONS////////////////////////////////////////////////////
 
@@ -490,10 +853,17 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 			/////////////////////// FIN Affichage du nom et bannière élémentaire ////////////////////////
 			
 			if($useraddinfos){ // affichage infos passion du membre
+				$html.=" <b> <p align=\"center\"> INFORMATIONS PERSONELLES |  <a href=\"profile.php?mode=edit_account_infos\" />Edit</a> </p> </b> ";
+				$html.=printAccountInformation($userid);
+				$html.=" <br> <b> <p align=\"center\">  HOBBIES / ABOUT ME | <a href=\"profile.php?mode=edit_profile\" />Edit</a></p> </b>";
 				$html.=printInfoMember($userid);
+				$html.=" <br> <b> <p align=\"center\">  CONTRAINTES ALIMENTAIRES </p> </b>";
+				$html.=	getAllInMyProhib($userid);
+				$html.= getAllIngILike($userid);	
+				$html.= getAllIngIDislike($userid);	
 			}
 		
-			$html.= '<br/><br/><a href="profile.php?mode=edit_profile" />Edit your profile</a> | <a href="profile.php?mode=edit_account_infos" />Edit your account informations</a>';
+			//$html.= '<br/><br/><a href="profile.php?mode=edit_profile" />Edit your profile</a> | <a href="profile.php?mode=edit_account_infos" />Edit your account informations</a>';
 			$html.="<h4>Lastest posts</h4>";
 			$html.= getUserRecipesbyUserID($userid);
 		
@@ -515,7 +885,10 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 				//$city      = $_POST['city'];		
 				$username  = $_POST['username'];
 				$mail      = $_POST['mail'];
-				
+		/************************************************************************************************************************************************************************************************************/
+/************************************************************************************************************************************************************************************************************/
+/************************************************************************************************************************************************************************************************************/
+/************************************************************************************************************************************************************************************************************/		
 				//mise a jour dans la bdd
 				$res = updateUser($firstname,$surname,$address,$country,$username,$mail, $userid);
 
@@ -549,7 +922,135 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 			
 			$html.= '<br/><a href="profile.php" />Back to Profile</a>';
 			
-		}elseif(isset($_GET['mode']) && $_GET['mode']=="edit_profile"){ // edit profile
+		}
+		
+		elseif(isset($_GET['mode']) && $_GET['mode']=="edit_prohib"){ // edit account infos
+			// Mise à jour des données
+			
+			$html.="<script>	
+			function removeIngOnProhib(e, id) {
+      var a, url, x;
+      e.preventDefault();
+      a = e.target.parentNode;
+      a.parentNode.hidden = true;
+      url = './deleteOnProhib.php?id=' + id;
+      x = new XMLHttpRequest();
+      x.open('GET', url, true);
+      x.onload = function(e) {
+        a.innerHTML = this.responseText;
+        if(this.responseText !== 'success') {
+          a.innerHTML = this.responseText;
+          a.parentNode.hidden = false;
+        }
+      };
+      x.send();
+    }
+	</script>
+	";
+		
+			
+			$html.= getAllInMyProhib($userid);
+			$html.= printFormAddIngredientProhib($userid);
+			
+			
+			$html.="<h5><h5/><br>";
+			
+			$html.= '<br/><a href="profile.php">Back to Profile</a>';
+			
+			//requête pour recupérer les ingrédients
+	$ingredients = mysql_query("SELECT name_en,id FROM ingredients");
+	$list2 = "";
+	while ($ingredient = mysql_fetch_array($ingredients)) {
+	$list2.= "<option value='$ingredient[0]'>$ingredient[0]</option>";
+	}
+	$html.= "<datalist id='ingredientList'>$list2</datalist>";
+		
+		}
+		
+		elseif(isset($_GET['mode']) && $_GET['mode']=="edit_like"){ // edit account infos
+			// Mise à jour des données
+			
+			$html.="<script>	
+			function removeIngOnLike(e, id) {
+      var a, url, x;
+      e.preventDefault();
+      a = e.target.parentNode;
+      a.parentNode.hidden = true;
+      url = './deleteOnLike.php?id=' + id;
+      x = new XMLHttpRequest();
+      x.open('GET', url, true);
+      x.onload = function(e) {
+        a.innerHTML = this.responseText;
+        if(this.responseText !== 'success') {
+          a.innerHTML = this.responseText;
+          a.parentNode.hidden = false;
+        }
+      };
+      x.send();
+    }
+	</script>
+	";
+			
+			$html.= getAllIngILike($userid);
+			$html.= printFormAddIngredientLike($userid);
+			
+			
+			$html.="<h5><h5/><br>";
+			
+			$html.= '<br/><a href="profile.php">Back to Profile</a>';
+			
+			//requête pour recupérer les ingrédients
+	$ingredients = mysql_query("SELECT name_en,id FROM ingredients");
+	$list2 = "";
+	while ($ingredient = mysql_fetch_array($ingredients)) {
+	$list2.= "<option value='$ingredient[0]'>$ingredient[0]</option>";
+	}
+	$html.= "<datalist id='ingredientList'>$list2</datalist>";
+		
+		}
+		
+		elseif(isset($_GET['mode']) && $_GET['mode']=="edit_dislike"){
+		// Mise à jour des données
+			$html.="<script>	
+			function removeIngOnDislike(e, id) {
+      var a, url, x;
+      e.preventDefault();
+      a = e.target.parentNode;
+      a.parentNode.hidden = true;
+      url = './deleteOnDislike.php?id=' + id;
+      x = new XMLHttpRequest();
+      x.open('GET', url, true);
+      x.onload = function(e) {
+        a.innerHTML = this.responseText;
+        if(this.responseText !== 'success') {
+          a.innerHTML = this.responseText;
+          a.parentNode.hidden = false;
+        }
+      };
+      x.send();
+    }
+	</script>
+	";
+			
+			$html.= getAllIngIDislike($userid);
+			$html.= printFormAddIngredientDislike($userid);
+			
+			
+			$html.="<h5><h5/><br>";
+			
+			$html.= '<br/><a href="profile.php">Back to Profile</a>';
+			
+			//requête pour recupérer les ingrédients
+	$ingredients = mysql_query("SELECT name_en,id FROM ingredients");
+	$list2 = "";
+	while ($ingredient = mysql_fetch_array($ingredients)) {
+	$list2.= "<option value='$ingredient[0]'>$ingredient[0]</option>";
+	}
+	$html.= "<datalist id='ingredientList'>$list2</datalist>";
+		
+		}
+		
+		elseif(isset($_GET['mode']) && $_GET['mode']=="edit_profile"){ // edit profile
 			if (isset($_GET['updatesuccess'])) $html.= 'Update successful';
 			
 			$sql = 'SELECT * FROM information WHERE id_user ='.$userid; // gets user profile
