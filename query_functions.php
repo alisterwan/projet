@@ -232,11 +232,14 @@ function getFileExtension($file){
 //creation de thumbnails
 function createThumb($src, $dest, $largeur, $pos){
 	list($srcX, $srcY, $type, $attr) = getimagesize($src);
-	if(getFileExtension($src)==".jpg" || getFileExtension($src)=="jpeg"){
+	if(getFileExtension($src)==".jpg" || getFileExtension($src)==".jpeg"){
 		$imgSrc=imagecreatefromjpeg($src); 
 	}
 	if(getFileExtension($src)==".png" ){
 		$imgSrc=imagecreatefrompng($src);  
+	}
+	if(getFileExtension($src)==".gif" ){
+		$imgSrc=imagecreatefromgif($src);  
 	}
 	if (empty($imgSrc)){ 
 		return false; 
@@ -294,6 +297,10 @@ function createThumb($src, $dest, $largeur, $pos){
   
 	if(getFileExtension($src)==".png"){
 		imagepng($imDest, $dest); 
+	} 
+	
+	if(getFileExtension($src)==".gif"){
+		imagegif($imDest, $dest); 
 	} 
   
 	imagedestroy($imDest); 

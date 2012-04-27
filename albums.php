@@ -7,8 +7,11 @@ include 'header.php';
 function getRandomAlbumCover($idalbum){
 	$query = "SELECT path_thumbnail,id_album from albums_photos WHERE id_album='$idalbum' ORDER BY RAND() LIMIT 1";
 	$result = mysql_query($query);
-	//$html ="<div id='allalbums'>";
 	$html = "";
+	if(mysql_num_rows($result)==0){
+		$html.= "<a href='./albums.php?id=$idalbum'><img src='http://etudiant.univ-mlv.fr/~jwankutk/projet/img/default/thumbnoimage.gif'></a>";
+		}
+	
 	while($row = mysql_fetch_assoc($result)){
 		$html.= "<a href='./albums.php?id=$row[id_album]'><img src='$row[path_thumbnail]'></a>";
 	}
@@ -120,14 +123,21 @@ function addPhotoToAlbum($idalbum,$pathfull,$paththum){
 }
 
 
+function redirect($idalbum) {
+	$query = mysql_fetch_row(mysql_query(sprintf("SELECT id FROM albums WHERE id LIKE '%s'",
+	mysql_real_escape_string(strip_tags($idalbum)))));
 
+	$id = $query[0];
+	header("Location: albums.php?id=$id");
+	exit;
+}
 
 
 function printMultiUploadForm($idalbum){
 
 	$taillemax = 2000000; // taille max d'un fichier (multiple de 1024)
-	$filetype = "/jpeg|png/i"; // types de fichiers accepteacute;s, separes par |
-	$nametype = "/\.jpeg|\.jpg|\.png/i"; // extensions correspondantes
+	$filetype = "/jpeg|png|gif/i"; // types de fichiers accepteacute;s, separes par |
+	$nametype = "/\.jpeg|\.jpg||\.gif|\.png/i"; // extensions correspondantes
 	$rep = "img/albums/"; // reacute;pertoire de destination
 	$maxfichier = 10; // nombre maximal de fichiers
 	// 1 fichier par deacute;faut (ou supeacute;rieur à $maxfichier)
@@ -191,17 +201,18 @@ function printMultiUploadForm($idalbum){
 			else
 				if(strlen($nom)){
 					$msg[] = "File <b>$nom_default</b> successfully uploaded.";	
+					$thumb = "img/thumbnails/$nom";
+					createThumb($destination,$thumb,150,"left");
+					addPhotoToAlbum($idalbum,$destination,$thumb);
 				}
-				
-			$thumb = "img/thumbnails/$nom";
-			createThumb($destination,$thumb,150,"left");
-			addPhotoToAlbum($idalbum,$destination,$thumb);
 		}
 		
 		// affichage confirmation
 		for($i=0; $i<=count($msg); $i++){
 			if(isset($msg[$i]))	$html.= "<p>$msg[$i]</p>";
 		}
+
+		//redirect($idalbum);
 	}
 
 	return $html;
@@ -217,28 +228,16 @@ if (isset($userid)){ // vérification si logué ou pas
 		$html = newAlbumForm($userid);
 		printDocument('Create Album');
 		
-	}else if(isset($_GET['mode']) && $_GET['mode'] == "delete_album" && isset($_GET['id'])){		
-		$sql = "DELETE from albums WHERE id='$_GET[id]'";
-		$query = @mysql_query($sql);
-
-		if(!$query) die("Error: ".mysql_error());
-		echo "success";
-	
-	}else if(isset($_GET['mode']) && $_GET['mode'] == "delete_picture" && isset($_GET['id'])){		
-		$sql = "DELETE from albums_photos WHERE id='$_GET[id]'";
-		$query = @mysql_query($sql);
-
-		if(!$query) die("Error: ".mysql_error());
-		echo "success";
-	
-	}elseif(isset($_GET['mode']) && $_GET['mode'] == "upload_album" && isset($_GET['idalbum'])){
+	}
+	elseif(isset($_GET['mode']) && $_GET['mode'] == "upload_album" && isset($_GET['idalbum'])){
 		$userinfos=retrieve_user_infos($userid);
 		$idalbum = $_GET['idalbum'];
 		$html = printMultiUploadForm($idalbum);
 
 		printDocument('Upload Album');
 	
-	}else{
+	}
+	else{
 	
 		$html="<script>	
 				function removeAlbum(e, id) {
@@ -246,7 +245,7 @@ if (isset($userid)){ // vérification si logué ou pas
 				e.preventDefault();
 				a = e.target.parentNode;
 				a.parentNode.hidden = true;
-				url = './albums.php?mode=delete_album&id='+id;
+				url = './jsphp/deleteAlbum.php?id='+id;
 				x = new XMLHttpRequest();
 				x.open('GET', url, true);
 				x.onload = function(e) {
@@ -254,6 +253,9 @@ if (isset($userid)){ // vérification si logué ou pas
 					if(this.responseText !== 'success') {
 						a.innerHTML = this.responseText;
 						a.parentNode.hidden = false;
+					}
+					else {
+			  		location.pathname = '/~jwankutk/projet/albums.php';
 					}
 				};
 				x.send();
@@ -272,7 +274,7 @@ if (isset($userid)){ // vérification si logué ou pas
 				e.preventDefault();
 				a = e.target.parentNode;
 				a.parentNode.hidden = true;
-				url = './albums.php?mode=delete_picture&id='+id;
+				url = './jsphp/deletePicture.php?id='+id;
 				x = new XMLHttpRequest();
 				x.open('GET', url, true);
 				x.onload = function(e) {
@@ -280,6 +282,9 @@ if (isset($userid)){ // vérification si logué ou pas
 					if(this.responseText !== 'success') {
 						a.innerHTML = this.responseText;
 						a.parentNode.hidden = false;
+					}
+					else {
+			  		location.pathname = '/~jwankutk/projet/albums.php';
 					}
 				};
 				x.send();
