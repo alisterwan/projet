@@ -12,5 +12,5 @@ $result = @mysql_query($query);
 if (!$result) {
     die("Error: ".mysql_error());
 }
-
+echo "success";
 ?>

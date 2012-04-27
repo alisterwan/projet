@@ -338,8 +338,8 @@ header > * {
   border: 1px solid #CCC;
   box-shadow: 0 5px 15px rgba(0, 0, 0, .2);
   position: absolute;
-  top: 2.9em;
-  right: .5em;
+  top: 3.9em;
+  right: 3em;
 }
 #notifications::before {
   content: "";

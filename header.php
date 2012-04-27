@@ -198,16 +198,19 @@ function printDocument($title = 'DigEat') {
 							a.innerHTML = this.responseText;
 							a.parentNode.hidden = false;
 						}
+						else {
+			  			location.pathname = '/~jwankutk/projet/wall.php';
+						}
 					};
 					x.send();
 				}
 
-				function readPrivate(e, id, id_user) {
+				function readPrivate(e, id, id_user, id_sender) {
 					var a, url, x;
 					e.preventDefault();
 					a = e.target.parentNode;
 					a.parentNode.hidden = true;
-					url = './jsphp/readPrivate.php?id='+ id +'&id_user=' + id_user;
+					url = './jsphp/readPrivate.php?id='+ id +'&id_user=' + id_user+'&id_sender=' + id_sender;
 					x = new XMLHttpRequest();
 					x.open('GET', url, true);
 					x.onload = function(e) {
@@ -215,6 +218,9 @@ function printDocument($title = 'DigEat') {
 						if(this.responseText !== 'success') {
 							a.innerHTML = this.responseText;
 							a.parentNode.hidden = false;
+						}
+						else {
+			  			location.pathname = '/~jwankutk/projet/private_messages.php';
 						}
 					};
 					x.send();

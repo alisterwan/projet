@@ -13,8 +13,6 @@ if (!$result) {
     die("Error: ".mysql_error());
 }
 
-else{ header("Location: wall.php"); 
-	exit();
-	}
+echo "success";
 
 ?>

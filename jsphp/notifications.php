@@ -3,7 +3,7 @@
 include '../header.php';
 header('Content-type: text/plain');
 
-echo '<ol>';
+echo '<ul>';
 
 $query  = sprintf("SELECT * FROM private_messages WHERE id_recipient='%s' AND status='0'",
 	mysql_real_escape_string($userid));
@@ -16,7 +16,7 @@ $result = mysql_query($query);
 
 		while ($friend = mysql_fetch_assoc($response2)) {
 			echo "<li><a href='profile.php?id_user=$friend[id]'>$friend[username]</a><img src='$friend[avatar]' style='height: 20px; width: 20px;'> wrote you a private message.
-				<a href='#' onclick='readPrivate(event,$row1[id],$userid)'>See</a>
+				<a href='#' onclick='readPrivate(event,$row1[id],$userid,$friend[id])'>See</a>
 			</li>";
 		}
 }
@@ -87,6 +87,6 @@ while ($row = mysql_fetch_assoc($result)) {
 	}
 }
 
-echo '</ol>';
+echo '</ul>';
 
 ?>
