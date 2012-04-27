@@ -212,7 +212,7 @@ function printMultiUploadForm($idalbum){
 			if(isset($msg[$i]))	$html.= "<p>$msg[$i]</p>";
 		}
 
-		//redirect($idalbum);
+		redirect($idalbum);
 	}
 
 	return $html;
