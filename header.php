@@ -113,7 +113,7 @@ function printDocument($title = 'DigEat') {
 			<script>
 				function updateNotifications() {
 					var x = new XMLHttpRequest();
-					url = './notifications.php';
+					url = './jsphp/notifications.php';
 					x.open('GET', url, true);
 					x.onload = function() {
 						var d = document;
@@ -136,7 +136,7 @@ function printDocument($title = 'DigEat') {
 					e.preventDefault();
 					a = e.target.parentNode;
 					a.parentNode.hidden = true;
-					url = './confirmfriends.php?idgroup='+ idgroup +'&id_user=' + id_user;
+					url = './jsphp/confirmfriends.php?idgroup='+ idgroup +'&id_user=' + id_user;
 					x = new XMLHttpRequest();
 					x.open('GET', url, true);
 					x.onload = function(e) {
@@ -154,7 +154,7 @@ function printDocument($title = 'DigEat') {
 					e.preventDefault();
 					a = e.target.parentNode;
 					a.parentNode.hidden = true;
-					url = './cancelfriends.php?idgroup='+ idgroup +'&id_user=' + id_user;
+					url = './jsphp/cancelfriends.php?idgroup='+ idgroup +'&id_user=' + id_user;
 					x = new XMLHttpRequest();
 					x.open('GET', url, true);
 					x.onload = function(e) {
@@ -171,7 +171,7 @@ function printDocument($title = 'DigEat') {
 					e.preventDefault();
 					a = e.target.parentNode;
 					a.parentNode.hidden = true;
-					url = './confirmFollow.php?idgroup='+ idgroup +'&id_user=' + id_user;
+					url = './jsphp/confirmFollow.php?idgroup='+ idgroup +'&id_user=' + id_user;
 					x = new XMLHttpRequest();
 					x.open('GET', url, true);
 					x.onload = function(e) {
@@ -189,7 +189,7 @@ function printDocument($title = 'DigEat') {
 					e.preventDefault();
 					a = e.target.parentNode;
 					a.parentNode.hidden = true;
-					url = './readComments.php?idwall='+ idwall +'&id_user=' + id_user;
+					url = './jsphp/readComments.php?idwall='+ idwall +'&id_user=' + id_user;
 					x = new XMLHttpRequest();
 					x.open('GET', url, true);
 					x.onload = function(e) {
@@ -207,7 +207,7 @@ function printDocument($title = 'DigEat') {
 					e.preventDefault();
 					a = e.target.parentNode;
 					a.parentNode.hidden = true;
-					url = './readPrivate.php?id='+ id +'&id_user=' + id_user;
+					url = './jsphp/readPrivate.php?id='+ id +'&id_user=' + id_user;
 					x = new XMLHttpRequest();
 					x.open('GET', url, true);
 					x.onload = function(e) {

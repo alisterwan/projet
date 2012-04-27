@@ -378,7 +378,7 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
       e.preventDefault();
       a = e.target.parentNode;
       a.parentNode.hidden = true;
-      url = './deleteOnFridge.php?id=' + id;
+      url = './jsphp/deleteOnFridge.php?id=' + id;
       x = new XMLHttpRequest();
       x.open('GET', url, true);
       x.onload = function(e) {

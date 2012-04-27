@@ -284,7 +284,7 @@ function printAddNewFriend($userid){
 		  e.preventDefault();
 		  a = e.target.parentNode;
 		  a.parentNode.hidden = true;
-		  url = './addFriends.php?id_user='+ id_user +'&id_friend=' + id_friend;
+		  url = './jsphp/addFriends.php?id_user='+ id_user +'&id_friend=' + id_friend;
 		  x = new XMLHttpRequest();
 		  x.open('GET', url, true);
 		  x.onload = function(e) {
@@ -308,7 +308,7 @@ function printAddNewSubscriber($userid){
 		  e.preventDefault();
 		  a = e.target.parentNode;
 		  a.parentNode.hidden = true;
-		  url = './addSubscribers.php?id_user='+ id_user +'&id_friend=' + id_friend;
+		  url = './jsphp/addSubscribers.php?id_user='+ id_user +'&id_friend=' + id_friend;
 		  x = new XMLHttpRequest();
 		  x.open('GET', url, true);
 		  x.onload = function(e) {
@@ -936,7 +936,7 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
       e.preventDefault();
       a = e.target.parentNode;
       a.parentNode.hidden = true;
-      url = './deleteOnProhib.php?id=' + id;
+      url = './jsphp/deleteOnProhib.php?id=' + id;
       x = new XMLHttpRequest();
       x.open('GET', url, true);
       x.onload = function(e) {
@@ -979,7 +979,7 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
       e.preventDefault();
       a = e.target.parentNode;
       a.parentNode.hidden = true;
-      url = './deleteOnLike.php?id=' + id;
+      url = './jsphp/deleteOnLike.php?id=' + id;
       x = new XMLHttpRequest();
       x.open('GET', url, true);
       x.onload = function(e) {
@@ -1020,7 +1020,7 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
       e.preventDefault();
       a = e.target.parentNode;
       a.parentNode.hidden = true;
-      url = './deleteOnDislike.php?id=' + id;
+      url = './jsphp/deleteOnDislike.php?id=' + id;
       x = new XMLHttpRequest();
       x.open('GET', url, true);
       x.onload = function(e) {

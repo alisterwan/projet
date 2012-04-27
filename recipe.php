@@ -118,7 +118,7 @@ function printUserActions_ByRecipeId($recipeID){
 		  e.preventDefault();
 		  a = e.target.parentNode;
 		  a.parentNode.hidden = true;
-		  url = './deleterecipe.php?id=' + id;
+		  url = './jsphp/deleterecipe.php?id=' + id;
 		  x = new XMLHttpRequest();
 		  x.open('GET', url, true);
 		  x.onload = function(e) {
@@ -145,7 +145,7 @@ function printUserActions_ByRecipeId($recipeID){
 		  e.preventDefault();
 		  a = e.target.parentNode;
 		  a.parentNode.hidden = true;
-		  url = './recipeTopdf.php?data=' + data;
+		  url = './jsphp/recipeTopdf.php?data=' + data;
 		  x = new XMLHttpRequest();
 		  x.open('GET', url, true);
 		  x.onload = function(e) {
@@ -176,7 +176,7 @@ function printUserActions_ByRecipeId($recipeID){
 			  e.preventDefault();
 			  a = e.target.parentNode;
 			  a.parentNode.hidden = true;
-			  url = './recipeTopdf.php?data=' + data;
+			  url = './jsphp/recipeTopdf.php?data=' + data;
 			  x = new XMLHttpRequest();
 			  x.open('GET', url, true);
 			  x.onload = function(e) {
@@ -326,7 +326,7 @@ if (isset($userid)){ // vérification si logué ou pas
 		  e.preventDefault();
 		  a = e.target.parentNode;
 		  a.parentNode.hidden = true;
-		  url = './recipeTopdf.php?data=' + data;
+		  url = './jsphp/recipeTopdf.php?data=' + data;
 		  x = new XMLHttpRequest();
 		  x.open('GET', url, true);
 		  x.onload = function(e) {
