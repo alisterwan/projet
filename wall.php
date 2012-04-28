@@ -349,7 +349,7 @@ function printAllPostByUserId($id){ // display ALL POSTS AND COMMENTS according 
 	$ficelle.= '<div class="all_wall_post" >';
 	
 		foreach($allposts AS $post){
-		$ficelle.= printWallPostById($post).'<br>';
+		$ficelle.= printWallPostById($post);
 	}
 	$ficelle.= '</div>';
 	return $ficelle;
@@ -381,9 +381,9 @@ function printWallPostById($idpost){ // display a Post and Comments
 	$ficelle.= printAvatarByUserId($id_user).'<br/>';// case avatar
 	$ficelle.= printRatingPost($idpost); // ratings
 
-	$ficelle.= printLinkToProfileByUserId($id_user).' - '.$date.'<br/>';
-	$ficelle.= $content;
-	$ficelle.= printLikeDislikePost($id_post).'<br/>'.printPermissionChoices($id_post, getCreatorIdByPostId($id_post)).'</form>';
+	$ficelle.= '<div class="link_to_user" >'.printLinkToProfileByUserId($id_user).'</div><div class="wall_post_date" >'.$date.'</div>';
+	$ficelle.= '<div class="wall_post_content" >'.$content.'</div>';
+	$ficelle.= printLikeDislikePost($id_post).printPermissionChoices($id_post, getCreatorIdByPostId($id_post)).'</form>';
 	$ficelle.= printAllCommentsByWallPostId($id_post);
 	$ficelle.= '</div>';
 	return $ficelle;
@@ -393,7 +393,7 @@ function printAvatarByUserId($id){ // display avatar miniature
 	$sql = 'SELECT avatar FROM users WHERE id='.$id;
 	$query = mysql_query($sql);
 	$result = mysql_fetch_assoc($query);
-	return '<img src="'.$result['avatar'].'"  width="64" height="64" alt="avatar">';
+	return '<div class="user_avatar" ><img src="'.$result['avatar'].'"  width="64" height="64" alt="avatar"></div>';
 }
 
 function printLikeDislikePost($idpost){ // like dislike delete bar for POST
@@ -402,30 +402,32 @@ function printLikeDislikePost($idpost){ // like dislike delete bar for POST
 	$wallowner = getCreatorIdByPostId($idpost);
 	if(!alreadyRatedPostByUser($idpost, $userid)){
 		// Like button
-		$ficelle.= '<button class="like_button" title="Like post" value='.$idpost.' name="post_like" type="submit">
+		$ficelle.= '<div class="like_button" ><button title="Like post" value='.$idpost.' name="post_like" type="submit">
 					Like
-					</button>';
+					</button></div>';
 		// Dislike button
-		$ficelle.= '<button class="dislike_button" title="Dislike post" value='.$idpost.' name="post_dislike" type="submit">
+		$ficelle.= '<div class="dislike_button" ><button title="Dislike post" value='.$idpost.' name="post_dislike" type="submit">
 					Dislike
-					</button>';
+					</button></div>';
 	}else{ // undo rating?
+		$ficelle.= '<div class="user_post_rate" >';
 		if(getCurrentUserPostRatingByPost($idpost)==0){
 			$ficelle.='You dislike this post. ';
 		}else{
 			$ficelle.='You like this post. ';
 		}
+		$ficelle.= '</div>';
 
-		$ficelle.= '<button class="undo_button" title="Undo post rating" value='.$idpost.' name="post_undo_rating" type="submit">
+		$ficelle.= '<div class="undo_button" ><button title="Undo post rating" value='.$idpost.' name="post_undo_rating" type="submit">
 					Undo
-					</button>';
+					</button></div>';
 	}
 
 	// delete button
 	if(posterOrOwnerOfPost($idpost, $userid)){
-		$ficelle.= '<button class="delete_button" title="Delete post" value='.$idpost.' name="post_delete" type="submit">
+		$ficelle.= '<div class="delete_button" ><button title="Delete post" value='.$idpost.' name="post_delete" type="submit">
 					Delete
-					</button>';
+					</button></div>';
 	}
 
 	return $ficelle;
@@ -441,10 +443,10 @@ function printCommentByCommentId($idcomment){ // comment display
 
 	$result = mysql_fetch_assoc($query);
 
-	$ficelle = '<div class="wall_post_comment" >'.printAvatarByUserId($result['id_poster']).'<br/>'; // case avatar
+	$ficelle = '<div class="wall_post_comment" >'.printAvatarByUserId($result['id_poster']); // case avatar
 	$ficelle.= printRatingComment($idcomment); // ratings
 
-	$ficelle.= printLinkToProfileByUserId($result['id_poster']).' '.$result['comment'].'<br/>';
+	$ficelle.= printLinkToProfileByUserId($result['id_poster']).' <div class="comment_content" >'.$result['comment'].'</div>';
 	$ficelle.= printLikeDislikeComment($idcomment);
 	$ficelle.= '</div>';
 
@@ -459,13 +461,14 @@ function printAllCommentsByWallPostId($postid){ // all comments for a post
 	
 	$ficelle.= '<div class="all_wall_post_comment" >';
 	
+	$ficelle.= '<div class="post_comments_number" >';
 	$nbcomment = mysql_num_rows($query);
 	if($nbcomment>1){
 		$ficelle.= $nbcomment.' comments';
 	}else{
 		$ficelle.= $nbcomment.' comment';
 	}
-	$ficelle.= '<br/>';
+	$ficelle.= '</div>';
 	
 	$wallowner = getCreatorIdByPostId($postid);
 	if($wallowner!=$userid){
@@ -483,8 +486,8 @@ function printAllCommentsByWallPostId($postid){ // all comments for a post
 	}
 	///////////////NEW COMMENT/////////////
 	$ficelle.= '<input type="hidden" name="idpost" id="idpost" value='.$postid.' />
-	<textarea name="newcomment" id="newcomment" ></textarea><br/>
-	<input type="submit" value="Post new comment" /></form>';
+	<div class="new_comment_textarea" ><textarea name="newcomment" id="newcomment" ></textarea></div>
+	<div class="new_comment_button" ><input type="submit" value="Post new comment" /></div></form>';
 	$ficelle.= '</div>';
 	
 	return $ficelle;
@@ -497,37 +500,39 @@ function printLikeDislikeComment($idcomment){ // like dislike delete bar for com
 	$wallowner = getWallOwnerByCommentId($idcomment);
 	if(!alreadyRatedCommentByUser($idcomment, $userid)){
 		// Like button
-		$ficelle.= '<button class="like_button" title="Like this" value='.$idcomment.' name="comment_like" type="submit">
+		$ficelle.= '<div class="like_button" ><button title="Like this" value='.$idcomment.' name="comment_like" type="submit">
 					Like
-					</button>';
+					</button></div>';
 
 		// Dislike button		
-		$ficelle.= '<button class="dislike_button" title="Dislike this" value='.$idcomment.' name="comment_dislike" type="submit">
+		$ficelle.= '<div class="like_button" ><button title="Dislike this" value='.$idcomment.' name="comment_dislike" type="submit">
 					Dislike
-					</button>';
+					</button></div>';
 	}else{ // undo rating?
+		$ficelle.= '<div class="user_comment_rate" >';
 		if(getCurrentUserPostRatingByComment($idcomment)==0){
 			$ficelle.='You dislike this comment. ';
 		}else{
 			$ficelle.='You like this comment. ';
 		}
-		$ficelle.= '<button class="undo_button" title="Undo rating" value='.$idcomment.' name="comment_undo_rating" type="submit">
+		$ficelle.= '</div>';
+		$ficelle.= '<div class="undo_button" ><button title="Undo rating" value='.$idcomment.' name="comment_undo_rating" type="submit">
 					Undo
-					</button>';
+					</button></div>';
 	}
 
 	// delete button
 	if(posterOrOwnerOfComment($idcomment, $userid)){
-		$ficelle.= '<button class="delete_button" title="Delete comment" value='.$idcomment.' name="comment_delete" type="submit">
+		$ficelle.= '<div class="delete_button" ><button title="Delete comment" value='.$idcomment.' name="comment_delete" type="submit">
 					Delete comment
-					</button>';
+					</button></div>';
 	}
 	
 	// date
 	$sql = 'SELECT date FROM wall_post_comment WHERE id='.$idcomment;
 	$query = mysql_query($sql);
 	$result = mysql_fetch_assoc($query);
-	$ficelle.= '<br/>'.$result['date'];
+	$ficelle.= '<div class="comment_date" >'.$result['date'].'</div>';
 
 	return $ficelle;
 }
@@ -536,7 +541,7 @@ function printPermissionChoices($idpost, $iduser){ // display Permissions and ch
 	global $userid; 
 	if($userid != $iduser) return '';
 	$ficelle = '';
-	$ficelle.= '<label for="share_with_group" >Share with</label> <select name="share_with_group" id="share_with_group">';
+	$ficelle.= '<div class="post_share" ><label for="share_with_group" >Share with</label> <select name="share_with_group" id="share_with_group">';
 
 	$groupsid = getAllGroupsByUserId($iduser); // all groups of iduser
 	$allowedGroupsId = getGroupsByWallPostId($idpost); // all groups granted by iduser
@@ -550,17 +555,17 @@ function printPermissionChoices($idpost, $iduser){ // display Permissions and ch
 		}
 	}
 
-	$ficelle.= '</select> <input type="submit" value="Submit" /><input type="hidden" name="post_allowed" id="post_allowed" value='.$idpost.' /><br/>';
+	$ficelle.= '</select> <input type="submit" value="Submit" /><input type="hidden" name="post_allowed" id="post_allowed" value='.$idpost.' /></div>';
 
 	if($allowedGroupsId!=false ){
 		foreach($allowedGroupsId AS $allowedGroup){
-			$ficelle.= getGroupNameById($allowedGroup).'<input type="hidden" name="remove_permission" id ="remove_permission" value='.$allowedGroup.' />
+			$ficelle.= '<div class="allowed group" >'.getGroupNameById($allowedGroup).'</div><input type="hidden" name="remove_permission" id ="remove_permission" value='.$allowedGroup.' />
 			';
 			//<input type="hidden" name="post_restricted" id ="post_restricted" value='.$idpost.' />';
 			//<input type="submit" value="Remove" /><br/>';
-			$ficelle.= '<button class="remove_group_button" title="Remove access" value='.$idpost.' name="post_restricted" type="submit">
+			$ficelle.= '<div class="remove_group_button" ><button  title="Remove access" value='.$idpost.' name="post_restricted" type="submit">
 					Remove
-					</button>';
+					</button></div>';
 		}
 	}
 	return $ficelle;
@@ -568,33 +573,37 @@ function printPermissionChoices($idpost, $iduser){ // display Permissions and ch
 
 function printRatingPost($idpost){
 	$ficelle = '';
+	$ficelle.= '<div class="wall_post_ratings_like" >';
 	if(getLikesByPost($idpost)<2) {
 		$ficelle.= getLikesByPost($idpost).' like'; // like
 	}else{
 		$ficelle.= getLikesByPost($idpost).' likes'; // likes
 	}
 
-	$ficelle.= '<br/>';
-	//$ficelle.= '&nbsp;';
+	//$ficelle.= '<br/>';
+	$ficelle.= '</div><div class="wall_post_ratings_dilike" >';
 
 	if(getDislikesByPost($idpost)<2) {
 		$ficelle.= getDislikesByPost($idpost).' dislike'; // dislike
 	}else{
 		$ficelle.= getDislikesByPost($idpost).' dislikes'; // dislikes
 	}
-	$ficelle.= '<br/>';
+	$ficelle.= '</div>';
 	return $ficelle;
 }
 
 function printRatingComment($idcomment){
 	$ficelle = '';
+	
+	$ficelle.= '<div class="comment_ratings_like" >';
 	if(getLikesByComment($idcomment)<2) {
 		$ficelle.= getLikesByComment($idcomment).' like'; // like
 	}else{
 		$ficelle.= getLikesByComment($idcomment).' likes'; // likes
 	}
 
-	$ficelle.= '<br/>';
+	$ficelle.= '</div>
+	<div class="comment_ratings_dilike" >';
 	//$ficelle.= '&nbsp;';
 
 	if(getDislikesByComment($idcomment)<2) {
@@ -602,7 +611,7 @@ function printRatingComment($idcomment){
 	}else{
 		$ficelle.= getDislikesByComment($idcomment).' dislikes'; // dislikes
 	}
-	$ficelle.= '<br/>';
+	$ficelle.= '</div>';
 	return $ficelle;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -716,12 +725,13 @@ if(isset($userid) || isVisitor() ){
 	}
 	$html.= printNewWallPost($id); // new post
 
-
+	$html.= '<div class="wall">';
 	if(printAllPostByUserId($id)==false){ // nothing to display
-		$html.= '<br>No post.<br>';
+		$html.= 'No post';
 	}else{
-		$html.= '<br><div class="wall">'.printAllPostByUserId($id).'</div>'; // display all posts
+		$html.= printAllPostByUserId($id); // display all posts
 	}
+	$html.= '</div>';
 
 	printDocument('Wall');
 }else{ // visitors
