@@ -1,6 +1,7 @@
 <?php
 
 include 'header.php';
+define("NO_IMAGE", "img/default/noimage.gif");
 
 /**************Fonctions****************************/
 
@@ -133,10 +134,16 @@ function printUserBadgeById($id) {
 		return '';
 	}
 
+	if(file_exists($user['avatar'])){
+		$avatar = $user['avatar'];
+	}else{
+		$avatar = NO_IMAGE;
+	}
+	
 	$ficelle  = '
 	<table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
 		<tr>
-			<td>'.printAvatarBadgeByURL($user['avatar']).'</td>
+			<td>'.printAvatarBadgeByURL($avatar).'</td>
 			<td><a href=profile.php?id_user='.$user['id'].'>'.$user['firstname'].' '.$user['surname'].'<br>';
 
 	global $userid;
@@ -216,11 +223,10 @@ if (isConnected() && !isset($_GET['id'])) {
 			$response2 = mysql_query($query2);
 
 			while($friend = mysql_fetch_assoc($response2)) {
-				$message .= "
-<p class='error'>
-	<a href='profile.php?id_user=$friend[id]'><img src='$friend[avatar]' style='height: 50px; width: 50px;'>$friend[username]</a> is following you.
-	<a href='#' onclick='confirmFollow(event,$row[id_group],$userid)'>Ok</a>
-</p>";
+				$message.= "<p class='error'>
+								<a href='profile.php?id_user=$friend[id]'><img src='$friend[avatar]' style='height: 50px; width: 50px;'>$friend[username]</a> is following you.
+								<a href='#' onclick='confirmFollow(event,$row[id_group],$userid)'>Ok</a>
+							</p>";
 			}
 		}
 	}
