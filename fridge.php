@@ -1,14 +1,16 @@
-<?php include 'header.php';
+<?php 
+include 'header.php';
 
+define("NO_IMAGE", "img/default/noimage.gif");
 
 /***************fonctions***************************/
 
 //fonction pour verifier si deux users sont amis
   
 /*
-La fonction getAllGroupsByUserId($id) récupère un array des numéros des groupes auxquel $id appartient.
+La fonction getAllGroupsByUserId($id) r≈Ωcup¬ère un array des num≈Ωros des groupes auxquel $id appartient.
 
-La fonction checkPermission($vargroup, $user) renvoie TRUE si le $user appartient à au moins un des groupes $vargroup. 
+La fonction checkPermission($vargroup, $user) renvoie TRUE si le $user appartient ÀÜ au moins un des groupes $vargroup. 
   
 printAddNewFriend($userid) imprime les boutons pour ajouter en ami ou follow. $userid est l'ID du demandeur.
 /**************************************************/
@@ -73,18 +75,18 @@ function leftboxContent(){
 	if(!isLost()){
 		if (isset($_SESSION['id'])) { // if logged in
 			if (isLoggedVisitor()) { // if visitor 
-				// Requête qui récupère toutes les coordonnées du client
+				// Requ¬ête qui r≈Ωcup¬ère toutes les coordonn≈Ωes du client
 				$userinfos=retrieve_user_infos($_GET['id_user']);
 				$content.= "<img src= '$userinfos[avatar]' width='170px' height='200px' />";
 			}else{
-				// Requête qui récupère toutes les coordonnées du client
+				// Requ¬ête qui r≈Ωcup¬ère toutes les coordonn≈Ωes du client
 				global $userid;
 				$userinfos=retrieve_user_infos($userid);
 				$content.= "<img src= '$userinfos[avatar]' width='170px' height='200px'><a href='./image.php'><img src= './img/templates/camera.png' width='50px' height='50px'></a>Change my avatar";
 				
 			}
 		}else if(isset($_GET['id_user'])){ // non logged in visitor
-			// Requête qui récupère toutes les coordonnées du client
+			// Requ¬ête qui r≈Ωcup¬ère toutes les coordonn≈Ωes du client
 			$userinfos=retrieve_user_infos($_GET['id_user']);
 			$content.= "<img src= '$userinfos[avatar]' width='170px' height='200px' />";
 		}
@@ -219,38 +221,41 @@ function IngredientAdd($j){
 
 function printFormAddIngredient($userid){
 	$var = CountIngredients($userid);
-	$html ="
-	<form action='fridge.php' method='post' id='contribution' enctype='multipart/form-data'>";
+	$html ="<form action='fridge.php' method='post' id='contribution' enctype='multipart/form-data'>";
 	$html.= IngredientAdd($var);
-	$html.="<input type='submit' value='Submit'>
-	";
+	$html.="<input type='submit' value='Submit'>";
 		
 	//instructions pour rechercher
 	if(isset($_POST)){	
 		//recupere tous les ingredients de la liste dans un tableau
 		$toto = getAllInMyFridge($userid);
 		
+		$all_recipes;
 		if($toto){
 			$html.= "<h4>Search Results</h4>";
 			foreach($toto as $to){
 				$coco = getidIngredient($to);
-				//si l'ingredient existe on recherche les recettes liées par l'id
+				//si l'ingredient existe on recherche les recettes li√©es par l'id
 				if($coco){
 					$titi = getRecipesIdbyIngredientId($coco['id']);
 					if($titi!=false){
-						foreach($titi as $ti){	
-							$wawa = retrieve_recipe_infos($ti); 
-							$user = retrieve_user_infos($wawa['id_user']);		
-							$html.= "<p><div>
-							<span>";
-							$html.= getRecipesPhotobyId($wawa['id']);
-							$html.="</span>
-							<span><a href='recipe.php?id=$wawa[id]'>$wawa[name_en]</a> by <a href='profile.php?id_user=$wawa[id_user]'>$user[username]</a></span>
-							</div></p>";					
-						}
+						$all_recipes[] = $titi;
 					}
 				}
 			}
+			
+			$all_recipes = array_unique($titi);// supression des doublons
+			foreach($all_recipes as $recipe){	
+				$wawa = retrieve_recipe_infos($recipe); 
+				$user = retrieve_user_infos($wawa['id_user']);		
+				$html.= "<p><div>
+				<span>";
+				$html.= getRecipesPhotobyId($wawa['id']);
+				$html.="</span>
+				<span><a href='recipe.php?id=$wawa[id]'>$wawa[name_en]</a> by <a href='profile.php?id_user=$wawa[id_user]'>$user[username]</a></span>
+				</div></p>";					
+			}
+			
 		}else{
 			$html.= "<h4>No Results found</h4>";
 		}
@@ -281,15 +286,22 @@ function getRecipesPhotobyId($idrecipe){
 	$query = sprintf("SELECT path_source FROM recipe_photos WHERE id_recipe='%s'", mysql_real_escape_string($idrecipe));
 	$result2 = mysql_query($query);
 
-	if(mysql_num_rows($result2) == 1){
+	if(mysql_num_rows($result2) > 0){
 		$ij = mysql_fetch_assoc($result2);
-		$html = "<img src='$ij[path_source]' width='100px' height='75px' />";
+		
+		if(file_exists($ij['path_source'])){
+			$html = "<img src='$ij[path_source]' width='100px' height='75px' />";
+		}else{
+			$html = '<img src="'.NO_IMAGE.'" width="100px" height="75px" />';
+		}
+	}else{
+		$html = '<img src="'.NO_IMAGE.'" width="100px" height="75px" />';
 	}
 	return $html;
 }
 
 
-function retrieve_recipe_infos($id){ // prend en paramètre l'id de la recette
+function retrieve_recipe_infos($id){ // prend en param¬ètre l'id de la recette
 	$sql='SELECT * FROM recipes WHERE id='.$id;
 	$query=mysql_query($sql);
 	$verif = mysql_num_rows($query);
@@ -365,7 +377,7 @@ function insertIntoFridgeIng($text,$userid){
 ////////////////////////////////////////////END FUNCTIONS////////////////////////////////////////////////////
 
 
-if (isset($userid)){  // vérification si logué en tant qu'utilisateur
+if (isset($userid)){  // v≈Ωrification si logu≈Ω en tant qu'utilisateur
 
 	$html = '';
 	$userinfos=retrieve_user_infos($userid);
@@ -397,18 +409,15 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 	$html.= printFormAddIngredient($userid);
 
 
-	//requête pour recupérer les ingrédients
+	//requ¬ête pour recup≈Ωrer les ingr≈Ωdients
 	$ingredients = mysql_query("SELECT name_en,id FROM ingredients");
 	$list2 = "";
 	while ($ingredient = mysql_fetch_array($ingredients)) {
-	$list2.= "<option value='$ingredient[0]'>$ingredient[0]</option>";
+		$list2.= "<option value='$ingredient[0]'>$ingredient[0]</option>";
 	}
 	$html.= "<datalist id='ingredientList'>$list2</datalist>";
-	
-	
-	
 
-	 printDocument('My Fridge'); 
+	printDocument('My Fridge'); 
 }
 
 
