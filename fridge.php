@@ -220,53 +220,73 @@ function IngredientAdd($j){
 }
 
 function printFormAddIngredient($userid){
-	$var = CountIngredients($userid);
-	$html ="<form action='fridge.php' method='post' id='contribution' enctype='multipart/form-data'>";
-	$html.= IngredientAdd($var);
-	$html.="<input type='submit' value='Submit'>";
+
+	$html = '';
+	$all_recipes = getRecipeIdByFridgeByUserID($userid);
 		
-	//instructions pour rechercher
-	if(isset($_POST)){	
-		//recupere tous les ingredients de la liste dans un tableau
-		$toto = getAllInMyFridge($userid);
+	if($all_recipes!=false){
 		
-		$all_recipes;
-		if($toto){
-			$html.= "<h4>Search Results</h4>";
-			foreach($toto as $to){
-				$coco = getidIngredient($to);
-				//si l'ingredient existe on recherche les recettes liées par l'id
-				if($coco){
-					$titi = getRecipesIdbyIngredientId($coco['id']);
-					if($titi!=false){
-						$all_recipes[] = $titi;
-					}
-				}
-			}
-			
-			$all_recipes = array_unique($titi);// supression des doublons
-			foreach($all_recipes as $recipe){	
-				$wawa = retrieve_recipe_infos($recipe); 
-				$user = retrieve_user_infos($wawa['id_user']);		
-				$html.= "<p><div>
-				<span>";
-				$html.= getRecipesPhotobyId($wawa['id']);
-				$html.="</span>
-				<span><a href='recipe.php?id=$wawa[id]'>$wawa[name_en]</a> by <a href='profile.php?id_user=$wawa[id_user]'>$user[username]</a></span>
-				</div></p>";					
-			}
-			
-		}else{
-			$html.= "<h4>No Results found</h4>";
+		foreach($all_recipes as $recipe){	
+			$wawa = retrieve_recipe_infos($recipe); 
+			$user = retrieve_user_infos($wawa['id_user']);		
+			$html.= "<p><div>
+			<span>";
+			$html.= getRecipesPhotobyId($wawa['id']);
+			$html.="</span>
+			<span><a href='recipe.php?id=$wawa[id]'>$wawa[name_en]</a> by <a href='profile.php?id_user=$wawa[id_user]'>$user[username]</a></span>
+			</div></p>";					
 		}
 		
-		return $html;
-	} 
-		
+	}else{
+		$html.= "<h4>No Results found</h4>";
+	}
+	
 	return $html;
 }
 
+function getRecipeIdByFridgeByUserID($userid){
 
+	$ingredients = getAllInMyFridge($userid);
+
+	if($ingredients==false){
+		return false;
+	}
+	
+	$ingredientsID;
+	$id;
+
+	foreach($ingredients AS $ingredient){
+		$id = getidIngredient($ingredient);
+		if($id!=false){
+			$ingredientsID[] = $id['id'];
+		}
+	}
+
+
+	$recipesID;
+	$allrecipes;
+	
+	if(isset($ingredientsID)){
+		foreach($ingredientsID AS $ingredientID){
+			$recipesID = getRecipesIdbyIngredientId($ingredientID);
+			if($recipesID!=false){
+				foreach($recipesID AS $recipeID){
+					$allrecipes[] = $recipeID;
+				}
+			}
+		}
+	}else{
+		return false;
+	}
+	
+	if(isset($allrecipes)){
+		$allrecipes = array_unique($allrecipes);
+	}else{
+		return false;
+	}
+	
+	return $allrecipes;
+}
 
 function getRecipesIdbyIngredientId($ingid){
 	$query = sprintf("SELECT id_recipe FROM recipe_ingredients WHERE id_ingredient='$ingid'",	mysql_real_escape_string($ingid));
