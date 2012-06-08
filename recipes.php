@@ -1,6 +1,8 @@
 <?php
 include 'header.php';
 
+define("NO_IMAGE", "img/default/noimage.gif");
+
 /******* NEW Recipe Functions *******/
 
 //fonction pour inserer un ingredient dans la bdd
@@ -22,19 +24,14 @@ function getnameIngredient($name) {
 
 	if (!$result) {
 		return false;
-	} else while ($row = mysql_fetch_assoc($result)) {
-		// ??????????????????????????????????????
-		// return dans un while ?
+	} else {
+		$row = mysql_fetch_assoc($result);
 		$html = $row['name_en'];
 	}
-	
-	// ??????????????????????????????????????
-	// on appele une fonction après avoir retourner la méthode?
+
 	mysql_free_result($result);
 	return $html;
 }
-
-
 
 //fonction pour recuperer le id de l'ingredient
 function getidIngredient($name) {
@@ -45,17 +42,46 @@ function getidIngredient($name) {
 		//si l'ingredient n'existe pas on l'ajoute dans la table ingredient
 		return false;
 	}else{
-		while ($row = mysql_fetch_assoc($result)) {
-			// ??????????????????????????????????????
-			// return dans un while ?
-			$html = $row['id'];
-		}	
+		$row = mysql_fetch_assoc($result);
+		$html = $row['id'];
 	}
 
 	// ??????????????????????????????????????
 	// on appele une fonction après avoir retourner la méthode?
 	mysql_free_result($result);
 	return $html;
+}
+
+// recupère un tableau d'id de recettes faites par les contacts de l'utilisateur
+function getLastestRecipesofContact(){
+	if(!isConnected()) return false;
+
+	global $userid;
+	$groups = getAllGroupsByUserId($userid);
+	if(!$groups || count($groups)<1) return false;
+
+	$users = getAllUsersOfGroups($groups);
+
+	if($users == false || count($users)<1 ) return false;
+
+	$sql = 'SELECT id FROM recipes WHERE ';
+	$nbusers = count($users);
+	$i = 0;
+	foreach($users AS $user){
+		$i++;
+		$sql.= 'id_user='.$user;
+		if($i < $nbusers) $sql.= ' OR ';
+	}
+
+	$sql.= ' ORDER BY creation DESC LIMIT 0, 4';
+	$query = mysql_query($sql);
+	if(!$query || mysql_num_rows($query)<1) return false;
+
+	$posts;
+	while($result = mysql_fetch_assoc($query)){
+		$recipes[] = $result['id'];
+	}
+	return $recipes;
 }
 
 // Fonction qui insere un new recipe dans la bdd
@@ -99,15 +125,16 @@ function insertRecipe() {
 		$country['id_country'] = 67;
 	}
 
-	$query = sprintf("INSERT INTO recipes(name_en, description_en, country_origin, difficulty, num_serves, duration_preparation, duration_cook, preparation_en, approval, id_user) VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');",
+	$query = sprintf("INSERT INTO recipes(name_en, description_en, country_origin, difficulty, num_serves, duration_preparation, duration_cook, preparation_en, type, approval, id_user) VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');",
 		mysql_real_escape_string(strip_tags($_POST['name'])),
 		mysql_real_escape_string(strip_tags($_POST['description'])),
 		mysql_real_escape_string(strip_tags($country['id_country'])),
 		mysql_real_escape_string(strip_tags($_POST['difficulty'])),
 		mysql_real_escape_string(strip_tags($_POST['serves'])),
-		mysql_real_escape_string(strip_tags($_POST['prepDuration'])),
+		mysql_real_escape_string(strip_tags($_POST['prepDuration'])),		
 		mysql_real_escape_string(strip_tags($_POST['cookDuration'])),
 		mysql_real_escape_string(strip_tags($_POST['method'])),
+		mysql_real_escape_string(strip_tags($_POST['recipe_type'])),
 		mysql_real_escape_string(strip_tags($_POST['permission'])),
 		mysql_real_escape_string(strip_tags($userid)));
 	$result = mysql_query($query);
@@ -117,6 +144,175 @@ function insertRecipe() {
 	}
 
 	return true;
+}
+
+
+/*************** PRINTERS ********************/
+function printSelectRecipeType(){
+	$sdf = '<label>Recipe type <select name="recipe_type" id="recipe_type" >';
+	
+	$query = mysql_query('SELECT * FROM recipe_type');
+	if($query!=false){
+		while($type = mysql_fetch_assoc($query)){
+			if(isset($_POST['recipe_type']) && $_POST['recipe_type'] == $type['id']){
+				$sdf.= '<option value='.$type['id'].' selected="selected">'.$type['name_en'].'</option>';
+			}else{
+				$sdf.= '<option value='.$type['id'].' >'.$type['name_en'].'</option>';
+			}
+		}
+	}
+	
+	$sdf.= '</select></label>';
+	return $sdf;
+}
+
+function printRecipeDifficulty(){
+	$sdf = "<label>Difficulty
+			<select name='difficulty'>";
+
+	$result = mysql_query("SELECT id, name_en FROM recipe_difficulty");
+
+	while ($rows = mysql_fetch_assoc($result)) {
+		if(isset($_POST['difficulty']) && $_POST['difficulty'] == $rows['id']){
+			$sdf.= "<option value='$rows[id]' selected='selected' >$rows[name_en]</option>";
+		}else{
+			$sdf.= "<option value='$rows[id]' >$rows[name_en]</option>";
+		}
+	}
+
+	$sdf.= "</select></label>";
+	return $sdf;
+}
+
+function printPublicRecipes(){
+	$sq = "";
+	
+	$sq.= '<h3>Dish type</h3>';
+	// print type selector
+	$sq.= printRecipeTypeSelector();
+	
+	$sq.= "<hr>";
+	
+	// print results by selected type
+	$sq.= '<strong>Results</strong> <br><br>';
+	$sq.= printRecipesBySelectedType();
+	
+	return $sq;
+}
+
+function printRecipeTypeSelector(){
+	$sq = '';
+	
+	if(isset($_GET['recipe_type'])){
+		$sq.= '<center><a href="'.$_SERVER['PHP_SELF'].'?mode=public_recipes" >All</a>';
+	}else{
+		$sq.= '<center>All';
+	}
+	
+	$query = mysql_query('SELECT * FROM recipe_type');
+	if(!$query){
+		return $sq;
+	}
+	
+	while($result = mysql_fetch_assoc($query)){
+		if(  (isset($_GET['recipe_type']) && $result['id'] != $_GET['recipe_type']) || !isset($_GET['recipe_type']) ){
+			$sq.= ' | <a href="'.$_SERVER['PHP_SELF'].'?mode=public_recipes&recipe_type='.$result['id'].'" >'.$result['name_en'].'</a>';
+		}else{
+			$sq.= ' | '.$result['name_en'];
+		}
+	}
+	$sq.= '</center>';
+	return $sq;
+}
+
+function printRecipesBySelectedType(){
+	$sq = "";
+	$type;
+
+	if(!isset($_GET['recipe_type'])){
+		$sql = 'SELECT id, name_en FROM recipes WHERE approval=2';
+	}else{
+		$sql = 'SELECT id, name_en FROM recipes WHERE approval=2 AND type='.$_GET['recipe_type'];
+	}
+	
+	$query = mysql_query($sql);
+	if(!$query || mysql_num_rows($query) < 1){
+		return 'No recipe found';
+	}
+	
+	while($result = mysql_fetch_assoc($query)){
+		$sq.= '<a href="recipe.php?id='.$result['id'].'" >'.printRecipeThumbnail($result['id']).' '.$result['name_en'].'</a><br><br>';
+	}
+	
+	return $sq;
+}
+
+function printRecipeThumbnail($recipeID){
+	$query = mysql_query('SELECT path_source FROM recipe_photos WHERE id_recipe='.$recipeID);
+	if(!$query || mysql_num_rows($query) < 1){
+		return '<img style="width: 75px; height: 75px;" alt="recipe_img" src="'.NO_IMAGE.'" border="0" >';
+	}
+	$result = mysql_fetch_assoc($query);
+	if(file_exists($result['path_source'])){
+		return '<img style="width: 75px; height: 75px;" alt="recipe_img" src="'.$result['path_source'].'" border="0" >';
+	}
+	return '<img style="width: 75px; height: 75px;" alt="recipe_img" src="'.NO_IMAGE.'" border="0" >';
+}
+
+function printMyRecipes(){
+	global $userid;
+	$df = "";
+	
+	$df.= '<h3>My Recipes</h3>';
+	
+	$query = mysql_query('SELECT id, name_en FROM recipes WHERE id_user='.$userid);
+	
+	if(!$query || mysql_num_rows($query) < 1 ){
+		$df.= 'No recipe found.';
+	}else{
+		while($result = mysql_fetch_assoc($query)){
+			$df.= '<a href="recipe.php?id='.$result['id'].'" >'.printRecipeThumbnail($result['id']).' '.$result['name_en'].'</a><br><br>';
+		}
+	}
+	
+	return $df;
+}
+
+function printLastestPublicRecipes(){
+	$df = "";
+	
+	$df.= '<h3>Lastest Public Recipes</h3>';
+	
+	$query = mysql_query('SELECT id, name_en FROM recipes WHERE approval=2 ORDER BY creation DESC LIMIT 0, 4');
+	
+	if(!$query || mysql_num_rows($query) < 1 ){
+		$df.= 'No recipe found.';
+	}else{
+		while($result = mysql_fetch_assoc($query)){
+			$df.= '<a href="recipe.php?id='.$result['id'].'" >'.printRecipeThumbnail($result['id']).' '.$result['name_en'].'</a><br><br>';
+		}
+	}
+	
+	return $df;
+}
+
+function printLastestRecipesOfContacts(){
+	$df = "<h3>Lastest Recipes of Contacts</h3>";
+	
+	$recipes = getLastestRecipesofContact();
+	if(!$recipes){
+		$df.= 'No recipe found';
+	}else{
+		foreach($recipes AS $recipe){
+			$query = mysql_query('SELECT id, name_en FROM recipes WHERE id='.$recipe);
+			if($query && mysql_num_rows($query) >0 ){
+				$result = mysql_fetch_assoc($query);
+				$df.= '<a href="recipe.php?id='.$result['id'].'" >'.printRecipeThumbnail($result['id']).' '.$result['name_en'].'</a><br><br>';
+			}
+		}
+	}
+	
+	return $df;
 }
 
 /*********** END -- NEW Recipe functions ***********/
@@ -151,17 +347,18 @@ function retrieve_recipe_infos($id){
 }
 
 /**************MAIN*************/
+global $message;
 
 if(isset($_GET['mode']) && $_GET['mode'] == "new_recipe"){
 	if ($_POST) {
+	// vérifie s'il existe une recette du même nom
 	$query = mysql_num_rows(
 		mysql_query(
 			sprintf("SELECT id FROM recipes WHERE name_en LIKE '%s'",
 				mysql_real_escape_string(strip_tags($_POST['name']))
 			)
 		)
-	);
-	
+	);	
 	if ($query > 0) {
 		// Si la recette existe déjà,
 		// on redirige l'utilisateur vers la dite recette.
@@ -184,7 +381,7 @@ if(isset($_GET['mode']) && $_GET['mode'] == "new_recipe"){
 		if (!in_array($extension, $imgExtensions)) {
 			$message.= "<p class='error'>The uploaded file's type is not supported.</p>";
 		} else {
-			$rep = './img/recipes/';
+			$rep = '/img/recipes/';
 			$file_path = $userid.'_'.$id_recipe.'.'.$extension;
 			$destination = $rep.$file_path;
 
@@ -206,7 +403,7 @@ if(isset($_GET['mode']) && $_GET['mode'] == "new_recipe"){
 
 	// Insertion des ingrédients dans le BDD.
 	$i = 1;
-	while ($_POST[$i]) {
+	while (isset($_POST[$i])) {
 		$ing = getidIngredient($_POST[$i]);
 
 		//insere l'ingredient dans la bdd s'il n'existe pas
@@ -227,10 +424,10 @@ if(isset($_GET['mode']) && $_GET['mode'] == "new_recipe"){
 		$message.= "<p class='error'>Please check your recipe again and submit.</p>";
 	}
 }
-
-
-
-	$html =	"<form action='recipes.php?mode=new_recipe' method='post' id='contribution' enctype='multipart/form-data'>
+	$html = '';
+	$html.= '<a href="'.$_SERVER['PHP_SELF'].'" >Return to Recipe main page</a>';
+	
+	$html.=	"<form action='recipes.php?mode=new_recipe' method='post' id='contribution' enctype='multipart/form-data'>
 			<p>Please define the recipe.</p>";
 			
 	if (isset($_POST['name'])){ // récup name si déjà envoyé
@@ -238,29 +435,21 @@ if(isset($_GET['mode']) && $_GET['mode'] == "new_recipe"){
 	}else{
 		$html.= "<label>Name <input type='text' name='name' required /></label>";
 	}
-	if (isset($_POST['name'])){ // récup description si déjà envoyé
+	
+	$html.= printSelectRecipeType(); // Recipe Type Selection $_POST['recipe_type']
+	
+	if (isset($_POST['description'])){ // récup description si déjà envoyé
 		$html.= "<label>Description <textarea name='description'>$_POST[description]</textarea></label>";
 	}else{
 		$html.= "<label>Description <textarea name='description'></textarea></label>";
 	}		
-	if (isset($_POST['name'])){ // récup country si déjà envoyé
+	if (isset($_POST['country'])){ // récup country si déjà envoyé
 		$html.= "<label>Origin <input type='text' name='country' list='countryList' value='$_POST[country]' /></label>";
 	}else{
 		$html.= "<label>Origin <input type='text' name='country' list='countryList' /></label>";
 	}
 			
-	$html.= "<label>Difficulty
-			<select name='difficulty'>";
-
-	$result = mysql_query("SELECT id, name_en FROM recipe_difficulty");
-
-	while ($rows = mysql_fetch_assoc($result)) {
-		$html.= "<option value='$rows[id]'>$rows[name_en]</option>";
-	}
-
-
-	$html.= "</select>
-		</label>";
+	$html.= printRecipeDifficulty(); // Recipe Difficulty Selection $_POST['difficulty']
 		
 	if (isset($_POST['serves'])){ // récup Serves si déjà envoyé
 		$html.= "<label>Servings <input type='number' name='serves' value='$_POST[serves]' /></label>";
@@ -280,7 +469,6 @@ if(isset($_GET['mode']) && $_GET['mode'] == "new_recipe"){
 
 	$html.= "<label for='picture'>Picture of the Recipe :</label>
 		<input type='file' size='65' name='picture' /></p>";
-
 
 	$i = 1;
 	while (isset($_POST[$i])) {
@@ -335,26 +523,28 @@ if(isset($_GET['mode']) && $_GET['mode'] == "new_recipe"){
 	
 	if(isset($_POST['name']) && isset($_POST['description']) && $_POST['name']!="" ){
 
-	$query = mysql_num_rows(mysql_query(sprintf("SELECT id FROM ingredients WHERE name_en LIKE '%s'",
-        mysql_real_escape_string(strip_tags($_POST['name'])))));
-		
-    if($query){
-		redirect_ingredient();
-    }else{
-		$query = sprintf("INSERT INTO ingredients(name_en,description_en) VALUES('%s','%s');",
-        mysql_real_escape_string(strip_tags($_POST['name'])),
-        mysql_real_escape_string(strip_tags($_POST['description'])));
-		$response = @mysql_query($query);
-		if(!$response) {
-			$message = "<p class='error'>Connection error.</p>";
-		}else{
+		$query = mysql_num_rows(mysql_query(sprintf("SELECT id FROM ingredients WHERE name_en LIKE '%s'",
+			mysql_real_escape_string(strip_tags($_POST['name'])))));
+			
+		if($query){
 			redirect_ingredient();
+		}else{
+			$query = sprintf("INSERT INTO ingredients(name_en,description_en) VALUES('%s','%s');",
+			mysql_real_escape_string(strip_tags($_POST['name'])),
+			mysql_real_escape_string(strip_tags($_POST['description'])));
+			$response = @mysql_query($query);
+			if(!$response) {
+				$message = "<p class='error'>Connection error.</p>";
+			}else{
+				redirect_ingredient();
+			}
 		}
-    }
 	}
 
 	// formulaire
-	$html = "<form action='recipes.php?mode=new_ingredient' method='post' id='contribution'>
+	$html = '';
+	$html.= '<a href="'.$_SERVER['PHP_SELF'].'" >Return to Recipe main page</a>';
+	$html.= "<form action='recipes.php?mode=new_ingredient' method='post' id='contribution'>
 			<p>Please define the ingredient.</p>
 			<label>Name <input type='text' name='name' required></label>
 			<p>You may also describe it.</p>
@@ -365,6 +555,7 @@ if(isset($_GET['mode']) && $_GET['mode'] == "new_recipe"){
 	printDocument('New ingredient');
 	
 }else{ // Shows recipes
+	$html = "";
 	if (isset($userid)){  // vérification si logué ou pas
 
 		/* Affichage des recettes des amis*/
@@ -389,41 +580,31 @@ if(isset($_GET['mode']) && $_GET['mode'] == "new_recipe"){
 					$html.="<div><a href='./recipe.php?id=$row3[id]&iduser=$_GET[iduser]'><img src='$row2[path_source]' 	width='250px' height='220px' alt='$row3[name_en]' title='$row3[name_en]'/><br/>$row3[name_en]</a></div>";
 				}
 			}
-		}else{
+		}elseif(isset($_GET['mode']) && $_GET['mode'] == "public_recipes" ){
+			$html.= '<a href="'.$_SERVER['PHP_SELF'].'" >Return to Recipe main page</a>';
+			$html.= printPublicRecipes();
+			
+		}else{ // afficher ses recettes, les dernières recettes publiques
 
 			$userinfos=retrieve_user_infos($userid);
 			$useraddinfos=retrieve_user_add_infos($userid);
 
-			/*$html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
-				<h3>My Recipes</h3>
-				<div class='navlinks'>
-					<a href='recipes.php?mode=new_recipe'>Add Recipe</a>
-					<a href='recipes.php?mode=new_ingredient'>Add Ingredients</a>
-				</div>";*/
-			$html = "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
-				<h3>My Recipes</h3>
-				<div class='navlinks'>
-					<a href='recipes.php?mode=new_recipe'>Add Recipe</a>
-					<a href='recipes.php?mode=new_ingredient'>Add Ingredients</a>
-				</div>";
-				
-			$query = sprintf("SELECT * FROM recipes WHERE id_user='%s'", mysql_real_escape_string($userid));
+			$html.= '<h1>Recipes</h1>';
+			$html.= '<div class="navlinks">
+						<a href="recipes.php?mode=new_recipe">Add Recipe</a>
+						<a href="recipes.php?mode=new_ingredient">Add Ingredients</a>
+					</div>'; // liens pour ajouter des ingrédients ou recettes
 			
-			$result = mysql_query($query);
-
-			if (!$result){
-				$html.="<p>You haven't got recipes</p>";
-				
-			}else{
-				while($row3=mysql_fetch_assoc($result)) {
-					$query2 = "SELECT * FROM recipe_photos WHERE id_recipe=$row3[id]";
-					$result2 = mysql_query($query2);
-					$row2=mysql_fetch_assoc($result2);
-					$html.="<div><a href='./recipe.php?id=$row3[id]'><img src='$row2[path_source]' width='250px' height='220px' alt='$row3[name_en]' title='$row3[name_en]'/><br/>$row3[name_en]</a></div>";
-				}
-			}
+			$html.= '<div class="navlinks">
+						<a href="recipes.php?mode=public_recipes">All Recipes</a>
+					</div>'; // liens pour afficher toutes les recettes publiques
+			
+			$html.= printMyRecipes().'<hr>';
+			$html.= printLastestRecipesOfContacts().'<hr>';
+			$html.= printLastestPublicRecipes().'<hr>';
 		}
-	  printDocument('My Recipes');
+		
+		printDocument('Recipes');
 	  
 	}else{
 		header('Location: index.php');
