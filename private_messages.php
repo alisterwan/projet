@@ -338,8 +338,9 @@ if(isConnected()){ // logged in
 			}
 		}
 	
-		$html.= '<h3>Private messages</h3><br/><br/>';
-		$html.= printNewPMByIdRecipient($_GET['id_recipient']).'<br/><br/><h4>Latest messages</h4><br/>';
+		$html.= '<a href="'.$_SERVER['PHP_SELF'].'" >Back to Private Messages main page</a>';
+		$html.= '<h3>Private messages</h3>';
+		$html.= printNewPMByIdRecipient($_GET['id_recipient']).'<h4>Latest messages</h4>';
 		$html.= printAllPMByIdRecipient($_GET['id_recipient']);
 		
 	}elseif(isset($_GET['id_recipient']) && !userIdExists($_GET['id_recipient'])){ // id_recipient bulshit
@@ -347,7 +348,8 @@ if(isConnected()){ // logged in
 	}elseif(isset($_GET['id_recipient'])  && !belongsToUserGroups($userid, $_GET['id_recipient']) && $userid!=$_GET['id_recipient']){ // doesn't belong to user group, shouldn't be there anyway!
 
 	}else{ // view General
-		$html.= '<h2>Private Messages</h2><br/>
+		$html.= '<a href="friends.php" >Back to Contacts main page</a>';
+		$html.= '<h2>Private Messages</h2>
 		<h4>Latest discussions</h4>'.
 		printLastestDiscussions();
 	}

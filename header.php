@@ -268,9 +268,11 @@ function navContent() {
 	if (isset($_SESSION['id'])) {
 		$content = "
 		<a href='./profile.php'>Profile</a>
+		<a href='wall.php'>Blog</a>
+		<a href='./albums.php'>Albums</a>
 		<a href='./recipes.php'>Recipes</a>
 		<a href='./friends.php'>Friends</a>
-		<a href='./albums.php'>Albums</a>
+
 		<!-- <a href='./information.php'>Information</a> -->
 		<a href='./objectivesform.php'>Objectives</a>
 		<a href='./fridge.php'>My Fridge</a>

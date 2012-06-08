@@ -162,22 +162,23 @@ function printContactsByUserId($id) {
 	$groupsids = getAllGroupsByUserId($id);
 	$ficelle   = '';
 	foreach ($groupsids AS $groupid) {
-		$ficelle.= '<br/><h4>'.getGroupNameById($groupid).'</h4>';
+		$ficelle.= '<h4>'.getGroupNameById($groupid).'</h4>';
 		$users    = getUserIdByGroup($groupid);
 		if ($users) {
 			foreach ($users AS $user) {
 				$ficelle.= printUserBadgeById($user).'<br>';
-			}
+			}			
 		} else {
 			$ficelle.= 'No contact<br>';
 		}
+		$ficelle.= '<hr>';
 	}
 	return $ficelle;
 }
 
 ////////////////////////////////////////////////////END FUNCTIONS////////////////////////////////////////////////////////////////
 
-if (isConnected() && !isset($_GET['id'])) {
+if (isConnected() && !isset($_GET['id'])) { // affiche la page Friends de l'utilisateur actuel
 	$userinfos    = retrieve_user_infos($userid);
 	$message ='';
 	/************* Friends Request **************************/
@@ -237,10 +238,10 @@ if (isConnected() && !isset($_GET['id'])) {
 	$html = "
 	<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>
 	<div class='navlinks'>
-		<a href='newmessage.php'>Messages</a>
+		<a href='private_messages.php'>Messages</a>
 		<a href='groups.php'>Groups</a>
-		<a href='followers.php'>Followers</a>
 	</div>
+	<hr>
 	<h3>My Contacts</h3>";
 
 	/////////////  AFFICHAGE DES CONTACTS

@@ -557,10 +557,11 @@ if(isset($_GET['mode']) && $_GET['mode'] == "new_recipe"){
 }else{ // Shows recipes
 	$html = "";
 	if (isset($userid)){  // vérification si logué ou pas
-
+	
 		/* Affichage des recettes des amis*/
 		if (isset($_GET['iduser'])){
-
+			$html.='<a href="profile.php?id_user='.$_GET['iduser'].'" >Back to Profile</a>';
+			
 			$userinfos=retrieve_user_infos($_GET['iduser']);
 			$useraddinfos=retrieve_user_add_infos($_GET['iduser']);
 
@@ -570,9 +571,9 @@ if(isset($_GET['mode']) && $_GET['mode'] == "new_recipe"){
 			$toto = mysql_num_rows($result);
 
 			if ($toto==0){
-				$html="<h3>Your friend hasn't got recipes</h3>";
+				$html.="<h3>Your friend hasn't got recipes</h3>";
 			}else{
-				$html = "<h3>$userinfos[firstname] $userinfos[surname] ($userinfos[username]) 's Recipes:</h3>";
+				$html.= "<h3>$userinfos[firstname] $userinfos[surname] ($userinfos[username]) 's Recipes:</h3>";
 				while($row3=mysql_fetch_assoc($result)) {
 					$query2 = "SELECT * FROM recipe_photos WHERE id_recipe=$row3[id]";
 					$result2 = mysql_query($query2);

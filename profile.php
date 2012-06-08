@@ -826,7 +826,7 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 		$userinfos=retrieve_user_infos($_GET['id_user']);
 		$useraddinfos=retrieve_user_add_infos($_GET['id_user']);
 		  
-		$html.= "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>";
+		$html.= "<h1>$userinfos[firstname] $userinfos[surname]</h1>";		
 		//$html.= printProfileBanner();
 		  
 		if(!$useraddinfos){ // "visiteur", mais no content available
@@ -847,6 +847,13 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 
 			if(!$var) $html.= printAddNewFriend($userid);
 		}
+		
+		$html.= '<hr>';
+		$html.= '<div class="navlinks">
+					<a href="wall.php?id='.$_GET['id_user'].'" >Blog</a>
+					<a href="private_messages.php?id_recipient='.$_GET['id_user'].'" >Send a private message</a>
+					<a href="recipes.php?iduser='.$_GET['id_user'].'" >User\'s recipes</a>
+				</div>';
 	}else{ // user viewing its own profile
 	
 		if(!isset($_GET['mode'])){ // no mod defined

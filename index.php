@@ -126,6 +126,11 @@ function getLastestRecipesofContact(){
 	return $recipes;
 }
 
+function isNoob(){
+	global $userid;
+	
+	$query = mysql_query('SELECT id, creation ');
+}
 /**********************************************************/
 
 /////////////////////////////////////////
@@ -599,6 +604,10 @@ function printRatingComment($idcomment){
 	return $ficelle;
 }
 
+function printTipsForNoobs(){
+
+}
+
 function retrieve_recipe_infos($id){ // prend en paramètre l'id de l'user, soit $_SESSION['id']
 	$sql='SELECT * FROM recipes WHERE id='.$id;
 	$query=mysql_query($sql);
@@ -653,6 +662,9 @@ if(isset($_GET['action']) && $_GET['action']=="logout"){
 if(isConnected()){
 	$html = '';
 
+	//$html.= '<u>Tips:</u> Use the search function to discover new recipes, or keep in touch with your friends!<hr>';
+	$html.= printTipsForNoobs();
+	
 	$recipes = getLastestRecipesofContact();
 	if($recipes!=false){
 		$html.="<h3>Lastest friends recipes</h3><div class='recipes'>";
@@ -670,98 +682,99 @@ if(isConnected()){
 		}
 		$html.="</div>";
 	}
+
 }
 
 if(($_POST)){ // something to treat?
 
-		////////////////////////////// POST MODIFICATIONS!!!! //////////////////////////////////////
+	////////////////////////////// POST MODIFICATIONS!!!! //////////////////////////////////////
 
-		if(isset($_POST['newpost']) && $_POST['newpost']!=""){ // NEW POST
-			$sql = "INSERT INTO wall_post(id_user, post_type, content, approval)
-			VALUES (".$userid.", 1, '".$_POST['newpost']."', 1)";
-			$query = mysql_query($sql); // insert new post
+	if(isset($_POST['newpost']) && $_POST['newpost']!=""){ // NEW POST
+		$sql = "INSERT INTO wall_post(id_user, post_type, content, approval)
+		VALUES (".$userid.", 1, '".$_POST['newpost']."', 1)";
+		$query = mysql_query($sql); // insert new post
 
 
-			$sql = 'INSERT INTO wall_post_permission(id_wall_post, id_group) VALUES('.mysql_insert_id().', '.getFriendGroupIdByUserId($userid).')';
-			$query = mysql_query($sql); // insert new permission (Friends default)
-		}
-
-		if(isset($_POST['rating_post_like'])){ // Post rating LIKE
-			$idpost = $_POST['rating_post_like'];
-			$sql = 'INSERT INTO wall_post_rating(id_post, id_user, rating)
-			VALUES('.$idpost.', '.$userid.', 1)';
-			$query = mysql_query($sql); // Post liked
-		}
-
-		if(isset($_POST['rating_post_dislike'])){ // Post rating DISLIKE
-			$idpost = $_POST['rating_post_dislike'];
-			$sql = 'INSERT INTO wall_post_rating(id_post, id_user, rating)
-			VALUES('.$idpost.', '.$userid.', 0)';
-			$query = mysql_query($sql); // Post disliked
-		}
-
-		if(isset($_POST['undo_post_rating'])){ // post rating UNDO
-			$idpost = $_POST['undo_post_rating'];
-			$sql = 'DELETE FROM wall_post_rating WHERE id_user='.$userid.' AND id_post='.$idpost;
-			$query = mysql_query($sql); // Post rating UNDONE
-		}
-
-		if(isset($_POST['delete_post'])){ // delete post
-			$idpost = $_POST['delete_post'];
-			$sql = 'DELETE FROM wall_post WHERE id='.$idpost;
-			$query = mysql_query($sql); // Post DELETED
-		}
-
-		if(isset($_POST['share_with_group']) && isset($_POST['post_allowed'])){ // grant access to group
-			$idgroup = $_POST['share_with_group'];
-			$idpost = $_POST['post_allowed'];
-			$sql = 'INSERT INTO wall_post_permission(id_wall_post, id_group) VALUES('.$idpost.', '.$idgroup.')';
-			$query = mysql_query($sql); // Acces granted to group for post
-		}
-
-		if(isset($_POST['remove_permission']) && isset($_POST['post_restricted'])){
-			$idgroup = $_POST['remove_permission'];
-			$idpost = $_POST['post_restricted'];
-			$sql = 'DELETE FROM wall_post_permission WHERE id_wall_post='.$idpost.' AND id_group='.$idgroup;
-			$query = mysql_query($sql); // Acces restricted to group for post
-		}
-
-		////////////////////////////// COMMENT MODIFICATIONS!!!! //////////////////////////////////////
-
-		if(isset($_POST['newcomment']) && isset($_POST['idpost'])){ // NEW COMMENT!!
-			$comment = $_POST['newcomment'];
-			$idpost = $_POST['idpost'];
-			if(isset($_GET['id']) && $_GET['id']!=$userid){ // poster is not owner
-				$sql = 'INSERT INTO wall_post_comment(id_wall_post, id_poster, comment)
-				VALUES('.$idpost.', '.$userid.', "'.$comment.'")';
-			}else{
-				$sql = 'INSERT INTO wall_post_comment(id_wall_post, id_poster, comment, status)
-				VALUES('.$idpost.', '.$userid.', "'.$comment.'", 1)';
-			}
-			$query = mysql_query($sql); // comment posted
-		}
-
-		if(isset($_POST['rating_comment']) && isset($_POST['rating'])){ // Rate a comment
-			$idcomment = $_POST['rating_comment'];
-			$rating = $_POST['rating'];
-			$sql = 'INSERT INTO wall_post_comment_rating(id_comment, id_user, rating)
-			VALUES('.$idcomment.', '.$userid.', '.$rating.')';
-			$query = mysql_query($sql); // comment rated
-		}
-
-		if(isset($_POST['undo_comment_rating'])){ // undo comment rating
-			$idcomment = $_POST['undo_comment_rating'];
-			$sql = 'DELETE FROM wall_post_comment_rating WHERE id_user='.$userid.' AND id_comment='.$idcomment;
-			$query = mysql_query($sql); // Comment rating UNDONE
-		}
-
-		if(isset($_POST['delete_comment'])){ // delete post
-			$idcomment = $_POST['delete_comment'];
-			$sql = 'DELETE FROM wall_post_comment WHERE id='.$idcomment;
-			$query = mysql_query($sql); // Comment DELETED
-		}
-
+		$sql = 'INSERT INTO wall_post_permission(id_wall_post, id_group) VALUES('.mysql_insert_id().', '.getFriendGroupIdByUserId($userid).')';
+		$query = mysql_query($sql); // insert new permission (Friends default)
 	}
+
+	if(isset($_POST['rating_post_like'])){ // Post rating LIKE
+		$idpost = $_POST['rating_post_like'];
+		$sql = 'INSERT INTO wall_post_rating(id_post, id_user, rating)
+		VALUES('.$idpost.', '.$userid.', 1)';
+		$query = mysql_query($sql); // Post liked
+	}
+
+	if(isset($_POST['rating_post_dislike'])){ // Post rating DISLIKE
+		$idpost = $_POST['rating_post_dislike'];
+		$sql = 'INSERT INTO wall_post_rating(id_post, id_user, rating)
+		VALUES('.$idpost.', '.$userid.', 0)';
+		$query = mysql_query($sql); // Post disliked
+	}
+
+	if(isset($_POST['undo_post_rating'])){ // post rating UNDO
+		$idpost = $_POST['undo_post_rating'];
+		$sql = 'DELETE FROM wall_post_rating WHERE id_user='.$userid.' AND id_post='.$idpost;
+		$query = mysql_query($sql); // Post rating UNDONE
+	}
+
+	if(isset($_POST['delete_post'])){ // delete post
+		$idpost = $_POST['delete_post'];
+		$sql = 'DELETE FROM wall_post WHERE id='.$idpost;
+		$query = mysql_query($sql); // Post DELETED
+	}
+
+	if(isset($_POST['share_with_group']) && isset($_POST['post_allowed'])){ // grant access to group
+		$idgroup = $_POST['share_with_group'];
+		$idpost = $_POST['post_allowed'];
+		$sql = 'INSERT INTO wall_post_permission(id_wall_post, id_group) VALUES('.$idpost.', '.$idgroup.')';
+		$query = mysql_query($sql); // Acces granted to group for post
+	}
+
+	if(isset($_POST['remove_permission']) && isset($_POST['post_restricted'])){
+		$idgroup = $_POST['remove_permission'];
+		$idpost = $_POST['post_restricted'];
+		$sql = 'DELETE FROM wall_post_permission WHERE id_wall_post='.$idpost.' AND id_group='.$idgroup;
+		$query = mysql_query($sql); // Acces restricted to group for post
+	}
+
+	////////////////////////////// COMMENT MODIFICATIONS!!!! //////////////////////////////////////
+
+	if(isset($_POST['newcomment']) && isset($_POST['idpost'])){ // NEW COMMENT!!
+		$comment = $_POST['newcomment'];
+		$idpost = $_POST['idpost'];
+		if(isset($_GET['id']) && $_GET['id']!=$userid){ // poster is not owner
+			$sql = 'INSERT INTO wall_post_comment(id_wall_post, id_poster, comment)
+			VALUES('.$idpost.', '.$userid.', "'.$comment.'")';
+		}else{
+			$sql = 'INSERT INTO wall_post_comment(id_wall_post, id_poster, comment, status)
+			VALUES('.$idpost.', '.$userid.', "'.$comment.'", 1)';
+		}
+		$query = mysql_query($sql); // comment posted
+	}
+
+	if(isset($_POST['rating_comment']) && isset($_POST['rating'])){ // Rate a comment
+		$idcomment = $_POST['rating_comment'];
+		$rating = $_POST['rating'];
+		$sql = 'INSERT INTO wall_post_comment_rating(id_comment, id_user, rating)
+		VALUES('.$idcomment.', '.$userid.', '.$rating.')';
+		$query = mysql_query($sql); // comment rated
+	}
+
+	if(isset($_POST['undo_comment_rating'])){ // undo comment rating
+		$idcomment = $_POST['undo_comment_rating'];
+		$sql = 'DELETE FROM wall_post_comment_rating WHERE id_user='.$userid.' AND id_comment='.$idcomment;
+		$query = mysql_query($sql); // Comment rating UNDONE
+	}
+
+	if(isset($_POST['delete_comment'])){ // delete post
+		$idcomment = $_POST['delete_comment'];
+		$sql = 'DELETE FROM wall_post_comment WHERE id='.$idcomment;
+		$query = mysql_query($sql); // Comment DELETED
+	}
+
+}
 
 
 printDocument('Homepage');
