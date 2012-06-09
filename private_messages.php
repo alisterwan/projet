@@ -234,6 +234,9 @@ function printAvatarByUserId($id){ // display avatar miniature
 	$sql = 'SELECT avatar FROM users WHERE id='.$id;
 	$query = mysql_query($sql);
 	$result = mysql_fetch_assoc($query);
+	if(!file_exists($result['avatar'])){
+		$result['avatar'] = NO_IMAGE;
+	}
 	return '<img src="'.$result['avatar'].'"  width="64" height="64" alt="avatar">';
 }
 

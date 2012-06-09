@@ -1,8 +1,6 @@
 <?php
 include 'header.php';
 
-define("NO_IMAGE", "img/default/noimage.gif");
-
 /******* NEW Recipe Functions *******/
 
 //fonction pour inserer un ingredient dans la bdd
@@ -185,7 +183,7 @@ function printRecipeDifficulty(){
 }
 
 function printPublicRecipes(){
-	$sq = "";
+	$sq = "<h1>All recipes</h1>";
 	
 	$sq.= '<h3>Dish type</h3>';
 	// print type selector
@@ -204,7 +202,11 @@ function printRecipeTypeSelector(){
 	$sq = '';
 	
 	if(isset($_GET['recipe_type'])){
-		$sq.= '<center><a href="'.$_SERVER['PHP_SELF'].'?mode=public_recipes" >All</a>';
+		if(isset($_GET['mode']) && $_GET['mode'] == "pending_public_recipes"){
+			$sq.= '<center><a href="'.$_SERVER['PHP_SELF'].'?mode=pending_public_recipes" >All</a>';
+		}else{
+			$sq.= '<center><a href="'.$_SERVER['PHP_SELF'].'?mode=public_recipes" >All</a>';
+		}
 	}else{
 		$sq.= '<center>All';
 	}
@@ -216,7 +218,11 @@ function printRecipeTypeSelector(){
 	
 	while($result = mysql_fetch_assoc($query)){
 		if(  (isset($_GET['recipe_type']) && $result['id'] != $_GET['recipe_type']) || !isset($_GET['recipe_type']) ){
-			$sq.= ' | <a href="'.$_SERVER['PHP_SELF'].'?mode=public_recipes&recipe_type='.$result['id'].'" >'.$result['name_en'].'</a>';
+			if(isset($_GET['mode']) && $_GET['mode'] == "pending_public_recipes"){
+				$sq.= ' | <a href="'.$_SERVER['PHP_SELF'].'?mode=pending_public_recipes&recipe_type='.$result['id'].'" >'.$result['name_en'].'</a>';
+			}else{
+				$sq.= ' | <a href="'.$_SERVER['PHP_SELF'].'?mode=public_recipes&recipe_type='.$result['id'].'" >'.$result['name_en'].'</a>';
+			}
 		}else{
 			$sq.= ' | '.$result['name_en'];
 		}
@@ -230,9 +236,17 @@ function printRecipesBySelectedType(){
 	$type;
 
 	if(!isset($_GET['recipe_type'])){
-		$sql = 'SELECT id, name_en FROM recipes WHERE approval=2';
+		if(isset($_GET['mode']) && $_GET['mode'] == "pending_public_recipes"){
+			$sql = 'SELECT id, name_en FROM recipes WHERE approval=0';
+		}else{
+			$sql = 'SELECT id, name_en FROM recipes WHERE approval=2';
+		}
 	}else{
-		$sql = 'SELECT id, name_en FROM recipes WHERE approval=2 AND type='.$_GET['recipe_type'];
+		if(isset($_GET['mode']) && $_GET['mode'] == "pending_public_recipes"){
+			$sql = 'SELECT id, name_en FROM recipes WHERE approval=0 AND type='.$_GET['recipe_type'];
+		}else{
+			$sql = 'SELECT id, name_en FROM recipes WHERE approval=2 AND type='.$_GET['recipe_type'];
+		}
 	}
 	
 	$query = mysql_query($sql);
@@ -313,6 +327,22 @@ function printLastestRecipesOfContacts(){
 	}
 	
 	return $df;
+}
+
+function printPendingPublicRecipes(){
+	$sq = "<h1>Vote for recipes!</h1>";
+	
+	$sq.= '<h3>Dish type</h3>';
+	// print type selector
+	$sq.= printRecipeTypeSelector();
+	
+	$sq.= "<hr>";
+	
+	// print results by selected type
+	$sq.= '<strong>Results</strong> <br><br>';
+	$sq.= printRecipesBySelectedType();
+	
+	return $sq;
 }
 
 /*********** END -- NEW Recipe functions ***********/
@@ -564,27 +594,42 @@ if(isset($_GET['mode']) && $_GET['mode'] == "new_recipe"){
 			
 			$userinfos=retrieve_user_infos($_GET['iduser']);
 			$useraddinfos=retrieve_user_add_infos($_GET['iduser']);
-
-			$query = sprintf("SELECT * FROM recipes WHERE id_user='%s' AND approval='0'",
-			mysql_real_escape_string($_GET['iduser']));
+			
+			if(belongsToUserGroups($userid, $_GET['iduser'])){ // affiche les recettes d'un contact
+				$query = sprintf("SELECT * FROM recipes WHERE id_user='%s' ", mysql_real_escape_string($_GET['iduser']));
+			}else{ // affiche les recettes d'un inconnu
+				$query = sprintf("SELECT * FROM recipes WHERE id_user='%s' AND (approval='0' OR approval='2') ", mysql_real_escape_string($_GET['iduser']));
+			}
 			$result = mysql_query($query);
 			$toto = mysql_num_rows($result);
 
 			if ($toto==0){
-				$html.="<h3>Your friend hasn't got recipes</h3>";
+				$html.="<h3>Your friend has no recipe</h3>";
 			}else{
 				$html.= "<h3>$userinfos[firstname] $userinfos[surname] ($userinfos[username]) 's Recipes:</h3>";
 				while($row3=mysql_fetch_assoc($result)) {
 					$query2 = "SELECT * FROM recipe_photos WHERE id_recipe=$row3[id]";
 					$result2 = mysql_query($query2);
-					$row2=mysql_fetch_assoc($result2);
-					$html.="<div><a href='./recipe.php?id=$row3[id]&iduser=$_GET[iduser]'><img src='$row2[path_source]' 	width='250px' height='220px' alt='$row3[name_en]' title='$row3[name_en]'/><br/>$row3[name_en]</a></div>";
+					if(!$result2 || mysql_num_rows($result2) < 1){
+						$row2['path_source'] = NO_IMAGE;
+					}else{
+						$row2=mysql_fetch_assoc($result2);
+						if(!file_exists($row2['path_source'])){
+							$row2['path_source'] = NO_IMAGE;
+						}
+					}
+
+					//$html.="<div><a href='./recipe.php?id=$row3[id]&iduser=$_GET[iduser]'><img src='$row2[path_source]' 	width='250px' height='220px' alt='$row3[name_en]' title='$row3[name_en]'/><br/>$row3[name_en]</a></div>";
+					$html.= '<div><a href="recipe.php?id='.$row3['id'].'&iduser='.$_GET['iduser'].'" >'.printRecipeThumbnail($row3['id']).' '.$row3['name_en'].'</a><br><br></div>';
 				}
 			}
 		}elseif(isset($_GET['mode']) && $_GET['mode'] == "public_recipes" ){
 			$html.= '<a href="'.$_SERVER['PHP_SELF'].'" >Return to Recipe main page</a>';
 			$html.= printPublicRecipes();
 			
+		}elseif(isset($_GET['mode']) && $_GET['mode'] == "pending_public_recipes"){
+			$html.= '<a href="'.$_SERVER['PHP_SELF'].'" >Return to Recipe main page</a>';
+			$html.= printPendingPublicRecipes();
 		}else{ // afficher ses recettes, les dernières recettes publiques
 
 			$userinfos=retrieve_user_infos($userid);
@@ -598,6 +643,7 @@ if(isset($_GET['mode']) && $_GET['mode'] == "new_recipe"){
 			
 			$html.= '<div class="navlinks">
 						<a href="recipes.php?mode=public_recipes">All Recipes</a>
+						<a href="recipes.php?mode=pending_public_recipes">Vote for recipes!</a>
 					</div>'; // liens pour afficher toutes les recettes publiques
 			
 			$html.= printMyRecipes().'<hr>';

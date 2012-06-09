@@ -1,5 +1,15 @@
 <?php
-  include './header.php';
+include './header.php';
+/*
+  *
+  *
+  *
+  *ISSUE DELETING RECIPE	
+  *
+  *
+  *
+  *
+ */ 
   
 define("VOTES_REQUIRED", 2);
   
@@ -50,6 +60,51 @@ function is_CurrentUser_RecipeCreator_ByRecipeID($id){
 	if(!$recipe) return false;
 	return $userid == $recipe['id_user'];
 }
+
+function recipe_exists($id){ // retourne booléen si la recette existe ou non
+	$query = mysql_query('SELECT id FROM recipes WHERE id='.$id);
+	if(!$query || mysql_num_rows($query) < 1) return false;
+	return true;
+}
+
+function getNumLikesByRecipeID($id){ // retourne le nombre de likes pour une recette
+	$query = mysql_query('SELECT id, id_recipe, rating FROM recipe_rating WHERE id_recipe='.$id.' AND rating=1' );
+	if(!$query || mysql_num_rows($query) < 1 ){
+		return 0;
+	}
+	return mysql_num_rows($query);
+}
+
+function getNumDislikesByRecipeID($id){ // retourne le nombre de dislikes pour une recette
+	$query = mysql_query('SELECT id, id_recipe, rating FROM recipe_rating WHERE id_recipe='.$id.' AND rating=0' );
+	if(!$query || mysql_num_rows($query) < 1 ){
+		return 0;
+	}
+	return mysql_num_rows($query);
+}
+
+function hasVoted($idrecipe){ // retourne si l'utilisateur a déjà voté
+	global $userid;
+	$query = mysql_query('SELECT * FROM recipe_rating WHERE id_recipe='.$idrecipe.' AND id_user='.$userid);
+	if(!$query || mysql_num_rows($query) < 1){
+		return false;
+	}
+	return true;
+}
+
+function getUserVote($idrecipe){ // retourne le vote de l'utilisateur 0 ou 1
+	global $userid;
+	
+	$query = mysql_query('SELECT * FROM recipe_rating WHERE id_recipe='.$idrecipe.' AND id_user='.$userid);
+	if(!$query){
+		return false;
+	}
+	
+	$result = mysql_fetch_assoc($query);
+	
+	return $result['rating'];
+}
+
 /******************** PRINTERS **************************/
 function printPublicApproval(){
 	global $userid;
@@ -105,6 +160,7 @@ function printUserActions_ByRecipeId($recipeID){
 	$df = "";
 	
 	if(is_CurrentUser_RecipeCreator_ByRecipeID($recipeID)){
+		$dir = $_SERVER['PHP_SELF'];
 		$df.= "<div>
 		<img src='img/templates/option.png' width='150' height='40' class='menu_head' />
 			<ul class='menu_body'>
@@ -127,7 +183,7 @@ function printUserActions_ByRecipeId($recipeID){
 			  a.innerHTML = this.responseText;
 			  a.parentNode.hidden = false;
 			} else {
-			  location.pathname = '/~jwankutk/projet/recipes.php';
+			  location.pathname = 'recipes.php';
 			}
 		  };
 		  x.send();
@@ -197,6 +253,83 @@ function printUserActions_ByRecipeId($recipeID){
 	return $df;
 }
 
+function printRecipeRating($id){
+	global $userid;
+	$df = '';	
+	
+	if(!recipe_exists($id)){
+		return "Recipe not found";
+	}
+	
+	if($_POST){
+		// like
+		if(isset($_POST['Like_recipe']) && !hasVoted($_POST['Like_recipe'])){
+			$query = mysql_query('INSERT INTO recipe_rating(id_recipe, id_user, rating) VALUES('.$id.', '.$userid.', 1)');
+			if(!$query){
+				return 'Vote error';
+			}
+		}
+		
+		// dislike
+		if(isset($_POST['Dislike_recipe']) && !hasVoted($_POST['Dislike_recipe'])){
+			$query = mysql_query('INSERT INTO recipe_rating(id_recipe, id_user, rating) VALUES('.$id.', '.$userid.', 0)');
+			if(!$query){
+				return 'Vote error';
+			}
+		}	
+		
+		//undo
+		if(isset($_POST['Undo_vote'])){
+			$query = mysql_query('DELETE FROM recipe_rating WHERE id_user='.$userid.' AND id_recipe='.$id);
+			if(!$query){
+				return 'Vote undo error';
+			}
+		}
+	}
+	
+	$likes = getNumLikesByRecipeID($id);
+	$dislikes = getNumDislikesByRecipeID($id);
+	// print les nombres de likes/dislikes
+	if($likes<2){
+		$df.= 'Like: '.$likes;
+	}else{
+		$df.= 'Likes: '.$likes;
+	}
+	$df.= ', ';
+	if($dislikes<2){
+		$df.= 'Dislike: '.$dislikes;
+	}else{
+		$df.= 'Dislikes: '.$dislikes;
+	}
+	$df.= '<br>';
+	
+	$df.= '<form action="'.$_SERVER['PHP_SELF'].'?id='.$id.'" method="post" >'; // form line
+	if(hasVoted($id)){
+		if(getUserVote($id) == 1){ // user likes it!
+			$df.= 'You like this recipe. ';
+		}else{
+			$df.= 'You don\'t like this recipe. ';
+		}
+		$df.= 	'<button title="Undo_vote" value='.$id.' name="Undo_vote" type="submit">
+					Undo
+				</button>';
+	}else{
+		// Like button
+		$df.= '<button title="Like_recipe" value='.$id.' name="Like_recipe" type="submit">
+					Like
+				</button>';
+		// Dislike button
+		$df.= '<button title="Dislike_recipe" value='.$id.' name="Dislike_recipe" type="submit">
+					Dislike
+					</button>';
+	}
+	
+	$df.= '</form>';
+	$df.= '<hr>';
+	
+	return $df;
+}
+
 /***********************************************************/
 if (isset($userid)){ // vérification si logué ou pas
 
@@ -224,159 +357,187 @@ if (isset($userid)){ // vérification si logué ou pas
 		}
 	}
 
-	if(isset($_GET['id']) && !isset($_GET['iduser'])){
+	if(isset($_GET['id']) && !isset($_GET['iduser'])){ // id de la recette et PAS du user indiqués dans l'url
 		$html = '';
-
+		
 		$i = retrieve_recipe_infos($_GET['id']);
 
-		$query21 = mysql_query("SELECT * FROM country WHERE id_country=$i[country_origin]");
-		$res2 = mysql_fetch_assoc($query21);
-		$i['country_origin']=$res2['name_en'];
+		if(!$i){
+			$html.= 'Recipe not found';
+		}else{
+			$query21 = mysql_query("SELECT * FROM country WHERE id_country=$i[country_origin]");
+			$res2 = mysql_fetch_assoc($query21);
+			$i['country_origin']=$res2['name_en'];
 
-		$query11 = "SELECT name_en FROM recipe_difficulty WHERE id=$i[difficulty]";
-		$res11 = mysql_query($query11);
-		$row = mysql_fetch_assoc($res11);
+			$query11 = "SELECT name_en FROM recipe_difficulty WHERE id=$i[difficulty]";
+			$res11 = mysql_query($query11);
+			$row = mysql_fetch_assoc($res11);
 
-		$i['difficulty']= $row['name_en'];
+			$i['difficulty']= $row['name_en'];
 
-		$html.= printMandatoryJScript($_GET['id']);
-		
-		$data = '<h2>'.$i['name_en'].'</h2> by '.printLinkToProfileByUserId($i['id_user']).printPublicApproval().'<br><br>';
+			$html.= printMandatoryJScript($_GET['id']);
+			
+			
+			
+			$data = '<h2>'.$i['name_en'].'</h2> by '.printLinkToProfileByUserId($i['id_user']).printPublicApproval().'<br><br>';
+			
+			$data.= printRecipeRating($_GET['id']);
+			
+			$html.= printUserActions_ByRecipeId($_GET['id']);
 
-		$html.= printUserActions_ByRecipeId($_GET['id']);
+			$query = sprintf("SELECT path_source FROM recipe_photos WHERE id_recipe='%s'",
+			mysql_real_escape_string($_GET['id']));
+			$result2 = mysql_query($query);
 
-		$data.="<strong>Ingredients</strong>:<ul>";
-
-		//selection des ingredients reliees a la recette
-		$query = sprintf("SELECT id_ingredient FROM recipe_ingredients WHERE id_recipe='%s'",
-		mysql_real_escape_string($_GET['id']));
-		$result = mysql_query($query);
-
-		while($row=mysql_fetch_row($result)) {
-			$query1 = "SELECT name_en FROM ingredients WHERE id=$row[0]";
-			$response = mysql_query($query1);
-			while($row1 = mysql_fetch_assoc($response)){
-				$data.="<li>$row1[name_en]</li>";
+			if(mysql_num_rows($result2) > 0){
+				$ij = mysql_fetch_assoc($result2);
+				if(!file_exists($ij['path_source'])){
+					$data.= "<img src='".NO_IMAGE."' width='200px' height='175px' />";
+				}else{
+					$data.= "<img src='$ij[path_source]' width='200px' height='175px' />";
+				}
+			}else{
+				$data.= "<img src='".NO_IMAGE."' width='200px' height='175px' />";
 			}
-		}
+			
+			$data.="<hr><strong>Ingredients</strong>:<ul>";
 
-		$query = sprintf("SELECT path_source FROM recipe_photos WHERE id_recipe='%s'",
-		mysql_real_escape_string($_GET['id']));
-		$result2 = mysql_query($query);
+			//selection des ingredients reliees a la recette
+			$query = sprintf("SELECT id_ingredient FROM recipe_ingredients WHERE id_recipe='%s'",
+			mysql_real_escape_string($_GET['id']));
+			$result = mysql_query($query);
 
-		if(mysql_num_rows($result2) == 1){
-			$ij = mysql_fetch_assoc($result2);
-			$data.= "<img src='$ij[path_source]' width='200px' height='175px' />";
-		}
+			while($row=mysql_fetch_row($result)) {
+				$query1 = "SELECT name_en FROM ingredients WHERE id=$row[0]";
+				$response = mysql_query($query1);
+				while($row1 = mysql_fetch_assoc($response)){
+					$data.="<li>$row1[name_en]</li>";
+				}
+			}
+
+			
+			
+			$data.="</ul>
+				<div><strong>Description</strong>: $i[description_en]</div><br>
+				<div><strong>Origin</strong>: $i[country_origin]</div>
+				<div><strong>Difficulty</strong>: $i[difficulty]</div>
+				<div><strong>Servings</strong>: $i[num_serves] </div>
+				<div><strong>Preparation</strong>: $i[duration_preparation] minutes</div>
+				<div><strong>Cooking</strong>: $i[duration_cook] minutes</div><br>
+				<div><strong>Instructions</strong>: $i[preparation_en]</div>";
+
+			$html.= "$data";
 		
-		$data.="</ul>
-			<div><strong>Description</strong>: $i[description_en]</div>
-			<div><strong>Origin</strong>: $i[country_origin]</div>
-			<div><strong>Difficulty</strong>: $i[difficulty]</div>
-			<div><strong>Servings</strong>: $i[num_serves] </div>
-			<div><strong>Preparation</strong>: $i[duration_preparation] minutes</div>
-			<div><strong>Cooking</strong>: $i[duration_cook] minutes</div>
-			<div><strong>Instructions</strong>: $i[preparation_en]</div>";
+		}
 
-		$html.= "$data";
-
-	}else if(isset($_GET['iduser']) && isset($_GET['id'])){
+	}else if(isset($_GET['iduser']) && isset($_GET['id'])){ // id de la recette et du user indiqués dans l'url
 		$html = '';
 
 		$i = retrieve_recipe_infos($_GET['id']);
 
-		$query21 = mysql_query("SELECT * FROM country WHERE id_country=$i[country_origin]");
-		$res2 = mysql_fetch_assoc($query21);
-		$i['country_origin']=$res2['name_en'];
+		if(!$i){
+			$html.= 'Recipe not found';
+		}else{
+			$query21 = mysql_query("SELECT * FROM country WHERE id_country=$i[country_origin]");
+			$res2 = mysql_fetch_assoc($query21);
+			$i['country_origin']=$res2['name_en'];
 
-		$query11 = "SELECT name_en FROM recipe_difficulty WHERE id=$i[difficulty]";
-		$res11 = mysql_query($query11);
-		$row = mysql_fetch_assoc($res11);
+			$query11 = "SELECT name_en FROM recipe_difficulty WHERE id=$i[difficulty]";
+			$res11 = mysql_query($query11);
+			$row = mysql_fetch_assoc($res11);
 
-		$i['difficulty']= $row['name_en'];
+			$i['difficulty']= $row['name_en'];
 
-		$html.= "<script type='text/javascript'>
-				$(document).ready(function () {
-				$('ul.menu_body li:even').addClass('alt');
-				$('img.menu_head').click(function () {
-				$('ul.menu_body').slideToggle('medium');
-				});
-				$('ul.menu_body li a').mouseover(function () {
-				$(this).animate({ fontSize: '14px', paddingLeft: '20px' }, 50 );
-				});
-				$('ul.menu_body li a').mouseout(function () {
-				$(this).animate({ fontSize: '12px', paddingLeft: '10px' }, 50 );
+			$html.= "<script type='text/javascript'>
+					$(document).ready(function () {
+					$('ul.menu_body li:even').addClass('alt');
+					$('img.menu_head').click(function () {
+					$('ul.menu_body').slideToggle('medium');
 					});
-				});
-				</script>";
+					$('ul.menu_body li a').mouseover(function () {
+					$(this).animate({ fontSize: '14px', paddingLeft: '20px' }, 50 );
+					});
+					$('ul.menu_body li a').mouseout(function () {
+					$(this).animate({ fontSize: '12px', paddingLeft: '10px' }, 50 );
+						});
+					});
+					</script>";
 
-		$data = '<h2>'.$i['name_en'].'</h2> by '.printLinkToProfileByUserId($i['id_user']).printPublicApproval().'<br/><br/>';
-		
-		$html.="<div>
-		<img src='img/templates/option.png' width='150' height='40' class='menu_head' />
-			<ul class='menu_body'>
+			$data = '<h2>'.$i['name_en'].'</h2> by '.printLinkToProfileByUserId($i['id_user']).printPublicApproval().'<br/><br/>';
+			
+			$html.="<div>
+			<img src='img/templates/option.png' width='150' height='40' class='menu_head' />
+				<ul class='menu_body'>
 
 
-				<li><a href='recipeTopdf.php?id=$_GET[id]'>Export to PDF</a></li>
-				<li><a href='#'>Share</a></li>
+					<li><a href='recipeTopdf.php?id=$_GET[id]'>Export to PDF</a></li>
+					<li><a href='#'>Share</a></li>
 
-				<script>
-		  function exportRecipe(e, data) {
-		  var a, url, x;
-		  e.preventDefault();
-		  a = e.target.parentNode;
-		  a.parentNode.hidden = true;
-		  url = './jsphp/recipeTopdf.php?data=' + data;
-		  x = new XMLHttpRequest();
-		  x.open('GET', url, true);
-		  x.onload = function(e) {
-			a.innerHTML = this.responseText;
-			if(this.responseText !== 'success') {
-			  a.innerHTML = this.responseText;
-			  a.parentNode.hidden = false;
+					<script>
+			  function exportRecipe(e, data) {
+			  var a, url, x;
+			  e.preventDefault();
+			  a = e.target.parentNode;
+			  a.parentNode.hidden = true;
+			  url = './jsphp/recipeTopdf.php?data=' + data;
+			  x = new XMLHttpRequest();
+			  x.open('GET', url, true);
+			  x.onload = function(e) {
+				a.innerHTML = this.responseText;
+				if(this.responseText !== 'success') {
+				  a.innerHTML = this.responseText;
+				  a.parentNode.hidden = false;
+				}
+			  };
+			  x.send();
 			}
-		  };
-		  x.send();
-		}
-		</script>
+			</script>
 
-			</ul>
-		</div>";
+				</ul>
+			</div>";
 
-		$data.="<strong>Ingredients</strong>:<ul>";
+			
+			$query = sprintf("SELECT path_source FROM recipe_photos WHERE id_recipe='%s'",
+			mysql_real_escape_string($_GET['id']));
+			$result2 = mysql_query($query);
 
-		//selection des ingredients reliees a la recette
-		$query = sprintf("SELECT id_ingredient FROM recipe_ingredients WHERE id_recipe='%s'",
-		mysql_real_escape_string($_GET['id']));
-		$result = mysql_query($query);
+			if(mysql_num_rows($result2) > 0){
+				$ij = mysql_fetch_assoc($result2);
+				if(!file_exists($ij['path_source'])){
+					$data.= "<img src='".NO_IMAGE."' width='200px' height='175px' />";
+				}else{
+					$data.= "<img src='$ij[path_source]' width='200px' height='175px' />";
+				}
+			}else{
+				$data.= "<img src='".NO_IMAGE."' width='200px' height='175px' />";
+			}			
+			
+			$data.="<strong>Ingredients</strong>:<ul>";
 
-		while($row=mysql_fetch_row($result)) {
-			$query1 = "SELECT name_en FROM ingredients WHERE id=$row[0]";
-			$response = mysql_query($query1);
-			while($row1 = mysql_fetch_assoc($response)){
-				$data.="<li>$row1[name_en]</li>";
+			//selection des ingredients reliees a la recette
+			$query = sprintf("SELECT id_ingredient FROM recipe_ingredients WHERE id_recipe='%s'",
+			mysql_real_escape_string($_GET['id']));
+			$result = mysql_query($query);
+
+			while($row=mysql_fetch_row($result)) {
+				$query1 = "SELECT name_en FROM ingredients WHERE id=$row[0]";
+				$response = mysql_query($query1);
+				while($row1 = mysql_fetch_assoc($response)){
+					$data.="<li>$row1[name_en]</li>";
+				}
 			}
+
+			$data.="</ul>
+				<div><strong>Description</strong>: $i[description_en]</div>
+				<div><strong>Origin</strong>: $i[country_origin]</div>
+				<div><strong>Difficulty</strong>: $i[difficulty]</div>
+				<div><strong>Servings</strong>: $i[num_serves] </div>
+				<div><strong>Preparation</strong>: $i[duration_preparation] minutes</div>
+				<div><strong>Cooking</strong>: $i[duration_cook] minutes</div>
+				<div><strong>Instructions</strong>: $i[preparation_en]</div>";
+
+			$html.= "$data";		
 		}
-
-		$query = sprintf("SELECT path_source FROM recipe_photos WHERE id_recipe='%s'",
-		mysql_real_escape_string($_GET['id']));
-		$result2 = mysql_query($query);
-
-		if(mysql_num_rows($result2) == 1){
-			$ij = mysql_fetch_assoc($result2);
-			$data.= "<img src='$ij[path_source]' width='200px' height='175px' />";
-		}
-
-		$data.="</ul>
-			<div><strong>Description</strong>: $i[description_en]</div>
-			<div><strong>Origin</strong>: $i[country_origin]</div>
-			<div><strong>Difficulty</strong>: $i[difficulty]</div>
-			<div><strong>Servings</strong>: $i[num_serves] </div>
-			<div><strong>Preparation</strong>: $i[duration_preparation] minutes</div>
-			<div><strong>Cooking</strong>: $i[duration_cook] minutes</div>
-			<div><strong>Instructions</strong>: $i[preparation_en]</div>";
-
-		$html.= "$data";		
 	}
 	printDocument('Recipe');
 }else{

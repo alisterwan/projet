@@ -393,6 +393,9 @@ function printAvatarByUserId($id){ // display avatar miniature
 	$sql = 'SELECT avatar FROM users WHERE id='.$id;
 	$query = mysql_query($sql);
 	$result = mysql_fetch_assoc($query);
+	if(!file_exists($result['avatar'])){
+		$result['avatar'] = NO_IMAGE;
+	}
 	return '<div class="user_avatar" ><img src="'.$result['avatar'].'"  width="64" height="64" alt="avatar"></div>';
 }
 
@@ -723,6 +726,7 @@ if(isset($userid) || isVisitor() ){
 	}else{
 		$id = $userid;
 	}
+	$html.= '<a href="profile.php?id_user='.$id.'" >Back to Profile</a>';
 	$html.= printNewWallPost($id); // new post
 
 	$html.= '<div class="wall">';

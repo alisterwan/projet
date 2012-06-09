@@ -1,7 +1,7 @@
 <?php
 
 include 'header.php';
-define("NO_IMAGE", "img/default/noimage.gif");
+//define("NO_IMAGE", "img/default/noimage.gif");
 
 /**************Fonctions****************************/
 
@@ -165,6 +165,7 @@ function printContactsByUserId($id) {
 		$ficelle.= '<h4>'.getGroupNameById($groupid).'</h4>';
 		$users    = getUserIdByGroup($groupid);
 		if ($users) {
+			$users = array_unique($users);
 			foreach ($users AS $user) {
 				$ficelle.= printUserBadgeById($user).'<br>';
 			}			

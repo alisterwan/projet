@@ -1,6 +1,5 @@
 <?php include 'header.php';
 
-
 /***************fonctions***************************/
 
 //fonction pour verifier si deux users sont amis

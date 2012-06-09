@@ -1,8 +1,6 @@
 <?php 
 include 'header.php';
 
-define("NO_IMAGE", "img/default/noimage.gif");
-
 /***************fonctions***************************/
 
 //fonction pour verifier si deux users sont amis
@@ -222,6 +220,12 @@ function IngredientAdd($j){
 function printFormAddIngredient($userid){
 
 	$html = '';
+	
+	$var = CountIngredients($userid);
+	$html.="<form action='fridge.php' method='post' id='contribution' enctype='multipart/form-data'>";
+	$html.= IngredientAdd($var);
+	$html.="<input type='submit' value='Submit'>";
+	
 	$all_recipes = getRecipeIdByFridgeByUserID($userid);
 		
 	if($all_recipes!=false){

@@ -1,6 +1,6 @@
 <?php
 
-
+define("NO_IMAGE", "img/default/noimage.gif");
 //Functions
 
 
@@ -86,47 +86,42 @@ function retrieve_user_add_infos($id){ // prend en paramètre l'id de l'user, so
 }
 
 //fonction pour recuperer les friends request
-  function checkFriendRequest($id){
-  $query = sprintf("SELECT * FROM groups_relations
-    WHERE id_user='%s' AND approval='0'",
-    mysql_real_escape_string($id));
+function checkFriendRequest($id){
+	$query = sprintf("SELECT * FROM groups_relations WHERE id_user='%s' AND approval='0'",
+	mysql_real_escape_string($id));
     $result = mysql_query($query);
 
-   if (!$result) {
-   return false;
-   }
+	if (!$result) {
+		return false;
+	}
 
-   else
-   while ($row = mysql_fetch_assoc($result)) {
-   return $row; 
-   }
+	else
+	while ($row = mysql_fetch_assoc($result)) {
+		return $row; 
+	}
 
-   mysql_free_result($result);
+	mysql_free_result($result);
 }
 
 
-
-	
-
-
-	//fonction pour recuperer le id de l'emetteur
-	function getGroupCreator($idgroup){
+//fonction pour recuperer le id de l'emetteur
+function getGroupCreator($idgroup){
 	$query = sprintf("SELECT * FROM groups
-    WHERE id='%s'",
-    mysql_real_escape_string($idgroup));
-    $result = mysql_query($query);
+	WHERE id='%s'",
+	mysql_real_escape_string($idgroup));
+	$result = mysql_query($query);
 
-   if (!$result) {
-   return false;
-   }
-
-   else
-   while ($row = mysql_fetch_assoc($result)) {
-   return $row['id_creator'];
-   }
-
-   mysql_free_result($result);
+	if (!$result) {
+		return false;
 	}
+
+	else
+	while ($row = mysql_fetch_assoc($result)) {
+	return $row['id_creator'];
+	}
+
+	mysql_free_result($result);
+}
 	
 
 /*****************FUNCTION ON SEARCH****************/

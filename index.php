@@ -1,6 +1,5 @@
 <?php include 'header.php';
 
-define("NOIMAGE", 'img/default/noimage.gif');
 ////////////////// BOXES //////////////////
 function leftboxContent(){
 		 // ATTENTION IL FAUT METTRE LES QUOTES POUR id !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -368,7 +367,14 @@ function printWallPostById($idpost){ // display a Post and Comments
 function printAvatarByUserId($id){ // display avatar miniature
 	$sql = 'SELECT avatar FROM users WHERE id='.$id;
 	$query = mysql_query($sql);
-	$result = mysql_fetch_assoc($query);
+	if(!$query || mysql_num_rows($query) < 1){
+		$result['avatar'] = NO_IMAGE;
+	}else{
+		$result = mysql_fetch_assoc($query);
+		if(!file_exists($result['avatar'])){
+			$result['avatar'] = NO_IMAGE;
+		}
+	}
 	return '<img src="'.$result['avatar'].'"  width="64" height="64" alt="avatar">';
 }
 
@@ -631,8 +637,11 @@ function printRecipesBadgeById($id) {
 
 	if(mysql_num_rows($result2) > 0){
 		$recip = mysql_fetch_assoc($result2);
+		if(!file_exists($recip['path_source'])){
+			$recip['path_source'] = NO_IMAGE;
+		}		
 	}else{
-		$recip['path_source'] = NOIMAGE;
+		$recip['path_source'] = NO_IMAGE;
 	}
 
 	if(!$recipe){

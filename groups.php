@@ -1,6 +1,5 @@
 <?php
 include './header.php';
-define("NO_IMAGE", "img/default/noimage.gif");
 
 function getAllGroupsExceptFollowersByUserId($idcreator){
 	$query = sprintf("SELECT * FROM groups	WHERE id_creator='%s'",	mysql_real_escape_string($idcreator));

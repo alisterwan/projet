@@ -434,7 +434,9 @@ $query = sprintf("SELECT * FROM recipes WHERE id_user='%s'",
 		$query2 = "SELECT * FROM recipe_photos WHERE id_recipe=$row3[id]";
 		$result2 = mysql_query($query2);
 		$row2=mysql_fetch_assoc($result2);
-
+		if(!file_exists($row2['path_source'])){
+			$row2['path_source'] = NO_IMAGE;
+		}
 		$html.="<div><a href='./recipe.php?id=$row3[id]'><img 		src='$row2[path_source]' width='60px' height='60px' alt='$row3[name_en]' 	title='$row3[name_en]'/><br/>$row3[name_en]</a> $row3[creation]</div>";
 		}
 
@@ -850,9 +852,11 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 		
 		$html.= '<hr>';
 		$html.= '<div class="navlinks">
-					<a href="wall.php?id='.$_GET['id_user'].'" >Blog</a>
-					<a href="private_messages.php?id_recipient='.$_GET['id_user'].'" >Send a private message</a>
-					<a href="recipes.php?iduser='.$_GET['id_user'].'" >User\'s recipes</a>
+					<a href="wall.php?id='.$_GET['id_user'].'" >Blog</a>';
+		if(belongsToUserGroups($userid, $_GET['id_user'])){
+			$html.='<a href="private_messages.php?id_recipient='.$_GET['id_user'].'" >Send a private message</a>';
+		}
+		$html.='<a href="recipes.php?iduser='.$_GET['id_user'].'" >User\'s recipes</a>
 				</div>';
 	}else{ // user viewing its own profile
 	
