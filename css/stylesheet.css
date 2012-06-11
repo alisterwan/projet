@@ -462,32 +462,6 @@ h1, h2, h3, h4, h5, h6 {
   content: '☆ ';
 }
 
-/*
-.wall table {
-  border: 1px solid transparent;
-  width: 100%;
-}
-.wall form {
-  display: inline-block;
-}
-.wall td:first-child {
-  text-align: center;
-}
-#body .wall input {
-  background: none;
-  border: none;
-  box-shadow: none;
-  width: auto;
-}
-#body .wall input[value="Like"] {
-  color: hsl(120, 60%, 50%);
-}
-#body .wall input[value="Dislike"] {
-  color: hsl(0, 60%, 50%);
-}
-*/
-
-
 #contribution input, #contribution select {
   display: block;
   margin: 2px auto;
@@ -501,6 +475,59 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+.wall_post {
+  margin-bottom: 40px;
+}
+.wall_post > form, .wall_post_comment {
+  border-left: 1px solid rgba(0, 0, 0, .3);
+  padding-left: 10px;
+}
+.wall_post > form {
+  margin-bottom: 15px;
+}
+.wall_post_comment {
+  margin-bottom: 30px;
+}
+.post_comments_number {
+  margin: 5px 0 15px 0;
+  font-weight: 700;
+}
+.all_wall_post_comment {
+  margin-left: 20px;
+}
+.user_avatar {
+  float: left;
+}
+.user_avatar + br {
+  display: none;
+}
+.wall_post_ratings_like, .wall_post_ratings_dilike,
+.comment_ratings_like, .comment_ratings_dilike {
+  display: inline-block;
+}
+.wall_post_ratings_dilike::before, .comment_ratings_dilike::before {
+  content: '\00A0-\00A0';
+}
+.link_to_user a, .wall_post_comment > a {
+  display: table;
+  font-size: larger;
+  font-weight: 700;
+  text-decoration: none;
+}
+.wall_post_date, .comment_date, .user_comment_rate {
+  font-size: x-small;
+  font-weight: 700;
+}
+.wall_post_content, .comment_content {
+  padding: 15px 20px;
+  clear: both;
+}
+.like_button, .dislike_button, .undo_button {
+  display: inline-block;
+  margin: 0 4px;
+}
+
+
 /*--------------------------------------------------
 	  Albums Display John
 -------------------------------------------------- */
@@ -509,7 +536,7 @@ h1, h2, h3, h4, h5, h6 {
 	margin: auto;
 	width: 700px;
 	position:relative;
-	
+
 }
 
 #pictures li {
@@ -527,7 +554,7 @@ h1, h2, h3, h4, h5, h6 {
 	z-index: 10;
 
 }
- 
+
 #pictures li span {
 	background: rgba(0, 0, 0, 0.5); /* Les légendes auront un arrière-plan noir avec une opacité de 50% */
 	color: #fff;
@@ -551,7 +578,7 @@ h1, h2, h3, h4, h5, h6 {
 	-o-transition: top 0.3s ease-in-out;
 	-webkit-transition: top 0.3s ease-in-out;
 }
- 
+
 #pictures li.legend-top:hover span {
 	top: 0;
 }
