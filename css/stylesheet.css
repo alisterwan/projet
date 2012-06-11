@@ -239,7 +239,6 @@ a:active {
 body {
   background-color: hsl(0, 0%, 90%);
   margin: 0 auto;
-  padding: 100px 0 50px 150px;
   width: 960px;
 }
 header {
@@ -436,6 +435,7 @@ nav input[type="submit"]:active,
 
 #body {
   margin: 0 1em;
+  padding: 100px 0 50px 150px;
 }
 h1, h2, h3, h4, h5, h6 {
   color: hsl(200, 10%, 25%);
