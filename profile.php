@@ -424,9 +424,8 @@ $query = sprintf("SELECT * FROM recipes WHERE id_user='%s'",
 	mysql_real_escape_string($userid));
 	$result = mysql_query($query);
 
-	if (!$result){
-	$html ="
-	<p>You haven't got recipes</p>";
+	if (!$result || mysql_num_rows($result)<1){
+	$html ="<p>You haven't got recipes</p>";
 	}
 	else {
 	$html ="";
@@ -865,20 +864,23 @@ if (isset($userid)){  // vérification si logué en tant qu'utilisateur
 			$html.= "<h1>$userinfos[firstname] $userinfos[surname] ($userinfos[username])</h1>";
 			//$html.= printProfileBanner();
 			/////////////////////// FIN Affichage du nom et bannière élémentaire ////////////////////////
-			
+			$html.= '<div class="navlinks">
+						<a href="profile.php?mode=edit_account_infos">Edit your account informations</a>
+						<a href="profile.php?mode=edit_profile">Edit your profile</a>
+					</div>';
 			if($useraddinfos){ // affichage infos passion du membre
 				$html.=" <b> <p align=\"center\"> INFORMATIONS PERSONELLES |  <a href=\"profile.php?mode=edit_account_infos\" >Edit</a> </p> </b> ";
 				$html.=printAccountInformation($userid);
 				$html.=" <br> <b> <p align=\"center\">  HOBBIES / ABOUT ME | <a href=\"profile.php?mode=edit_profile\" >Edit</a></p> </b>";
 				$html.=printInfoMember($userid);
-				$html.=" <br> <b> <p align=\"center\">  CONTRAINTES ALIMENTAIRES </p> </b>";
+				/*$html.=" <br> <b> <p align=\"center\">  CONTRAINTES ALIMENTAIRES </p> </b>";
 				$html.=	getAllInMyProhib($userid);
 				$html.= getAllIngILike($userid);	
-				$html.= getAllIngIDislike($userid);	
+				$html.= getAllIngIDislike($userid);	*/
 			}
 		
 			//$html.= '<br/><br/><a href="profile.php?mode=edit_profile" />Edit your profile</a> | <a href="profile.php?mode=edit_account_infos" />Edit your account informations</a>';
-			$html.="<h4>Lastest posts</h4>";
+			$html.="<h4>Lastest recipes</h4>";
 			$html.= getUserRecipesbyUserID($userid);
 		
 		}elseif(isset($_GET['mode']) && $_GET['mode']=="edit_account_infos"){ // edit account infos
